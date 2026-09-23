@@ -1,0 +1,1 @@
+92e2418eced4b315d5a5e98144036573b0775da3190c4ebe1e7193335b6d68a9  Stockfish-AI-Chess-1.0-build2-source.tar.gz
