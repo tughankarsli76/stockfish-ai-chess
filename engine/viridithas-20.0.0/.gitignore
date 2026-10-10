@@ -23,7 +23,7 @@ tb5
 *.nnue
 *.nnue.zst
 *.nnue.raw
-src/tablebases/bindings.rs
+# iOS uses frozen bindings without the optional bindgen feature.
 perf.data*
 flamegraph.svg
 profdir/*
