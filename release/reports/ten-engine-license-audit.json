@@ -1,0 +1,219 @@
+{
+  "checkedAt": "2026-10-07T10:14:53.411446+00:00",
+  "request": {
+    "total": 10,
+    "remove": "Stockfish 18",
+    "newCandidates": [
+      "Cinder",
+      "Viridithas",
+      "Halogen",
+      "Clover",
+      "Starzix"
+    ]
+  },
+  "excluded": [
+    {
+      "name": "Coda",
+      "reason": "Upstream documents past GPL/AGPL provenance remediation and its own engineering audit is not a legal clearance.",
+      "source": "https://github.com/adamtwiss/coda/blob/main/docs/license_analysis_2026-07-13.md",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Integral",
+      "latest": "v8",
+      "reason": "No engine redistribution license located in tagged source, README, or unanswered issue.",
+      "source": "https://github.com/aronpetko/integral/issues/226",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Hobbes",
+      "latest": "3.0",
+      "reason": "Engine MIT; separate required NNUE repository lacks an explicit redistribution grant; unanswered license issue.",
+      "source": "https://github.com/kelseyde/hobbes-networks/issues/1",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Alexandria",
+      "latest": "9.1.0",
+      "reason": "Engine GPL; separate required NNUE repository lacks an explicit redistribution grant.",
+      "source": "https://github.com/PGG106/Alexandria-networks",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Stormphrax",
+      "latest": "8.0.0",
+      "reason": "Engine GPL; separate required NNUE repository lacks an explicit redistribution grant.",
+      "source": "https://github.com/Ciekce/stormphrax-nets",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Caissa",
+      "latest": "2.0",
+      "reason": "Engine MIT; separate required NNUE repository lacks an explicit redistribution grant; upstream issue unresolved.",
+      "source": "https://github.com/Witek902/Caissa/issues/30",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Astra",
+      "latest": "7.0",
+      "reason": "Engine GPL; separate required NNUE repository lacks an explicit redistribution grant.",
+      "source": "https://github.com/h1me01/Astra-Networks",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Berserk",
+      "latest": "14",
+      "reason": "Engine code is licensed, but an explicit redistribution grant for the required separate network was not located. Excluded under the owner's strict uncertainty criterion, without claiming infringement.",
+      "source": "https://github.com/jhonnold/berserk-networks",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Tarnished",
+      "latest": "6.0",
+      "reason": "Engine code is licensed, but an explicit redistribution grant for the required separate network was not located. Excluded under the owner's strict uncertainty criterion, without claiming infringement.",
+      "source": "https://github.com/Bobingstern/tarnished-nets",
+      "ownerConfirmedRemoval": true
+    },
+    {
+      "name": "Raphael",
+      "latest": "4.2.0",
+      "codeLicense": "GPL-3.0",
+      "reason": "Required separate network repository has only a short README with no license/grant; matching release body contains no redistribution permission. Excluded under the owner's strict uncertainty criterion, without claiming infringement.",
+      "source": "https://github.com/Orbital-Web/Raphael/releases/tag/v4.2.0",
+      "networkSource": "https://github.com/Orbital-Web/Raphael-Net",
+      "networkRelease": "https://github.com/Orbital-Web/Raphael-Net/releases/tag/yogsothoth_v3",
+      "ownerConfirmedRemoval": true,
+      "excludedUnderStandingInstruction": true
+    },
+    {
+      "name": "Horsie",
+      "latest": "1.1",
+      "codeLicense": "GPL-3.0",
+      "reason": "Required separate network repository has only a short README with no license/grant; matching release body contains no redistribution permission. Excluded under the owner's strict uncertainty criterion, without claiming infringement.",
+      "source": "https://github.com/liamt19/Horsie/releases/tag/v1.1",
+      "networkSource": "https://github.com/liamt19/lizard-nets",
+      "networkRelease": "https://github.com/liamt19/lizard-nets/releases/tag/net-015-2048x16x32-132qb-z",
+      "ownerConfirmedRemoval": true,
+      "excludedUnderStandingInstruction": true
+    },
+    {
+      "name": "Icarus",
+      "latest": "1.1.1",
+      "codeLicense": "AGPL-3.0",
+      "reason": "Required separate network repository has only a short README with no license/grant; matching release body contains no redistribution permission. Excluded under the owner's strict uncertainty criterion, without claiming infringement.",
+      "source": "https://github.com/Sp00ph/icarus/releases/tag/v1.1.1",
+      "networkSource": "https://github.com/Sp00ph/icarus-nets",
+      "networkRelease": "https://github.com/Sp00ph/icarus-nets/releases/tag/glide-v22",
+      "ownerConfirmedRemoval": false,
+      "excludedUnderStandingInstruction": true
+    }
+  ],
+  "candidates": [
+    {
+      "name": "Cinder",
+      "version": "0.6.1",
+      "codeLicense": "GPL-3.0",
+      "network": "lib/nnue/nnue.bin.zst in the same licensed source tree; LC0 training-data ODbL attribution must be retained.",
+      "source": "https://github.com/brunocodutra/cinder/releases/tag/v0.6.1",
+      "commit": "f5d8b06701b059561e70bfb5dfbc98f65d910131",
+      "status": "Code/network/dependency license check and physical native analysis/match/cancellation tests passed; installed in normal version 1.1 phone app",
+      "networkSHA256": "8036a4da52ad5099824c211388e3e135680c806cc1b8f7d5b03831aa41ab2b7b"
+    },
+    {
+      "name": "Viridithas",
+      "version": "20.0.0",
+      "codeLicense": "MIT at pinned tag",
+      "networkLicense": "CC0-1.0; explicit all-networks statement and license in upstream network repository",
+      "source": "https://github.com/cosmobobak/viridithas/releases/tag/v20.0.0",
+      "networkSource": "https://github.com/cosmobobak/viridithas-networks",
+      "commit": "0631113e2215714c54d397cce9a8caebc5e6f8ee",
+      "status": "Code/network/dependency license check and physical native analysis/match/cancellation tests passed; installed in normal version 1.1 phone app",
+      "networkSHA256": "066c172e22c25ee3d3b4084ad44ff761426f906a9c536cabd0127d17413d0585"
+    },
+    {
+      "name": "Halogen",
+      "version": "16.0.0",
+      "codeLicense": "GPL-3.0",
+      "source": "https://github.com/KierenP/Halogen/releases/tag/v16",
+      "networkSource": "https://github.com/KierenP/Halogen-Networks",
+      "status": "Code/network/dependency license check and physical native analysis/match/cancellation tests passed; installed in normal version 1.1 phone app",
+      "networkLicense": "GPL-3.0; explicit LICENSE in upstream network repository",
+      "networkTag": "150521a9",
+      "networkSHA256": "150521a9957beb7fe90395dd5b134f75cde4e6dfc95e5d5fdee80031e7c7c9cb",
+      "commit": "fa6d24a5423a20b4530723cd0f6f76d4da0581d8"
+    },
+    {
+      "name": "Clover",
+      "version": "9.1",
+      "codeLicense": "GPL-3.0-or-later",
+      "network": "src/quantised.nnue is included in the same licensed source tree",
+      "source": "https://github.com/lucametehau/CloverEngine/releases/tag/v9.1",
+      "commit": "e647926a8f23b6b93f7f27c01cb6f686909ec482",
+      "dependencies": "Bundled Fathom retains its MIT license. Historical issue #161 was resolved in 2023 and its author accepted the fix. incbin license notice to retain in source distribution.",
+      "status": "Code/network/dependency license check and physical native analysis/match/cancellation tests passed; installed in normal version 1.1 phone app",
+      "networkSHA256": "605aa6d9cc676f299a81e048e3c4c4cca8c9899c977b2d49a7bb0c0de202b114"
+    },
+    {
+      "name": "Starzix",
+      "version": "6.1",
+      "codeLicense": "WTFPL-2.0",
+      "network": "src/net.bin in the same licensed source tree; retain LC0 training-data attribution",
+      "source": "https://github.com/zzzzz151/Starzix/releases/tag/6.1",
+      "commit": "cb3bc13cc651f73db56ad4a714ed2765dcc901c0",
+      "dependencies": "tsl ordered_hash/ordered_map retain MIT headers; incbin Unlicense supplied from original upstream",
+      "archivedRepository": true,
+      "status": "Code/network/dependency license check and physical native analysis/match/cancellation tests passed; installed in normal version 1.1 phone app",
+      "networkSHA256": "2ef2c339a0eb17a06d64b91d96a3b374750f58600a973d1521a12d1452320034"
+    }
+  ],
+  "distribution": "Source and network grants checked, original notices retained, Rust dependencies inventoried and vendored. Existing app rights use the prior owner confirmation recorded in release/APP-STORE-LICENSE-REVIEW.md. All ten native engines passed physical and simulator checks; the signed 1.1 development app was installed and launched on the normal phone app with its existing bundle identifier. This evidence is not a zero-risk legal certification. No App Store submission or source publication performed.",
+  "retainedExistingEngines": [
+    {
+      "name": "Stockfish",
+      "version": "19"
+    },
+    {
+      "name": "Reckless",
+      "version": "0.9.0"
+    },
+    {
+      "name": "PlentyChess",
+      "version": "8.0.0"
+    },
+    {
+      "name": "Pawnocchio",
+      "version": "2.0.1"
+    },
+    {
+      "name": "Obsidian",
+      "version": "16.0"
+    }
+  ],
+  "counts": {
+    "retainedExisting": 5,
+    "newCodeAndNetworkChecksPassed": 5,
+    "proposedAfterStockfish18Removal": 10,
+    "newEnginesIntegrated": 5,
+    "tenthEngine": "Starzix 6.1",
+    "currentNativeSourceIncludesStockfish18": false,
+    "currentNormalPhoneAppIncludesStockfish18": false,
+    "newEnginesInstalledInNormalPhoneApp": 5,
+    "normalPhoneEngineTotal": 10
+  },
+  "validation": {
+    "simulatorFirstFailure": "Pawnocchio upstream identity lowercase; test expectation corrected",
+    "neonNumericMath": "Passed: 1024 inputs against scalar reference, forced baseline and dispatched DOTPROD",
+    "webTests": "38 passed",
+    "installedNormalApp": true,
+    "physicalNative": "Passed: all 10 identities/legal analysis, 5 new timed matches and 5 infinite-search cancellations; threads 2/hash150",
+    "migration": "Passed final physical check: obsolete Stockfish18 selection preserves PGN, position, username and resource settings; clears obsolete engine match and defaults to available engines",
+    "continuedGrant": "Passed on physical iPhone: native grant/handoff plus actual Home UI test, 65 seconds in background and 28 legal recorded plies after return",
+    "cinderFix": "UCI parsing moved off 512 KB iOS dispatch stack onto 16 MB engine worker; crash resolved in physical all-engine test",
+    "bundle": "Signed 1.1 build verified: exact ten-engine catalog, corresponding source hashes, network/dependency notices and no excluded engine paths",
+    "deviceInstall": "ios/test-results/version-1.1-ten-engines-device-install.json",
+    "deviceLaunch": "ios/test-results/version-1.1-ten-engines-device-launch.json",
+    "sourceCandidate": "release/version-1.1-source-candidate.tar.gz",
+    "sourceCandidateCleanBuildRepeated": false,
+    "physicalScreenLockTestPerformed": false
+  }
+}

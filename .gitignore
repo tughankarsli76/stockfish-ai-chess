@@ -19,7 +19,8 @@ ios/StockfishChess/background-model.js
 *.p12
 *.mobileprovision
 .env
-/release/reports/
+/release/reports/*
+!/release/reports/ten-engine-license-audit.json
 /release/*-source/
 /engine/Obsidian-16.0/net87perm.bin
 /engine/cinder-0.6.1/lib/nnue/nnue.bin.zst

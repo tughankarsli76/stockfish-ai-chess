@@ -1,5 +1,7 @@
 # Building the corresponding source
 
+On `develop`, the generator defaults to version 1.5/build 22 and uses `CI_BUILD_NUMBER` during Xcode Cloud builds. Restore the model inputs with `python3 ios/ci_scripts/restore-models.py` before building. The shared project is committed for cloud discovery and regenerated before the build. See `ios/XCODE-CLOUD.md` for cloud setup. The historical release details below describe the immutable 1.4 build 21 source that this development branch started from.
+
 This package contains the original application and modified engine source, required networks, assets and build scripts. Read LICENSING.md for the scoped application license and individual component licenses.
 
 ## Environment

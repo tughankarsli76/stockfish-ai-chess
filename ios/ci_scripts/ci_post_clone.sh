@@ -24,7 +24,7 @@ if [ ! -x "$CHESS_ROOT/ios/zig-toolchain/zig" ]; then
     tar -xf "$CHESS_ROOT/.cloud-cache/zig.tar.xz" -C "$CHESS_ROOT/ios/zig-toolchain" --strip-components=1
 fi
 "$CHESS_ROOT/ios/zig-toolchain/zig" version
-if ! command -v node >/dev/null 2>&1; then
+if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.versions.node.split(".")[0]) >= 24 ? 0 : 1)'; then
     export HOMEBREW_NO_AUTO_UPDATE=1
     brew install node@24
     export PATH="$(brew --prefix node@24)/bin:$PATH"
