@@ -1,0 +1,220 @@
+use crate::{chess::Position, warn};
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::{fs::read_dir, path::Path};
+
+mod dtz;
+mod fs;
+mod material;
+mod table;
+mod tablebase;
+mod wdl;
+
+pub use dtz::*;
+pub use fs::*;
+pub use material::*;
+pub use table::*;
+pub use tablebase::*;
+pub use wdl::*;
+
+/// The [`Syzygy`] tablebases.
+#[derive(Debug, Default)]
+pub struct Syzygy {
+    tablebase: Tablebase,
+    hits: AtomicU64,
+}
+
+impl Syzygy {
+    /// Initializes the the tablebase from the files in `path`.
+    pub fn new<P: AsRef<Path>, I: IntoIterator<Item = P>>(paths: I) -> Self {
+        let mut syzygy = Self::default();
+
+        for path in paths {
+            if let Ok(directory) = read_dir(path) {
+                for entry in directory.flatten() {
+                    let file = entry.path();
+                    if let Err(e) = syzygy.tablebase.load(&file) {
+                        warn!("failed to load `{}`, {e}", file.display());
+                    }
+                }
+            }
+        }
+
+        syzygy
+    }
+
+    /// The maximum number of pieces available in the tablebase.
+    #[inline(always)]
+    pub fn max_pieces(&self) -> usize {
+        self.tablebase.max_pieces()
+    }
+
+    /// The number of successful probes so far.
+    #[inline(always)]
+    pub fn hits(&self) -> u64 {
+        self.hits.load(Ordering::Relaxed)
+    }
+
+    /// Resets hits counter.
+    #[inline(always)]
+    pub fn reset_hits(&self) {
+        self.hits.store(0, Ordering::Relaxed);
+    }
+
+    /// This [`Position`]'s [`Wdl`] if immediately following a zeroing move.
+    #[inline(always)]
+    pub fn wdl_after_zeroing(&self, pos: &Position) -> Option<Wdl> {
+        if pos.halfmoves() == 0 {
+            self.wdl(pos)
+        } else {
+            None
+        }
+    }
+
+    /// This [`Position`]'s [`Wdl`].
+    #[inline(always)]
+    pub fn wdl(&self, pos: &Position) -> Option<Wdl> {
+        if self.max_pieces() >= pos.occupied().count() as usize {
+            let probe = self.tablebase.probe(pos)?;
+            self.hits.fetch_add(1, Ordering::Relaxed);
+            probe.wdl()
+        } else {
+            None
+        }
+    }
+
+    /// This [`Position`]'s [`Dtz`].
+    #[inline(always)]
+    pub fn dtz(&self, pos: &Position) -> Option<Dtz> {
+        if self.max_pieces() >= pos.occupied().count() as usize {
+            let probe = self.tablebase.probe(pos)?;
+            self.hits.fetch_add(1, Ordering::Relaxed);
+            probe.dtz()
+        } else {
+            None
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::{File, create_dir_all};
+    use std::{io::Write, path::PathBuf};
+    use tempfile::TempDir;
+    use test_strategy::proptest;
+
+    pub const KNVK_RTBW: &[u8] = &[
+        0x71, 0xE8, 0x23, 0x5D, 0x31, 0x00, 0xEE, 0x66, 0x22, 0x00, 0x80, 0x02, 0x80, 0x02, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0xB9, 0xEC, 0xCB, 0xFF, 0x19, 0xC6, 0x77, 0x15, 0x8E, 0x92, 0x8B,
+        0x1B, 0x64, 0x12, 0x48, 0xB7,
+    ];
+
+    pub const KNVKN_RTBZ: &[u8] = &[
+        0xD7, 0x66, 0x0C, 0xA5, 0x40, 0x01, 0x0E, 0x0A, 0x06, 0x02, 0x80, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x2D, 0xA6, 0x2B, 0xDA, 0x60, 0xBF, 0xB9, 0x2C, 0xBD, 0x46, 0x72,
+        0xDB, 0x2C, 0xD6, 0xB6, 0xC5,
+    ];
+
+    #[proptest(cases = 1)]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_empty_paths_succeeds() {
+        let syzygy = Syzygy::new::<&PathBuf, _>(&[]);
+        assert_eq!(syzygy.max_pieces(), 0);
+    }
+
+    #[proptest(cases = 1)]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_single_directory_succeeds() {
+        let tmp = TempDir::new()?;
+
+        let file = tmp.path().join("KNvK.rtbw");
+        File::create(&file)?.write_all(KNVK_RTBW)?;
+
+        let file = tmp.path().join("KNvKN.rtbz");
+        File::create(&file)?.write_all(KNVKN_RTBZ)?;
+
+        let syzygy = Syzygy::new(&[tmp]);
+        assert_eq!(syzygy.max_pieces(), 4);
+    }
+
+    #[proptest(cases = 1)]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_multiple_directories_succeeds() {
+        let tmp = TempDir::new()?;
+
+        let wdl = tmp.path().join("wdl");
+        create_dir_all(&wdl)?;
+        let file = wdl.join("KNvK.rtbw");
+        File::create(&file)?.write_all(KNVK_RTBW)?;
+
+        let dtz = tmp.path().join("dtz");
+        create_dir_all(&dtz)?;
+        let file = dtz.join("KNvKN.rtbz");
+        File::create(&file)?.write_all(KNVKN_RTBZ)?;
+
+        let syzygy = Syzygy::new(&[wdl, dtz]);
+        assert_eq!(syzygy.max_pieces(), 4);
+    }
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_nonexistent_directory_succeeds(#[strategy("[A-Za-z0-9_]{1,10}")] dir: String) {
+        let tmp = TempDir::new()?;
+        let syzygy = Syzygy::new(&[tmp.path().join(dir)]);
+        assert_eq!(syzygy.max_pieces(), 0);
+    }
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_empty_directory_succeeds(#[strategy("[A-Za-z0-9_]{1,10}")] dir: String) {
+        let tmp = TempDir::new()?;
+        let dir = tmp.path().join(dir);
+        create_dir_all(&dir)?;
+
+        let syzygy = Syzygy::new(&[dir]);
+        assert_eq!(syzygy.max_pieces(), 0);
+    }
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_not_a_directory_succeeds(#[strategy("[A-Za-z0-9_]{1,10}")] file: String) {
+        let tmp = TempDir::new()?;
+        let file = tmp.path().join(file);
+        File::create(&file)?;
+
+        let syzygy = Syzygy::new(&[file]);
+        assert_eq!(syzygy.max_pieces(), 0);
+    }
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_directory_containing_invalid_file_succeeds(
+        #[strategy("[A-Za-z0-9_]{1,10}[.](rtbw|rtbz|RTBW|RTBZ)")] file: String,
+    ) {
+        let tmp = TempDir::new()?;
+        let file = tmp.path().join(file);
+        File::create(file)?;
+
+        let syzygy = Syzygy::new(&[tmp]);
+        assert_eq!(syzygy.max_pieces(), 0);
+    }
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn new_with_directory_containing_invalid_file_extension_succeeds(
+        #[strategy("KNvK[.]([A-Za-z0-9_]{0,3})?")] file: String,
+    ) {
+        let tmp = TempDir::new()?;
+        let file = tmp.path().join(file);
+        File::create(file)?;
+
+        let syzygy = Syzygy::new(&[tmp]);
+        assert_eq!(syzygy.max_pieces(), 0);
+    }
+}

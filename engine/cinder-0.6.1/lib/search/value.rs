@@ -1,0 +1,65 @@
+use crate::chess::Flip;
+use crate::search::{Ply, Score};
+use crate::util::{Binary, Bits, Bounded, Int, Num};
+use bytemuck::{NoUninit, Zeroable};
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Zeroable, NoUninit)]
+#[cfg_attr(test, derive(test_strategy::Arbitrary))]
+#[repr(transparent)]
+pub struct ValueRepr(#[cfg_attr(test, strategy(Self::MIN..=Self::MAX))] <ValueRepr as Num>::Repr);
+
+const unsafe impl Num for ValueRepr {
+    type Repr = i16;
+    const MIN: Self::Repr = -Self::MAX;
+    const MAX: Self::Repr = Score::MAX - 2 * (Ply::MAX + 1);
+}
+
+const unsafe impl Int for ValueRepr {}
+
+/// A position's static evaluation.
+pub type Value = Bounded<ValueRepr>;
+
+impl Flip for Value {
+    #[inline(always)]
+    fn flip(self) -> Self {
+        -self
+    }
+}
+
+impl Binary for Value {
+    type Bits = Bits<u16, 14>;
+
+    #[inline(always)]
+    fn encode(&self) -> Self::Bits {
+        Bits::new((self.get() - Self::MIN + 1).cast())
+    }
+
+    #[inline(always)]
+    fn decode(bits: Self::Bits) -> Self {
+        Value::new(bits.cast::<i16>() + Self::MIN - 1)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test_strategy::proptest;
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn flipping_value_returns_its_negative(v: Value) {
+        assert_eq!(v.flip(), -v);
+    }
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn decoding_encoded_value_is_an_identity(v: Value) {
+        assert_eq!(Value::decode(v.encode()), v);
+    }
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn decoding_encoded_optional_value_is_an_identity(v: Option<Value>) {
+        assert_eq!(Option::decode(v.encode()), v);
+    }
+}

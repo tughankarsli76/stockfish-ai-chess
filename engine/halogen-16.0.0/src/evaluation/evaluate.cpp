@@ -1,0 +1,86 @@
+#include "evaluation/evaluate.h"
+
+#include "bitboard/enum.h"
+#include "chessboard/board_state.h"
+#include "network/network.h"
+#include "search/score.h"
+#include "spsa/tuneable.h"
+
+#include <algorithm>
+#include <array>
+#include <bit>
+#include <cassert>
+
+Score evaluate(const BoardState& board, NN::Accumulator* acc, NN::Network& net)
+{
+    // apply lazy updates to accumulator stack
+    //
+    // we assume the root position always has a valid accumulator, and use pointer arithmatic to get there
+    auto* current = acc;
+    while (!current->acc_is_valid)
+    {
+        current--;
+    }
+
+    while (current + 1 <= acc)
+    {
+        net.apply_lazy_updates(*current, *(current + 1));
+        current++;
+    }
+
+    assert(NN::Network::verify(board, *acc));
+    Score eval = NN::Network::eval(board, *acc);
+
+    // Apply material scaling factor
+    const auto npMaterial = eval_scale[PAWN] * std::popcount(board.get_pieces_bb(PAWN))
+        + eval_scale[KNIGHT] * std::popcount(board.get_pieces_bb(KNIGHT))
+        + eval_scale[BISHOP] * std::popcount(board.get_pieces_bb(BISHOP))
+        + eval_scale[ROOK] * std::popcount(board.get_pieces_bb(ROOK))
+        + eval_scale[QUEEN] * std::popcount(board.get_pieces_bb(QUEEN));
+    eval = eval.value() * (eval_scale_const + npMaterial) / 32768;
+
+    return std::clamp<Score>(eval, Score::Limits::EVAL_MIN, Score::Limits::EVAL_MAX);
+}
+
+bool insufficient_material(const BoardState& board)
+{
+    if ((board.get_pieces_bb(WHITE_PAWN)) != 0)
+        return false;
+    if ((board.get_pieces_bb(WHITE_ROOK)) != 0)
+        return false;
+    if ((board.get_pieces_bb(WHITE_QUEEN)) != 0)
+        return false;
+
+    if ((board.get_pieces_bb(BLACK_PAWN)) != 0)
+        return false;
+    if ((board.get_pieces_bb(BLACK_ROOK)) != 0)
+        return false;
+    if ((board.get_pieces_bb(BLACK_QUEEN)) != 0)
+        return false;
+
+    /*
+    From the Chess Programming Wiki:
+        According to the rules of a dead position, Article 5.2 b, when there is no possibility of checkmate for either
+        side with any series of legal moves, the position is an immediate draw if:
+            1: both sides have a bare king
+            2: one side has a king and a minor piece against a bare king
+            Not covered: both sides have a king and a bishop, the bishops being the same color
+    */
+
+    // We know the board must contain just knights, bishops and kings
+    int WhiteBishops = std::popcount(board.get_pieces_bb(WHITE_BISHOP));
+    int BlackBishops = std::popcount(board.get_pieces_bb(BLACK_BISHOP));
+    int WhiteKnights = std::popcount(board.get_pieces_bb(WHITE_KNIGHT));
+    int BlackKnights = std::popcount(board.get_pieces_bb(BLACK_KNIGHT));
+    int WhiteMinor = WhiteBishops + WhiteKnights;
+    int BlackMinor = BlackBishops + BlackKnights;
+
+    if (WhiteMinor == 0 && BlackMinor == 0)
+        return true; // 1
+    if (WhiteMinor == 1 && BlackMinor == 0)
+        return true; // 2
+    if (WhiteMinor == 0 && BlackMinor == 1)
+        return true; // 2
+
+    return false;
+}

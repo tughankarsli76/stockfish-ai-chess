@@ -1,0 +1,124 @@
+use crate::nnue::{F2V, FTQ, I2F, Layer, Li, Ln, Synapse};
+use crate::{simd::*, util::Assume};
+use bytemuck::Zeroable;
+use std::array;
+
+const I: usize = Li::LEN;
+const O: usize = Ln::LEN / 2;
+
+/// The input connection.
+#[derive(Debug, Zeroable)]
+pub struct Lin<S> {
+    pub bias: Aligned<[f32; O]>,
+    pub weight: Aligned<[[i8; 4]; I * O / 4]>,
+    pub next: S,
+}
+
+impl<S: for<'a> Synapse<Input<'a> = Ln<'a>, Output = V2<f32>>> Synapse for Lin<S> {
+    type Input<'a> = Li<'a>;
+    type Output = f32;
+
+    #[inline(always)]
+    #[cfg_attr(feature = "no_panic", no_panic::no_panic)]
+    fn forward(&self, (us, them): Self::Input<'_>) -> Self::Output {
+        const { assert!(I.is_multiple_of(2 * W8)) }
+        const { assert!(O.is_multiple_of(W2)) }
+
+        let us: &[[V4<i16>; I / W8]; 2] = us.cast_ref();
+        let them: &[[V4<i16>; I / W8]; 2] = them.cast_ref();
+
+        let active: Aligned<[[V8<u8>; 2]; I / W8 / 2]> = Aligned(array::from_fn(|i| {
+            let xl00 = us[0][2 * i].simd_min(Simd::splat(FTQ));
+            let xl01 = us[0][2 * i + 1].simd_min(Simd::splat(FTQ));
+            let xh00 = us[1][2 * i].simd_clamp(Simd::splat(0), Simd::splat(FTQ));
+            let xh01 = us[1][2 * i + 1].simd_clamp(Simd::splat(0), Simd::splat(FTQ));
+
+            let x00 = xl00.mul_high::<7>(xh00);
+            let x01 = xl01.mul_high::<7>(xh01);
+
+            let xl10 = them[0][2 * i].simd_min(Simd::splat(FTQ));
+            let xl11 = them[0][2 * i + 1].simd_min(Simd::splat(FTQ));
+            let xh10 = them[1][2 * i].simd_clamp(Simd::splat(0), Simd::splat(FTQ));
+            let xh11 = them[1][2 * i + 1].simd_clamp(Simd::splat(0), Simd::splat(FTQ));
+
+            let x10 = xl10.mul_high::<7>(xh10);
+            let x11 = xl11.mul_high::<7>(xh11);
+
+            [Pack::pack(x00, x10), Pack::pack(x01, x11)]
+        }));
+
+        let mut nzs = Aligned([0u16; I / 4]);
+        let nzs_len = nzs.nzs(active.cast_ref::<[[V2<u32>; 2]; I / W2 / 8]>());
+
+        let xs: &[u8x4; I / 4] = active.cast_ref();
+        let ws: &[[V8<i8>; O / W2]; I / 4] = self.weight.cast_ref();
+        let bs: &[V2<f32>; O / W2] = self.bias.cast_ref();
+
+        #[cfg(target_feature = "avx512f")]
+        const K: usize = 4;
+
+        #[cfg(not(target_feature = "avx512f"))]
+        const K: usize = 2;
+
+        let mut acc = Aligned([[Simd::splat(0); K]; O / W2]);
+
+        (nzs_len <= nzs.len()).assume();
+        for i in (0..nzs_len - nzs_len % K).step_by(K) {
+            let nz0 = *nzs.get(i).assume() as usize;
+            let nz1 = *nzs.get(i + 1).assume() as usize;
+
+            #[cfg(target_feature = "avx512f")]
+            let nz2 = *nzs.get(i + 2).assume() as usize;
+            #[cfg(target_feature = "avx512f")]
+            let nz3 = *nzs.get(i + 3).assume() as usize;
+
+            let x0 = Aligned([*xs.get(nz0).assume(); W2]);
+            let x1 = Aligned([*xs.get(nz1).assume(); W2]);
+
+            #[cfg(target_feature = "avx512f")]
+            let x2 = Aligned([*xs.get(nz2).assume(); W2]);
+            #[cfg(target_feature = "avx512f")]
+            let x3 = Aligned([*xs.get(nz3).assume(); W2]);
+
+            let w0 = ws.get(nz0).assume();
+            let w1 = ws.get(nz1).assume();
+
+            #[cfg(target_feature = "avx512f")]
+            let w2 = ws.get(nz2).assume();
+            #[cfg(target_feature = "avx512f")]
+            let w3 = ws.get(nz3).assume();
+
+            for (j, a) in acc.iter_mut().enumerate() {
+                a[0] = w0[j].mul_add_4x8(x0.cast(), a[0]);
+                a[1] = w1[j].mul_add_4x8(x1.cast(), a[1]);
+
+                #[cfg(target_feature = "avx512f")]
+                {
+                    a[2] = w2[j].mul_add_4x8(x2.cast(), a[2]);
+                    a[3] = w3[j].mul_add_4x8(x3.cast(), a[3]);
+                }
+            }
+        }
+
+        for i in nzs_len - nzs_len % K..nzs_len {
+            let nz = *nzs.get(i).assume() as usize;
+            let x = Aligned([*xs.get(nz).assume(); W2]);
+            let w = ws.get(nz).assume();
+            for (j, a) in acc.iter_mut().enumerate() {
+                a[0] = w[j].mul_add_4x8(x.cast(), a[0]);
+            }
+        }
+
+        let output: Aligned<[V2<f32>; O / W2]> = Aligned(array::from_fn(|j| {
+            let sum = acc[j].iter().sum::<V2<i32>>();
+            sum.cast::<f32>().mul_add(Simd::splat(I2F), bs[j])
+        }));
+
+        let active = Aligned([
+            output.map(|i| i.simd_max(Simd::splat(0.)).powi::<2>()),
+            output.map(|i| i.simd_min(Simd::splat(0.)).powi::<2>()),
+        ]);
+
+        F2V * self.next.forward(active.cast_ref()).reduce_sum()
+    }
+}

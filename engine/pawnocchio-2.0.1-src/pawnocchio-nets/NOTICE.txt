@@ -1,0 +1,8 @@
+Pawnocchio neural network pp_new2.nnue
+Author/source: Jonathan Hallstrom, pawnocchio-nets contributors
+License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
+Source: https://github.com/JonathanHallstrom/pawnocchio-nets/tree/bbaf11347430bfedbf27461a1c3c2b360aa5e930
+License source: https://raw.githubusercontent.com/JonathanHallstrom/pawnocchio-nets/bbaf11347430bfedbf27461a1c3c2b360aa5e930/LICENSE
+Network SHA-256: 8b1d78b2908d330ace30ab69c3679a44db8176e0d6bf4116b60da8c383a4bc17
+The downloaded network is unmodified. The upstream transform-net build step prepares its ARM representation for embedding. See ../IOS-NOTES.md and the engine build source.
+Engine code and other artwork retain their separate licenses.

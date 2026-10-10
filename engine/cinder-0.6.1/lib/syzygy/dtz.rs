@@ -1,0 +1,83 @@
+use crate::syzygy::Wdl;
+use crate::util::{Bounded, Int, Num};
+use bytemuck::Zeroable;
+use std::ops::Neg;
+
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Zeroable)]
+#[cfg_attr(test, derive(test_strategy::Arbitrary))]
+#[repr(transparent)]
+pub struct DtzRepr(#[cfg_attr(test, strategy(Self::MIN..=Self::MAX))] <DtzRepr as Num>::Repr);
+
+const unsafe impl Num for DtzRepr {
+    type Repr = i16;
+    const MIN: Self::Repr = -Self::MAX;
+    const MAX: Self::Repr = 32767;
+}
+
+const unsafe impl Int for DtzRepr {}
+
+/// DTZ<sub>50</sub>. Based on the distance to zeroing of the half-move clock.
+///
+/// Zeroing the half-move clock while keeping the game-theoretical result in
+/// hand guarantees making progress, so min-maxing `Dtz` values guarantees
+/// achieving the optimal outcome under the 50-move rule.
+///
+/// | DTZ               | WDL          | |
+/// | ----------------- | ------------ | - |
+/// | `-100 <= n <= -1` | Loss         | Unconditional loss (assuming the 50-move counter is zero). Zeroing move can be forced in `-n` plies. |
+/// | `n < -100`        | Blessed loss | Loss, but draw under the 50-move rule. A zeroing move can be forced in `-n` plies or `-n - 100` plies (if a later phase is responsible for the blessing). |
+/// | 0                 | Draw         | |
+/// | `100 < n`         | Cursed win   | Win, but draw under the 50-move rule. A zeroing move can be forced in `n` or `n - 100` plies (if a later phase is responsible for the curse). |
+/// | `1 <= n <= 100`   | Win          | Unconditional win (assuming the 50-move counter is zero). Zeroing move can be forced in `n` plies. |
+pub type Dtz = Bounded<DtzRepr>;
+
+impl Dtz {
+    /// Increases the absolute non-zero value by `plies`.
+    #[inline(always)]
+    pub fn stretch(self, plies: u16) -> Dtz {
+        self + self.get().signum() as i32 * plies as i32
+    }
+}
+
+/// Converts [`Wdl`] to a [`Dtz`].
+///
+/// | WDL          | DTZ  |
+/// | ------------ | ---- |
+/// | Loss         | -1   |
+/// | Blessed loss | -101 |
+/// | Draw         | 0    |
+/// | Cursed win   | 101  |
+/// | Win          | 1    |
+impl From<Wdl> for Dtz {
+    #[inline(always)]
+    fn from(wdl: Wdl) -> Self {
+        match wdl {
+            Wdl::Loss => Dtz::new(-1),
+            Wdl::BlessedLoss => Dtz::new(-101),
+            Wdl::Draw => Dtz::new(0),
+            Wdl::CursedWin => Dtz::new(101),
+            Wdl::Win => Dtz::new(1),
+        }
+    }
+}
+
+impl Neg for DtzRepr {
+    type Output = Self;
+
+    #[inline(always)]
+    fn neg(self) -> Self::Output {
+        Self(self.0.neg())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test_strategy::proptest;
+
+    #[proptest]
+    #[cfg_attr(miri, ignore)]
+    fn stretching_dtz_increases_magnitude(dtz: Dtz, p: u16) {
+        assert!(dtz.stretch(p).get().abs() >= dtz.get().abs());
+    }
+}

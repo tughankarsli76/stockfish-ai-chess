@@ -1,0 +1,33 @@
+name: tool_builds
+
+on:
+  push:
+    branches: [ "dev" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: 0.16.0
+
+      - run: zig build tool_builds --prefix dist
+
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete tool-dev-builds --yes --cleanup-tag || true
+          gh release create tool-dev-builds \
+            --target "${GITHUB_SHA}" \
+            --title "tool dev builds" \
+            --prerelease \
+            dist/bin/*

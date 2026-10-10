@@ -1,0 +1,20 @@
+[package]
+name = "chess_rust_ios"
+version = "1.1.0"
+edition = "2024"
+license = "AGPL-3.0-or-later"
+publish = false
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+reckless = { path = "../reckless-0.9.0", default-features = false, features = ["ios"] }
+cinder = { path = "../cinder-0.6.1" }
+viridithas = { path = "../viridithas-20.0.0", features = ["ios"] }
+futures = { version = "0.3.32", default-features = false, features = ["async-await", "executor", "std"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"

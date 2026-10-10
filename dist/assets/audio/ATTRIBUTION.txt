@@ -1,0 +1,15 @@
+Lichess Mobile — Standard move and capture sounds
+Copyright (c) 2022-2023 Lichess Mobile contributors
+Authors: https://github.com/lichess-org/mobile/graphs/contributors
+License: GNU GPL version 3 or later (LICHESS-LICENSE.txt)
+Upstream terms: LICHESS-COPYING.md
+Source: https://github.com/lichess-org/mobile/tree/738fffd17510fbbf677ab51a2b2af478592af8df/assets/sounds/standard
+
+move-lichess.aifc is the unchanged move.aifc used by Lichess Mobile on iOS.
+move-lichess.mp3 is the unchanged move.mp3 used on its other platforms.
+capture-lichess.aifc and capture-lichess.mp3 are the unchanged capture.aifc
+and capture.mp3 used by Lichess Mobile on iOS and its other platforms.
+The files are renamed for this app; their contents are unmodified.
+Playback volume matches Lichess Mobile's default of 0.8.
+Pinned URLs, file sizes and SHA-256 checksums are in lichess-source.json.
+Verify or restore copies with tools/import-lichess-move-sound.py.

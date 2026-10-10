@@ -1,0 +1,28 @@
+name: Rust
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: fetch evalfile
+      run: |
+        curl -s "https://api.github.com/repos/cosmobobak/viridithas-networks/releases/latest" | grep -o '"browser_download_url": "[^"]*' | awk -F'"' '{print $4}' | xargs -L 1 wget -O viridithas.nnue.zst
+        echo "EVALFILE=viridithas.nnue.zst" >> $GITHUB_ENV
+    - name: install cargo-nextest
+      uses: taiki-e/install-action@nextest
+    - name: build and test
+      run: cargo build --verbose
+    - name: run tests
+      run: cargo nextest run --verbose

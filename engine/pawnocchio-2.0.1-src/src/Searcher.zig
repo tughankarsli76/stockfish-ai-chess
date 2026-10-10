@@ -1,0 +1,2020 @@
+// pawnocchio, UCI chess engine
+// Copyright (C) 2025 Jonathan Hallström
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+const std = @import("std");
+
+const root = @import("root.zig");
+
+const simd = root.simd;
+const BoundedArray = root.BoundedArray;
+const evaluation = root.evaluation;
+const movegen = root.movegen;
+const Move = root.Move;
+const Board = root.Board;
+const Limits = root.Limits;
+const ScoredMove = root.ScoredMove;
+const Colour = root.Colour;
+const MovePicker = root.MovePicker;
+const history = root.history;
+const ScoreType = root.ScoreType;
+const engine = root.engine;
+const TypedMove = history.TypedMove;
+const SEE = root.SEE;
+const tuning = root.tuning;
+const TUNABLES = root.TUNABLE_CONSTANTS;
+const write = root.write;
+const TTEntry = root.TTEntry;
+const TTCluster = root.TTCluster;
+const cuckoo = root.cuckoo;
+pub const MAX_PLY = 256;
+pub const MAX_HALFMOVE = 100;
+
+pub const Params = struct {
+    board: Board,
+    limits: Limits,
+    previous_positions: BoundedArray(Board, 200),
+    previous_moves: BoundedArray(Move, 200),
+    needs_full_reset: bool = false,
+    syzygy_depth: u8 = 0,
+    contempt: i16,
+    normalize: bool,
+    minimal: bool,
+    show_wdl: bool,
+};
+
+const EvalPair = struct {
+    white: ?i16 = null,
+    black: ?i16 = null,
+    prev_white: ?i16 = null,
+    prev_black: ?i16 = null,
+
+    pub fn updateWith(self: EvalPair, comptime col: Colour, val: i16) EvalPair {
+        if (col == .white) {
+            return .{
+                .white = val,
+                .black = self.black,
+                .prev_white = self.white,
+                .prev_black = self.prev_black,
+            };
+        } else {
+            return .{
+                .white = self.white,
+                .black = val,
+                .prev_white = self.prev_white,
+                .prev_black = self.black,
+            };
+        }
+    }
+
+    inline fn curFor(self: EvalPair, col: Colour) ?i16 {
+        return if (col == .white) self.white else self.black;
+    }
+
+    inline fn prevFor(self: EvalPair, col: Colour) ?i16 {
+        return if (col == .white) self.prev_white else self.prev_black;
+    }
+
+    pub fn improvement(self: EvalPair, col: Colour) i32 {
+        const prev = self.prevFor(col) orelse return 0;
+        const cur = self.curFor(col) orelse return 0;
+        return @as(i32, cur) - prev;
+    }
+
+    pub fn worsening(self: EvalPair, col: Colour) bool {
+        const prev = self.prevFor(col) orelse return false;
+        const cur = self.curFor(col) orelse return false;
+        return cur < prev;
+    }
+};
+
+const STACK_PADDING = history.HIGHEST_CONTHIST_OFFSET;
+
+search_id: std.atomic.Value(u64) align(std.atomic.cache_line) = .init(0),
+is_ready: bool align(std.atomic.cache_line) = false,
+nodes: u64 align(std.atomic.cache_line),
+hashes: [MAX_PLY + 8]u64,
+eval_context: evaluation.Context,
+search_stack: [MAX_PLY + STACK_PADDING]StackEntry,
+root_move: ?Move,
+root_score: ?i16,
+full_width_score: i16,
+full_width_score_normalized: i16,
+nodes_prev_check: u64,
+eval_stability: u8,
+move_stability: u8,
+node_counts: [64][64]u64,
+limits: Limits,
+ply: u8,
+stop: std.atomic.Value(bool),
+should_stop: std.atomic.Value(bool),
+previous_position_hashes: BoundedArray(u64, MAX_HALFMOVE * 2),
+tt: []TTCluster,
+pvs: [MAX_PLY]BoundedArray(Move, 256),
+is_main_thread: bool = true,
+seldepth: u8,
+ttage: u5 = 0,
+syzygy_depth: u8 = 1,
+contempt: i16 = 0,
+normalize: bool = false,
+minimal: bool = false,
+show_wdl: bool = false,
+tbhits: u64 = 0,
+min_nmp_ply: u8 = 0,
+winning_root_moves: BoundedArray(Move, 256),
+histories: history.HistoryTable,
+correction_histories: *history.CorrectionHistoryTable,
+
+inline fn ttIndex(self: *const Searcher, hash: u64) usize {
+    return @intCast(@as(u128, hash) * self.tt.len >> 64);
+}
+
+pub fn writeTT(
+    self: *Searcher,
+    tt_pv: bool,
+    hash: u64,
+    move: Move,
+    score: i16,
+    score_type: ScoreType,
+    depth: i32,
+    raw_static_eval: i16,
+) void {
+    const entry = self.tt[self.ttIndex(hash)].write(TTCluster.compress(hash), self.ttage);
+
+    if (!(score_type == .exact or
+        !entry.hashEql(hash) or
+        self.ttage != entry.flags().getAge() or
+        depth + 4 > entry.depth()))
+    {
+        @branchHint(.unpredictable);
+        return;
+    }
+
+    entry.write(
+        .{
+            .score = evaluation.scoreToTt(score, self.ply),
+            .flags = .init(score_type, tt_pv, self.ttage),
+            .move = move,
+            .depth = @intCast(@max(0, depth)),
+            .raw_static_eval = raw_static_eval,
+        },
+        TTCluster.compress(hash),
+    );
+}
+
+fn rawEval(self: *Searcher) i16 {
+    const hash = self.stackEntry(0).board.getHashWithHalfmove();
+    const eval = self.eval_context.handle(self.ply).eval(&self.stackEntry(0).board);
+    self.writeTT(
+        false,
+        hash,
+        Move.init(),
+        evaluation.INF_SCORE,
+        .none,
+        0,
+        eval,
+    );
+    return eval;
+}
+
+inline fn prefetch(self: *const Searcher, board: *const Board, move: Move) void {
+    @prefetch(&self.tt[self.ttIndex(board.roughHashAfter(move, true))], .{});
+}
+
+pub inline fn readTT(self: *const Searcher, hash: u64) TTCluster.TTData {
+    return self.tt[self.ttIndex(hash)].read(TTCluster.compress(hash));
+}
+
+pub const StackEntry = struct {
+    board: Board,
+    movelist: root.movegen.MoveListReceiver,
+    scores: [256]i32,
+    move: TypedMove,
+    move_is_noisy: bool,
+    prev: TypedMove,
+    evals: EvalPair,
+    excluded: Move = Move.init(),
+    static_eval: i16,
+    corrected_eval: i16,
+    failhighs: u8,
+    usable_moves: u8,
+    reduction: i32,
+    history_score: i32,
+
+    pub fn init(
+        self: *StackEntry,
+        board_: *const Board,
+        move_: TypedMove,
+        prev_: TypedMove,
+        prev_evals: EvalPair,
+        usable_moves_: u8,
+    ) void {
+        self.board = board_.*;
+        self.move = move_;
+        self.move_is_noisy = board_.isNoisy(move_.move);
+        self.prev = prev_;
+        self.evals = prev_evals;
+        self.excluded = Move.init();
+        self.static_eval = evaluation.INF_SCORE;
+        self.corrected_eval = evaluation.INF_SCORE;
+        self.usable_moves = usable_moves_;
+        self.reduction = 0;
+        self.history_score = 0;
+    }
+
+    pub fn reset(self: *StackEntry) void {
+        @memset(std.mem.asBytes(self), 0);
+    }
+};
+
+inline fn getConthistTables(self: *Searcher, stm: Colour) history.ConthistTables {
+    var res: history.ConthistTables = undefined;
+    const usable = self.stackEntry(0).usable_moves;
+    const null_move = TypedMove.init();
+    std.debug.assert(usable <= self.ply + STACK_PADDING + 1);
+    inline for (history.CONTHIST_OFFSETS, 0..) |i, j| {
+        const move = if (i < usable) self.stackEntry(-i).move else null_move;
+        res[j] = self.histories.countermove.table(stm, move);
+    }
+    return res;
+}
+
+const Searcher = @This();
+
+fn updatePv(self: *Searcher, move: Move) void {
+    const cur = &self.pvs[self.ply];
+    cur.len = self.ply + 1;
+    cur.slice()[self.ply] = move;
+    if (self.ply + 1 < MAX_PLY) {
+        const next = &self.pvs[self.ply + 1];
+        const new_len = @max(cur.len, next.len);
+        for (cur.len..new_len) |i| {
+            cur.buffer[i] = next.buffer[i];
+        }
+        cur.len = new_len;
+    }
+}
+
+fn stackEntry(self: anytype, offset: anytype) root.inheritConstness(@TypeOf(self), *StackEntry) {
+    return &self.search_stack[@intCast(STACK_PADDING + @as(i64, self.ply) + offset)];
+}
+
+fn searchStackRoot(self: anytype) root.inheritConstness(@TypeOf(self), [*]StackEntry) {
+    return self.search_stack[STACK_PADDING..];
+}
+
+fn drawScore(self: *const Searcher, comptime stm: Colour) i16 {
+    _ = stm;
+    const r: i16 = @intCast(self.nodes & 2);
+    return r - 1;
+}
+
+fn applyContempt(self: *const Searcher, raw_static_eval: i16) i16 {
+    var contempt: i32 = self.contempt;
+    const board: *const Board = &self.stackEntry(0).board;
+    if (contempt != 0) {
+        const stm = self.searchStackRoot()[0].board.stm;
+        contempt += @as(i32, 200) * @popCount(board.occupancyFor(stm));
+        return evaluation.clampScore(if (self.ply % 2 == 0) raw_static_eval + contempt else raw_static_eval - contempt);
+    } else {
+        @branchHint(.likely);
+        return history.HistoryTable.scaleEval(board, evaluation.clampScore(if (self.ply % 2 == 0) raw_static_eval else raw_static_eval));
+    }
+}
+
+fn makeMove(self: *Searcher, comptime stm: Colour, typed: TypedMove) void {
+    const prev_stack_entry: *StackEntry = self.stackEntry(0);
+    const new_stack_entry: *StackEntry = self.stackEntry(1);
+    const board = &prev_stack_entry.board;
+    const move = typed.move;
+
+    new_stack_entry.init(
+        board,
+        typed,
+        prev_stack_entry.move,
+        prev_stack_entry.evals,
+        prev_stack_entry.usable_moves + 1,
+    );
+    self.ply += 1;
+    self.eval_context.prepareChild(self.ply, &new_stack_entry.board);
+    const new_handle = self.eval_context.handle(self.ply);
+    self.pvs[self.ply].len = 0;
+    new_stack_entry.board.makeMoveInternal(stm, move, new_handle, true);
+    self.hashes[self.ply] = new_stack_entry.board.hash;
+}
+
+fn unmakeMove(self: *Searcher, comptime stm: Colour, move: Move) void {
+    _ = stm;
+    _ = move;
+    self.ply -= 1;
+}
+
+fn makeNullMove(self: *Searcher, comptime stm: Colour) void {
+    const prev_stack_entry = self.stackEntry(0);
+    const new_stack_entry = self.stackEntry(1);
+    const board = &prev_stack_entry.board;
+    new_stack_entry.init(
+        board,
+        TypedMove.init(),
+        TypedMove.init(),
+        prev_stack_entry.evals,
+        0,
+    );
+    self.ply += 1;
+    self.eval_context.prepareChild(self.ply, &new_stack_entry.board);
+    self.pvs[self.ply].len = 0;
+    new_stack_entry.board.makeNullMove(stm);
+    self.hashes[self.ply] = new_stack_entry.board.hash;
+}
+
+fn unmakeNullMove(self: *Searcher, comptime stm: Colour) void {
+    _ = stm;
+    self.ply -= 1;
+}
+
+fn isRepetition(self: *Searcher, board: *const Board) bool {
+    const hash = board.hash;
+    const hash_vec: simd.Vector(u64) = @splat(hash);
+
+    const amt: usize = @min(self.ply, board.halfmove);
+
+    const N = simd.vecSize(u64);
+
+    var iter: simd.IndexedChunkIter(u64, N) =
+        .init(self.hashes[self.ply - amt .. self.ply]);
+
+    var found: @Vector(N, bool) = @splat(false);
+    while (true) {
+        found |= iter.maskedChunkUnchecked().select(~hash_vec) == hash_vec;
+        if (iter.isEmpty()) {
+            break;
+        }
+    }
+
+    iter = .init(self.previous_position_hashes.slice());
+    while (true) {
+        found |= iter.maskedChunkUnchecked().select(~hash_vec) == hash_vec;
+        if (iter.isEmpty()) {
+            break;
+        }
+    }
+
+    return @reduce(.Or, found);
+}
+
+fn hasUpcomingRepetition(self: *Searcher) bool {
+    const board: *const Board = &self.stackEntry(0).board;
+
+    return cuckoo.hasUpcomingRepetition(board, self.hashes[0 .. self.ply + 1], self.previous_position_hashes.slice());
+}
+
+inline fn lerp(
+    comptime T: type,
+    comptime granularity_log2: comptime_int,
+    t: anytype,
+    a: anytype,
+    b: anytype,
+) T {
+    return @intCast(a - (((a - b) * t) >> granularity_log2));
+}
+
+fn float(x: anytype) f64 {
+    return switch (@typeInfo(@TypeOf(x))) {
+        .int, .comptime_int => @floatFromInt(x),
+        .float, .comptime_float => @floatCast(x),
+        else => @compileError(std.fmt.comptimePrint("unsupported type {}\n", .{@TypeOf(x)})),
+    };
+}
+
+fn int(comptime T: type, x: anytype) T {
+    return switch (@typeInfo(@TypeOf(x))) {
+        .int, .comptime_int => @intCast(x),
+        .float, .comptime_float => @intFromFloat(x),
+        else => @compileError(std.fmt.comptimePrint("unsupported type {}\n", .{@TypeOf(x)})),
+    };
+}
+
+fn preCalculateBaseLMR(depth: i32, legal: i32, is_quiet: bool) i32 {
+    const base = if (is_quiet) TUNABLES.lmr_quiet_base else TUNABLES.lmr_noisy_base;
+    const depth_mult = if (is_quiet) TUNABLES.lmr_quiet_depth_mult else TUNABLES.lmr_noisy_depth_mult;
+    const legal_mult = if (is_quiet) TUNABLES.lmr_quiet_legal_mult else TUNABLES.lmr_noisy_legal_mult;
+    const depth_offs = if (is_quiet) TUNABLES.lmr_quiet_depth_offs else TUNABLES.lmr_noisy_depth_offs;
+    const legal_offs = if (is_quiet) TUNABLES.lmr_quiet_legal_offs else TUNABLES.lmr_noisy_legal_offs;
+
+    var reduction: i32 = base;
+
+    const depth_factor = int(i64, @log2(float(depth)) * float(depth_mult) + float(depth_offs));
+    const legal_factor = int(i64, @log2(float(legal)) * float(legal_mult) + float(legal_offs));
+    reduction += @intCast(depth_factor * legal_factor >> 10);
+
+    return reduction;
+}
+
+fn calculateBaseLMR(depth: i32, legal: u8, is_quiet: bool) i32 {
+    if (tuning.DO_TUNING) {
+        return preCalculateBaseLMR(@min(depth, 32), @min(legal, 32), is_quiet);
+    } else {
+        const table = comptime blk: {
+            @setEvalBranchQuota(1 << 30);
+            var res: [32][32][2]u16 = undefined;
+            for (1..33) |d| {
+                for (1..33) |l| {
+                    for (0..2) |q| {
+                        res[d - 1][l - 1][q] = preCalculateBaseLMR(d, l, q == 1);
+                    }
+                }
+            }
+            break :blk res;
+        };
+        return table[@intCast(@min(depth - 1, 31))][@min(legal - 1, 31)][@intFromBool(is_quiet)];
+    }
+}
+
+inline fn convolve(comptime N: usize, params: [N]bool, weights: anytype) i16 {
+    var res: i32 = 0;
+    inline for (0..std.meta.fields(@TypeOf(weights)).len) |order| {
+        switch (order) {
+            0 => {
+                const table = @field(weights, std.fmt.comptimePrint("{}", .{order + 1}));
+                inline for (0..N) |i| {
+                    res += table[i] * @as(i32, @intFromBool(params[i]));
+                }
+            },
+            1 => {
+                const table = @field(weights, std.fmt.comptimePrint("{}", .{order + 1}));
+                comptime var index = 0;
+                inline for (0..N) |i| {
+                    inline for (i + 1..N) |j| {
+                        res += table[index] * @as(i32, @intFromBool(params[i] and params[j]));
+                        index += 1;
+                    }
+                }
+            },
+            2 => {
+                const table = @field(weights, std.fmt.comptimePrint("{}", .{order + 1}));
+                comptime var index = 0;
+                inline for (0..N) |i| {
+                    inline for (i + 1..N) |j| {
+                        inline for (j + 1..N) |k| {
+                            res += table[index] * @as(i32, @intFromBool(params[i] and params[j] and params[k]));
+                            index += 1;
+                        }
+                    }
+                }
+            },
+            else => @compileError("order>3 not impled"),
+        }
+    }
+    return @intCast(res);
+}
+
+fn precomputeFactorized(comptime N: usize, comptime weights: anytype) type {
+    return struct {
+        const vals = blk: {
+            @setEvalBranchQuota(1 << 30);
+            var precomp: [1 << N]i16 = undefined;
+            for (&precomp, 0..) |*val, i| {
+                var params: [N]bool = undefined;
+                for (0..N) |j| {
+                    params[j] = i >> j & 1 != 0;
+                }
+                val.* = convolve(N, params, weights);
+            }
+            break :blk precomp;
+        };
+
+        pub inline fn query(params: [N]bool) i16 {
+            var i: usize = 0;
+            inline for (0..N) |j| {
+                i |= @as(usize, @intFromBool(params[j])) << j;
+            }
+            return vals[i];
+        }
+    };
+}
+
+inline fn getFactorised(comptime Family: type, comptime N: usize, params: [N]bool) i16 {
+    if (tuning.DO_FACTORIZED_TUNING) {
+        return convolve(N, params, Family.values.*);
+    } else {
+        return precomputeFactorized(
+            Family.input_count,
+            Family.values.*,
+        ).query(params);
+    }
+}
+
+fn checkSearch(
+    self: *Searcher,
+    comptime is_root: bool,
+) bool {
+    return !(is_root and self.is_main_thread and self.root_move == null) and (self.stop.load(.acquire) or self.limits.checkSearch(self.nodes));
+}
+
+fn qsearch(
+    self: *Searcher,
+    comptime is_root: bool,
+    comptime is_pv: bool,
+    comptime stm: Colour,
+    alpha_original: i32,
+    beta_original: i32,
+) i16 {
+    if (is_pv) {
+        self.seldepth = @max(self.seldepth, self.ply + 1);
+    }
+    var alpha = alpha_original;
+    var beta = beta_original;
+    self.nodes += 1;
+    if (self.checkSearch(is_root)) {
+        self.stop.store(true, .release);
+        return 0;
+    }
+    const cur: *StackEntry = self.stackEntry(0);
+    const board: *const Board = &cur.board;
+    std.debug.assert(board.stm == stm);
+    if (!is_root) {
+        if (alpha < 0 and self.hasUpcomingRepetition()) {
+            alpha = self.drawScore(stm);
+
+            if (alpha >= beta) {
+                return @intCast(alpha);
+            }
+        }
+    }
+    if (!is_root) {
+        const worst_possible = evaluation.matedIn(self.ply);
+        const best_possible = -evaluation.matedIn(self.ply + 1);
+
+        alpha = @max(alpha, worst_possible);
+        beta = @min(beta, best_possible);
+        if (alpha >= beta) {
+            return @intCast(alpha);
+        }
+    }
+    const is_in_check = board.checkers != 0;
+
+    const tt_hash = board.getHashWithHalfmove();
+    const tt_entry, const tt_hit = self.readTT(tt_hash);
+    const tt_score = evaluation.scoreFromTt(tt_entry.score, self.ply);
+    if (!is_pv and evaluation.checkTTBound(tt_score, alpha, beta, tt_entry.flags.getScoreType())) {
+        if (tt_score >= beta and !evaluation.isMateScore(tt_score)) {
+            return lerp(i16, 10, TUNABLES.qs_tt_fail_medium, tt_score, beta);
+        }
+
+        return tt_score;
+    }
+    const tt_pv = is_pv or tt_entry.flags.getPV();
+
+    var raw_static_eval: i16 = evaluation.matedIn(self.ply);
+    var corrected_static_eval = raw_static_eval;
+    var correction: i16 = 0;
+    var static_eval = corrected_static_eval;
+    if (!is_in_check) {
+        raw_static_eval = if (tt_hit and !evaluation.isMateScore(tt_entry.raw_static_eval)) tt_entry.raw_static_eval else self.rawEval();
+        correction, corrected_static_eval = self.correction_histories.correct(
+            board,
+            cur.move,
+            cur.prev,
+            self.applyContempt(raw_static_eval),
+        );
+        cur.corrected_eval = corrected_static_eval;
+        cur.evals = cur.evals.updateWith(stm, corrected_static_eval);
+        static_eval = corrected_static_eval;
+        if (tt_hit and evaluation.checkTTBound(tt_score, static_eval, static_eval, tt_entry.flags.getScoreType())) {
+            static_eval = tt_score;
+        }
+
+        if (static_eval >= beta) {
+            return lerp(i16, 10, TUNABLES.standpat_fail_medium, static_eval, beta);
+        }
+        if (static_eval > alpha) {
+            alpha = static_eval;
+        }
+    }
+
+    if (self.ply >= MAX_PLY - 1) {
+        return if (is_in_check) 0 else static_eval;
+    }
+
+    cur.board.ensureThreats();
+
+    var best_score = static_eval;
+    var best_move = Move.init();
+    var score_type: ScoreType = .upper;
+    var mp = MovePicker.initQs(
+        &cur.movelist,
+        &cur.scores,
+        tt_entry.move,
+        cur.move.move,
+        board.checkers == 0,
+    );
+    defer mp.deinit();
+    var num_searched: u8 = 0;
+
+    const futility = static_eval + TUNABLES.qs_futility_margin;
+
+    const previous_move_destination = cur.move.move.to();
+
+    const conthist_tables = self.getConthistTables(stm);
+
+    while (mp.next(
+        stm,
+        &self.histories,
+        conthist_tables,
+        board,
+    )) |typed| {
+        const move = typed.move;
+        std.debug.assert(!move.isNull());
+        self.prefetch(board, move);
+
+        if (std.debug.runtime_safety and
+            (mp.stage == .good_noisies or mp.stage == .bad_noisies))
+        {
+            std.debug.assert(board.isNoisy(move));
+        }
+        const dest_threatened = root.Bitboard.contains(board.threatsFor(stm.flipped()), move.to());
+        const skip_see_pruning = mp.stage == .good_noisies or !dest_threatened;
+        const is_recapture = move.to() == previous_move_destination;
+        if (best_score > evaluation.matedIn(MAX_PLY)) {
+            const history_score = self.histories.readNoisy(board, typed);
+            if (history_score < TUNABLES.qs_hp_margin) {
+                continue;
+            }
+
+            if (!is_in_check and
+                futility <= alpha and
+                !is_recapture and
+                @abs(alpha) <= 2000 and
+                !board.givesDirectCheck(move) and
+                !SEE.scoreMove(board, move, 1, .pruning))
+            {
+                if (!evaluation.isTBScore(best_score)) {
+                    best_score = @intCast(@max(best_score, futility));
+                }
+                continue;
+            }
+
+            const eval_factor = @divTrunc(TUNABLES.qs_alpha_eval_diff_mult * (alpha - static_eval), 1024);
+            const margin = TUNABLES.qs_see_threshold + eval_factor;
+            if (!skip_see_pruning and !SEE.scoreMove(board, move, margin, .pruning)) {
+                continue;
+            }
+        }
+
+        num_searched += 1;
+        self.makeMove(stm, typed);
+        const score = -self.qsearch(false, is_pv, stm.flipped(), -beta, -alpha);
+        self.unmakeMove(stm, move);
+        if (self.stop.load(.acquire)) {
+            return 0;
+        }
+
+        if (score > best_score) {
+            best_score = score;
+            if (score > evaluation.matedIn(MAX_PLY)) {
+                mp.skip_quiets = true;
+            }
+        }
+
+        if (score > alpha) {
+            best_move = move;
+            alpha = score;
+            if (is_pv) {
+                self.updatePv(move);
+            }
+            if (score >= beta) {
+                score_type = .lower;
+                break;
+            }
+        }
+    }
+
+    if (!evaluation.isTBScore(best_score) and !evaluation.isTBScore(beta) and best_score > beta) {
+        best_score = lerp(i16, 10, TUNABLES.qs_fail_medium, best_score, beta);
+    }
+
+    self.writeTT(
+        tt_pv,
+        tt_hash,
+        best_move,
+        best_score,
+        score_type,
+        0,
+        raw_static_eval,
+    );
+    return best_score;
+}
+
+fn search(
+    self: *Searcher,
+    comptime is_root: bool,
+    comptime is_pv: bool,
+    comptime stm: Colour,
+    alpha_original: i32,
+    beta_original: i32,
+    depth_original: i32,
+    cutnode: bool,
+) i16 {
+    var depth = depth_original;
+    var alpha = alpha_original;
+    var beta = beta_original;
+
+    self.pvs[self.ply].len = 0;
+
+    self.nodes += 1;
+    if (self.checkSearch(is_root)) {
+        self.stop.store(true, .release);
+        return 0;
+    }
+
+    const cur: *StackEntry = self.stackEntry(0);
+    const prev: *StackEntry = self.stackEntry(-1);
+    const board: *const Board = &cur.board;
+    const is_in_check = board.checkers != 0;
+
+    if (!is_root) {
+        if (alpha < 0 and self.hasUpcomingRepetition()) {
+            alpha = self.drawScore(stm);
+
+            if (alpha >= beta) {
+                return @intCast(alpha);
+            }
+        }
+    }
+
+    if (is_pv) {
+        self.seldepth = @max(self.seldepth, self.ply + 1);
+    }
+    if (self.ply >= MAX_PLY - 1) {
+        return if (is_in_check) 0 else self.rawEval();
+    }
+
+    if (!is_root) {
+        const worst_possible = evaluation.matedIn(self.ply);
+        const best_possible = -evaluation.matedIn(self.ply + 1);
+
+        alpha = @max(alpha, worst_possible);
+        beta = @min(beta, best_possible);
+        if (alpha >= beta) {
+            return @intCast(alpha);
+        }
+    }
+
+    if (!is_root and (board.halfmove >= 100 or self.isRepetition(board))) {
+        if (board.halfmove >= 100 and is_in_check) {
+            cur.board.ensureThreats();
+            if (!board.hasLegalMove()) return evaluation.matedIn(self.ply);
+        }
+        return self.drawScore(stm);
+    }
+
+    if (depth <= 0 and !is_in_check) {
+        return self.qsearch(is_root, is_pv, stm, alpha, beta);
+    }
+
+    const is_singular_search = !cur.excluded.isNull();
+    const tt_hash = board.getHashWithHalfmove();
+    var tt_entry: TTEntry = .{};
+    var tt_hit = false;
+    if (!is_singular_search) {
+        tt_entry, tt_hit = self.readTT(tt_hash);
+    }
+    const tt_score = evaluation.scoreFromTt(tt_entry.score, self.ply);
+    if (tt_hit) {
+        if (tt_entry.depth >= depth and !is_singular_search) {
+            if (!is_pv) {
+                if (evaluation.checkTTBound(tt_score, alpha, beta, tt_entry.flags.getScoreType()) and board.halfmove < 98) {
+                    var score = tt_score;
+                    if (tt_score >= beta and !evaluation.isMateScore(tt_score)) {
+                        score = lerp(i16, 10, TUNABLES.tt_fail_medium, tt_score, beta);
+                    }
+                    return score;
+                }
+            }
+        }
+    }
+
+    // tb probing
+    if (!is_root and cur.excluded.isNull() and depth >= self.syzygy_depth) {
+        cur.board.ensureThreats();
+        if (root.pyrrhic.probeWDL(board)) |result| {
+            @branchHint(.unlikely);
+            self.tbhits += 1;
+            const tp: ScoreType, const score = switch (result) {
+                .win => .{ .lower, evaluation.tbWin(self.ply) },
+                .loss => .{ .upper, evaluation.tbLoss(self.ply) },
+                .draw => .{ .exact, self.drawScore(stm) },
+            };
+            if (evaluation.checkTTBound(score, alpha, beta, tp)) {
+                self.writeTT(is_pv or (tt_hit and tt_entry.flags.getPV()), tt_hash, Move.init(), score, tp, depth, evaluation.matedIn(self.ply));
+                return score;
+            }
+        }
+    }
+
+    const has_tt_move = tt_hit and !tt_entry.move.isNull();
+    const tt_pv = is_pv or (tt_hit and tt_entry.flags.getPV());
+
+    // internal iterative reduction (iir)
+    if (depth >= 4 + (if (is_pv) 4 else 0) and
+        (is_pv or cutnode) and
+        !has_tt_move)
+    {
+        depth -= 1;
+    }
+    var improving = false;
+    var improvement: i32 = 0;
+    var opponent_worsening = false;
+    var raw_static_eval: i16 = evaluation.INF_SCORE;
+    var corrected_static_eval = raw_static_eval;
+    var correction: i16 = 0;
+    var is_tt_corrected_eval = false;
+    if (!is_in_check and !is_singular_search) {
+        raw_static_eval = if (tt_hit and !evaluation.isMateScore(tt_entry.raw_static_eval)) tt_entry.raw_static_eval else self.rawEval();
+        correction, corrected_static_eval = self.correction_histories.correct(
+            board,
+            cur.move,
+            cur.prev,
+            self.applyContempt(raw_static_eval),
+        );
+        cur.corrected_eval = corrected_static_eval;
+        cur.evals = cur.evals.updateWith(stm, corrected_static_eval);
+        improvement = cur.evals.improvement(stm);
+        improving = improvement > 0;
+        opponent_worsening = cur.evals.worsening(stm.flipped());
+
+        const prev_eval = prev.corrected_eval;
+
+        if (prev_eval != evaluation.INF_SCORE and
+            !cur.move.move.isNull() and
+            !cur.move_is_noisy)
+        {
+            const update = @divTrunc(
+                std.math.clamp(
+                    -(prev_eval + corrected_static_eval - TUNABLES.eval_hist_offs),
+                    TUNABLES.eval_hist_min,
+                    TUNABLES.eval_hist_max,
+                ) * TUNABLES.eval_hist_mult,
+                1024,
+            );
+            self.histories.quiet.updateRaw(
+                &prev.board,
+                cur.move,
+                update,
+            );
+        }
+        if (tt_hit and evaluation.checkTTBound(
+            tt_score,
+            corrected_static_eval,
+            corrected_static_eval,
+            tt_entry.flags.getScoreType(),
+        )) {
+            is_tt_corrected_eval = true;
+            cur.static_eval = tt_score;
+        } else {
+            cur.static_eval = corrected_static_eval;
+        }
+    }
+    const eval = cur.static_eval;
+    const prev_eval = prev.static_eval;
+
+    // hindsight extension
+    if (!is_pv and
+        eval != evaluation.INF_SCORE and prev_eval != evaluation.INF_SCORE and
+        !is_singular_search and
+        cur.reduction >= TUNABLES.hindsight_ext_margin and
+        @as(i32, eval) + prev_eval < 0)
+    {
+        depth += 1;
+    }
+    var corrhists_squared: ?i64 = null;
+
+    cur.board.ensureThreats();
+
+    if (!is_pv and
+        !evaluation.isMateScore(alpha) and
+        !evaluation.isMateScore(beta) and
+        !is_in_check and
+        !is_singular_search)
+    {
+        // reverse futility pruning (rfp)
+        if (eval >= beta - TUNABLES.rfp_min_margin) {
+            const opponent_has_easy_capture = board.occupancyFor(stm) & board.lesserThreatsFor(stm.flipped()) != 0;
+            const conditional_margin =
+                TUNABLES.rfp_improving_margin * @intFromBool(improving) +
+                TUNABLES.rfp_easy_margin * @intFromBool(opponent_has_easy_capture) +
+                TUNABLES.rfp_improving_easy_margin * @intFromBool(improving and opponent_has_easy_capture) +
+                TUNABLES.rfp_worsening_margin * @intFromBool(opponent_worsening) +
+                TUNABLES.rfp_cutnode_margin * @intFromBool(cutnode);
+            const history_mult = if (cur.move_is_noisy) TUNABLES.rfp_noisy_history_mult else TUNABLES.rfp_history_mult;
+            corrhists_squared = self.correction_histories.squaredCorrectionTerms(board, cur.move, cur.prev);
+            const rfp_margin =
+                @divTrunc(
+                    TUNABLES.rfp_base +
+                        TUNABLES.rfp_mult * depth +
+                        TUNABLES.rfp_quad * depth * depth +
+                        (corrhists_squared.? * TUNABLES.rfp_corrplexity_mult >> 22) +
+                        @divTrunc(cur.history_score * history_mult, 16),
+                    1024,
+                ) - conditional_margin;
+
+            if (eval >= beta + rfp_margin) {
+                return evaluation.clampScore(lerp(i16, 10, TUNABLES.rfp_fail_medium, eval, beta));
+            }
+        }
+
+        // razoring
+        const we_have_easy_capture = board.occupancyFor(stm.flipped()) & board.lesserThreatsFor(stm) != 0;
+        const depth_3 = @max(0, depth - 3);
+        if (eval +
+            TUNABLES.razoring_offs +
+            TUNABLES.razoring_mult * depth +
+            TUNABLES.razoring_quad * depth_3 * depth_3 +
+            TUNABLES.razoring_easy_capture * @intFromBool(we_have_easy_capture) <= alpha)
+        {
+            const razor_score = if (is_tt_corrected_eval) eval else self.qsearch(
+                is_root,
+                is_pv,
+                stm,
+                alpha,
+                alpha + 1,
+            );
+            if (razor_score <= alpha) {
+                return evaluation.clampScore(razor_score);
+            }
+        }
+
+        const non_pk = board.occupancyFor(stm) & ~(board.pawns() | board.kings());
+
+        // null move pruning (nmp)
+        if (depth >= 4 and
+            eval >= beta + TUNABLES.nmp_margin_base - TUNABLES.nmp_margin_mult * depth and
+            non_pk != 0 and
+            self.ply >= self.min_nmp_ply and
+            !cur.move.move.isNull() and
+            cutnode)
+        {
+            self.prefetch(board, Move.init());
+            var nmp_reduction = TUNABLES.nmp_base + depth * TUNABLES.nmp_mult;
+            nmp_reduction >>= 13;
+
+            self.makeNullMove(stm);
+            const nmp_score = -self.search(
+                false,
+                false,
+                stm.flipped(),
+                -beta,
+                -beta + 1,
+                depth - nmp_reduction,
+                !cutnode,
+            );
+            self.unmakeNullMove(stm);
+
+            if (nmp_score >= beta) {
+                if (depth <= 15 or self.min_nmp_ply != 0) {
+                    return if (evaluation.isMateScore(nmp_score)) @intCast(beta) else nmp_score;
+                }
+
+                self.min_nmp_ply = @intCast(std.math.clamp(self.ply + @divTrunc(nmp_reduction * 3, 4), 0, MAX_PLY));
+                const verif_score = self.search(
+                    false,
+                    false,
+                    stm,
+                    beta - 1,
+                    beta,
+                    depth - nmp_reduction,
+                    cutnode,
+                );
+                self.min_nmp_ply = 0;
+
+                if (verif_score >= beta) {
+                    return verif_score;
+                }
+            }
+        }
+
+        const probcut_beta = beta + TUNABLES.probcut_margin - TUNABLES.probcut_improving_margin * @intFromBool(improving);
+        const tt_score_valid = tt_hit and tt_entry.flags.getScoreType() != .none;
+        if (cutnode and
+            depth >= 5 and
+            eval != evaluation.INF_SCORE and
+            !evaluation.isMateScore(beta) and
+            (!has_tt_move or !board.isQuiet(tt_entry.move)) and
+            (!tt_score_valid or tt_score >= probcut_beta))
+        {
+            const probcut_see = @divTrunc((probcut_beta - eval) * TUNABLES.probcut_see_mult, 1024);
+            const probcut_tt_move = if (has_tt_move and
+                !board.isQuiet(tt_entry.move) and
+                board.isLegal(stm, tt_entry.move) and
+                SEE.scoreMove(board, tt_entry.move, probcut_see, .pruning))
+                tt_entry.move
+            else
+                Move.init();
+
+            const probcut_depth = depth - 4;
+            const conthist_tables = self.getConthistTables(stm);
+            var mp = MovePicker.initProbcut(
+                &cur.movelist,
+                &cur.scores,
+                probcut_tt_move,
+                cur.move.move,
+                probcut_see,
+            );
+            defer mp.deinit();
+
+            while (mp.next(
+                stm,
+                &self.histories,
+                conthist_tables,
+                board,
+            )) |typed| {
+                const move = typed.move;
+                if (move == cur.excluded) {
+                    continue;
+                }
+
+                self.prefetch(board, move);
+                self.makeMove(stm, typed);
+                var score = -self.qsearch(
+                    false,
+                    false,
+                    stm.flipped(),
+                    -probcut_beta,
+                    -probcut_beta + 1,
+                );
+
+                if (score >= probcut_beta and probcut_depth > 0) {
+                    score = -self.search(
+                        false,
+                        false,
+                        stm.flipped(),
+                        -probcut_beta,
+                        -probcut_beta + 1,
+                        probcut_depth,
+                        false,
+                    );
+                }
+
+                self.unmakeMove(stm, move);
+
+                if (self.stop.load(.acquire)) {
+                    return 0;
+                }
+
+                if (score >= probcut_beta) {
+                    self.writeTT(tt_pv, tt_hash, move, score, .lower, probcut_depth + 1, raw_static_eval);
+                    if (!evaluation.isMateScore(score)) {
+                        return evaluation.clampScore(lerp(i32, 10, TUNABLES.probcut_fail_medium, score, beta));
+                    }
+                }
+            }
+        }
+    }
+
+    const conthist_tables = self.getConthistTables(stm);
+    var mp = MovePicker.init(
+        &cur.movelist,
+        &cur.scores,
+        if (is_singular_search) cur.excluded else tt_entry.move,
+        cur.move.move,
+        is_singular_search,
+    );
+    defer mp.deinit();
+    var best_move = Move.init();
+    var best_score = -evaluation.INF_SCORE;
+    var searched_quiets: BoundedArray(TypedMove, 16) = .{};
+    var searched_noisies: BoundedArray(TypedMove, 8) = .{};
+    var num_searched_quiets: u8 = 0;
+    var score_type: ScoreType = .upper;
+
+    var num_searched: u8 = 0;
+    self.stackEntry(1).failhighs = 0;
+    var num_legal: u8 = 0;
+    var alpha_raises: u8 = 0;
+    const lmp_base = if (improving) TUNABLES.lmp_improving_base else TUNABLES.lmp_standard_base;
+    const lmp_linear_mult = if (improving) TUNABLES.lmp_improving_linear_mult else TUNABLES.lmp_standard_linear_mult;
+    const lmp_quadratic_mult = if (improving) TUNABLES.lmp_improving_quadratic_mult else TUNABLES.lmp_standard_quadratic_mult;
+    const lmp_base_margin = lmp_base +
+        lmp_linear_mult * depth +
+        lmp_quadratic_mult * depth * depth;
+    while (mp.next(
+        stm,
+        &self.histories,
+        conthist_tables,
+        board,
+    )) |typed| {
+        const move = typed.move;
+        if (move == cur.excluded) {
+            continue;
+        }
+        if (is_root and self.winning_root_moves.len > 0) {
+            if (for (self.winning_root_moves.slice()) |winning_move| {
+                // the move is a winning move so dont skip it
+                if (winning_move == move) {
+                    break false;
+                }
+            } else true) {
+                continue;
+            }
+        }
+        std.debug.assert(!move.isNull());
+        self.prefetch(board, move);
+        if (is_root) {
+            self.root_move = self.root_move orelse move;
+        }
+        num_legal += 1;
+
+        if (is_root and !board.isLegal(stm, move)) {
+            write("info string ERROR: Illegal move in root {s} {s}\n", .{ board.toFen().slice(), move.toString(board).slice() });
+            continue;
+        }
+        const is_quiet = board.isQuiet(move);
+        const direct_check = board.givesDirectCheck(move);
+        if (std.debug.runtime_safety and
+            (mp.stage == .good_noisies or mp.stage == .bad_noisies))
+        {
+            std.debug.assert(!is_quiet);
+        }
+        const dest_threatened = root.Bitboard.contains(board.threatsFor(stm.flipped()), move.to());
+        const skip_see_pruning = mp.stage == .good_noisies or !dest_threatened;
+        const history_terms = self.histories.readMoveTerms(
+            board,
+            typed,
+            conthist_tables,
+            is_quiet,
+        );
+        const lmr_depth_hist_weights = tuning.historyWeights("lmr_depth_hist");
+        const hp_hist_weights = tuning.historyWeights("hp_hist");
+        const lmr_hist_weights = tuning.historyWeights("lmr_hist");
+        const rfp_hist_weights = tuning.historyWeights("rfp_hist");
+        const fp_hist_weights = tuning.quietHistoryWeights("fp_hist");
+        const lmr_depth_hist_score =
+            if (is_quiet) tuning.histQ(history_terms, lmr_depth_hist_weights.q) else tuning.histN(history_terms, lmr_depth_hist_weights.n);
+        const hp_hist_score =
+            if (is_quiet) tuning.histQ(history_terms, hp_hist_weights.q) else tuning.histN(history_terms, hp_hist_weights.n);
+        const lmr_hist_score =
+            if (is_quiet) tuning.histQ(history_terms, lmr_hist_weights.q) else tuning.histN(history_terms, lmr_hist_weights.n);
+        const rfp_hist_score =
+            if (is_quiet) tuning.histQ(history_terms, rfp_hist_weights.q) else tuning.histN(history_terms, rfp_hist_weights.n);
+
+        if (!is_root and best_score >= evaluation.matedIn(MAX_PLY)) {
+            const lmr_history_mult: i64 = if (is_quiet) TUNABLES.lmr_quiet_history_mult else TUNABLES.lmr_noisy_history_mult;
+            var reduction = calculateBaseLMR(@max(1, depth), num_searched, is_quiet);
+            reduction -= @intCast(lmr_history_mult * lmr_depth_hist_score >> 13);
+            var lmr_depth: i32 = (depth << 10) - reduction;
+            const lmp_check_bonus: i32 = if (direct_check) TUNABLES.lmp_direct_check_bonus else 0;
+            const lmp_margin = lmp_base_margin + lmp_check_bonus;
+            std.debug.assert(lmp_margin > 0);
+
+            if (!is_pv and
+                @as(i32, num_searched) << 10 >= lmp_margin)
+            {
+                mp.skip_quiets = true;
+                if (is_quiet) {
+                    continue;
+                }
+            }
+
+            if (is_quiet) {
+                if (lmr_depth <= TUNABLES.history_pruning_depth_limit and
+                    hp_hist_score < depth * TUNABLES.history_pruning_mult + TUNABLES.history_pruning_offs)
+                {
+                    mp.skip_quiets = true;
+                    continue;
+                }
+
+                var futility_value = eval +
+                    TUNABLES.fp_base +
+                    @divTrunc(lmr_depth * TUNABLES.fp_mult +
+                        @divTrunc(tuning.histQ(history_terms, fp_hist_weights) * TUNABLES.fp_hist_mult, 4), 1024);
+
+                if (is_pv) {
+                    futility_value += TUNABLES.fp_pv_base + TUNABLES.fp_pv_mult * depth;
+                }
+
+                if (improving) {
+                    futility_value += TUNABLES.fp_improving;
+                }
+
+                if (!is_in_check and
+                    lmr_depth <= TUNABLES.fp_depth_limit and
+                    @abs(alpha) < 2000 and
+                    futility_value <= alpha)
+                {
+                    if (!evaluation.isTBScore(best_score)) {
+                        best_score = @intCast(@max(best_score, futility_value));
+                    }
+                    mp.skip_quiets = true;
+                    continue;
+                }
+            } else {
+                if (lmr_depth <= TUNABLES.noisy_history_pruning_depth_limit and
+                    hp_hist_score < depth * TUNABLES.noisy_history_pruning_mult + TUNABLES.noisy_history_pruning_offs)
+                {
+                    continue;
+                }
+                const captured_value = SEE.value(board.pieceOn(move.to()) orelse .king, .pruning);
+                const futility_value =
+                    eval +
+                    TUNABLES.bnfp_base +
+                    (lmr_depth * TUNABLES.bnfp_mult +
+                        captured_value * TUNABLES.bnfp_captured >> 10);
+                if (mp.stage == .bad_noisies and
+                    !is_in_check and
+                    lmr_depth <= TUNABLES.bnfp_depth_limit and
+                    @abs(alpha) < 2000 and
+                    futility_value <= alpha)
+                {
+                    if (!evaluation.isTBScore(best_score)) {
+                        best_score = @intCast(@max(best_score, futility_value));
+                    }
+                    break;
+                }
+            }
+
+            const see_offs: i64 = if (is_quiet) TUNABLES.see_quiet_pruning_offs else TUNABLES.see_noisy_pruning_offs;
+            const see_mult: i64 = if (is_quiet) TUNABLES.see_quiet_pruning_mult else TUNABLES.see_noisy_pruning_mult;
+            const see_quad: i64 = if (is_quiet) TUNABLES.see_quiet_pruning_quad else TUNABLES.see_noisy_pruning_quad;
+            lmr_depth = @max(lmr_depth, 0);
+            var see_pruning_thresh = see_offs + (lmr_depth * (see_mult + (lmr_depth * see_quad >> 10)) >> 10);
+
+            if (is_pv) {
+                see_pruning_thresh -= TUNABLES.see_pv_offs;
+            }
+
+            if (!skip_see_pruning and
+                !SEE.scoreMove(board, move, @intCast(see_pruning_thresh), .pruning))
+            {
+                continue;
+            }
+        }
+
+        var extension: i32 = 0;
+        if (!is_root and
+            depth >= 6 and
+            move == tt_entry.move and
+            !is_singular_search and
+            tt_entry.depth + @as(i32, 3) >= depth and
+            tt_entry.flags.getScoreType() != .upper)
+        {
+            var beta_mult: i32 = TUNABLES.singular_beta_mult;
+            beta_mult -= @intFromBool(is_pv) * TUNABLES.singular_beta_pv_mult;
+            beta_mult += @intFromBool(tt_pv) * TUNABLES.singular_beta_ttpv_mult;
+            const s_beta = @max(evaluation.matedIn(0) + 1, @divTrunc(tt_entry.score * @as(i32, 1024) - depth * beta_mult, 1024));
+            const s_depth = depth * TUNABLES.singular_depth_mult - TUNABLES.singular_depth_offs >> 10;
+
+            cur.excluded = move;
+            cur.static_eval = corrected_static_eval;
+            const s_score = self.search(
+                false,
+                is_pv,
+                stm,
+                s_beta - 1,
+                s_beta,
+                s_depth,
+                cutnode,
+            );
+            cur.static_eval = eval;
+            cur.excluded = Move.init();
+
+            if (s_score < s_beta) {
+                extension += 1;
+
+                var double_ext_margin = if (is_quiet)
+                    TUNABLES.singular_dext_margin_quiet
+                else
+                    TUNABLES.singular_dext_margin_noisy;
+                if (is_pv) {
+                    double_ext_margin += TUNABLES.singular_dext_pv_margin;
+                }
+
+                if (s_score < s_beta - double_ext_margin) {
+                    extension += 1;
+
+                    var triple_ext_margin = if (is_quiet)
+                        TUNABLES.singular_text_margin_quiet
+                    else
+                        TUNABLES.singular_text_margin_noisy;
+                    if (is_pv) {
+                        triple_ext_margin += TUNABLES.singular_text_pv_margin;
+                    }
+
+                    if (s_score < s_beta - triple_ext_margin) {
+                        extension += 1;
+                    }
+                }
+            } else if (s_beta >= beta) {
+                return @intCast(s_beta);
+            } else if (cutnode) {
+                extension -= 3;
+            } else if (tt_entry.score >= beta) {
+                extension -= 2;
+            }
+        }
+        num_searched += 1;
+
+        if (std.debug.runtime_safety) {
+            if (for (searched_noisies.slice()) |searched_move| {
+                if (searched_move.move == move) break true;
+            } else false) {
+                unreachable;
+            }
+            if (for (searched_quiets.slice()) |searched_move| {
+                if (searched_move.move == move) break true;
+            } else false) {
+                unreachable;
+            }
+        }
+
+        const score = blk: {
+            self.makeMove(stm, typed);
+            self.stackEntry(0).history_score = rfp_hist_score;
+            defer self.unmakeMove(stm, move);
+
+            const gives_check = self.stackEntry(0).board.checkers != 0;
+
+            const node_count_before: u64 = if (is_root) self.nodes else undefined;
+            defer if (is_root) {
+                self.node_counts[move.from().toInt()][move.to().toInt()] += self.nodes - node_count_before;
+            };
+            corrhists_squared = corrhists_squared orelse self.correction_histories.squaredCorrectionTerms(board, cur.move, cur.prev);
+
+            var s: i16 = 0;
+            var new_depth = depth + extension - 1;
+            if (depth >= 2 and num_searched > if (is_root) 2 else 1) {
+                const history_lmr_mult: i64 = if (is_quiet) TUNABLES.lmr_quiet_history_mult else TUNABLES.lmr_noisy_history_mult;
+                var reduction = calculateBaseLMR(depth, num_searched, is_quiet);
+                reduction -= @intCast(history_lmr_mult * lmr_hist_score >> 13);
+                reduction -= @intCast(TUNABLES.lmr_corrhist_mult * corrhists_squared.? >> 32);
+                reduction += getFactorised(tuning.FACTORIZED_LMR, 9, .{
+                    is_pv,
+                    cutnode,
+                    improving,
+                    has_tt_move,
+                    tt_pv,
+                    is_quiet,
+                    gives_check,
+                    is_root,
+                    cur.failhighs > 2,
+                });
+                reduction += @as(i32, TUNABLES.lmr_alpha_raise_mult) * alpha_raises;
+
+                if (tt_pv) {
+                    const r_score = tt_entry.flags.getScoreType() != .none and tt_entry.score > alpha;
+                    const r_depth = tt_entry.flags.getScoreType() != .none and tt_entry.depth >= depth;
+                    reduction -= TUNABLES.lmr_ttpv_score * @intFromBool(r_score);
+                    reduction -= TUNABLES.lmr_ttpv_depth * @intFromBool(r_depth);
+                }
+
+                const raw_reduced_depth = depth + extension - (reduction >> 10);
+                const reduced_depth = std.math.clamp(raw_reduced_depth, 1, new_depth) + @intFromBool(is_pv);
+                self.stackEntry(0).reduction =
+                    if (raw_reduced_depth == reduced_depth)
+                        reduction
+                    else
+                        1024 * (depth + extension - reduced_depth);
+
+                s = -self.search(
+                    false,
+                    false,
+                    stm.flipped(),
+                    -alpha - 1,
+                    -alpha,
+                    reduced_depth,
+                    true,
+                );
+                self.stackEntry(0).reduction = 0;
+                if (self.stop.load(.acquire)) {
+                    break :blk 0;
+                }
+
+                if (s > alpha and reduced_depth < new_depth) {
+                    const do_deeper_search = s > best_score + (TUNABLES.lmr_dodeeper_margin + TUNABLES.lmr_dodeeper_mult * new_depth >> 10);
+                    const do_shallower_search = s < best_score + (TUNABLES.lmr_doshallower_margin + TUNABLES.lmr_doshallower_mult * new_depth >> 10);
+
+                    new_depth += @intFromBool(s > best_score + TUNABLES.lmr_do_even_deeper_margin);
+                    new_depth += @intFromBool(do_deeper_search);
+                    new_depth -= @intFromBool(do_shallower_search);
+
+                    s = -self.search(
+                        false,
+                        false,
+                        stm.flipped(),
+                        -alpha - 1,
+                        -alpha,
+                        new_depth,
+                        !cutnode,
+                    );
+                    if (self.stop.load(.acquire)) {
+                        break :blk 0;
+                    }
+                    if (is_quiet and (s <= alpha or s >= beta)) {
+                        self.histories.updateCont(board, typed, conthist_tables, new_depth, s >= beta, 0);
+                    }
+                }
+            } else if (!is_pv or num_searched > 1) {
+                s = -self.search(
+                    false,
+                    false,
+                    stm.flipped(),
+                    -alpha - 1,
+                    -alpha,
+                    new_depth,
+                    !cutnode,
+                );
+                if (self.stop.load(.acquire)) {
+                    break :blk 0;
+                }
+            }
+            if (is_pv and (num_searched == 1 or s > alpha)) {
+                if (move == tt_entry.move and self.limits.root_depth > 8 and tt_entry.depth > 1)
+                    new_depth = @max(new_depth, 1);
+                s = -self.search(
+                    false,
+                    true,
+                    stm.flipped(),
+                    -beta,
+                    -alpha,
+                    new_depth,
+                    false,
+                );
+            }
+
+            break :blk s;
+        };
+        if (self.stop.load(.acquire)) {
+            return 0;
+        }
+
+        num_searched_quiets += @intFromBool(is_quiet);
+
+        if (score <= alpha) {
+            if (is_quiet) {
+                searched_quiets.append(typed) catch {};
+            } else {
+                searched_noisies.append(typed) catch {};
+            }
+        }
+
+        if (score > best_score) {
+            best_score = score;
+        }
+
+        if (score > alpha) {
+            best_move = move;
+            if (is_root) {
+                self.root_move = move;
+                self.root_score = best_score;
+            }
+            if (is_pv) {
+                self.updatePv(move);
+            }
+            alpha = score;
+            score_type = .exact;
+            if (score >= beta) {
+                var hist_depth = depth;
+
+                if (score >= beta + TUNABLES.high_eval_offs) {
+                    hist_depth += 1;
+                }
+
+                score_type = .lower;
+                cur.failhighs += 1;
+
+                const faillow_bonus = TUNABLES.faillow_mult * @max(0, alpha - eval) >> 10;
+
+                if (is_quiet) {
+                    if (depth >= 3 or num_searched_quiets >= 2) {
+                        self.histories.updateQuiet(board, typed, hist_depth, true, faillow_bonus);
+                        self.histories.updateCont(board, typed, conthist_tables, hist_depth, true, faillow_bonus);
+
+                        for (searched_quiets.slice()) |searched_move| {
+                            self.histories.updateQuiet(board, searched_move, hist_depth, false, 0);
+                            self.histories.updateCont(board, searched_move, conthist_tables, hist_depth, false, 0);
+                        }
+                    }
+                } else {
+                    self.histories.updateNoisy(board, typed, hist_depth, true, faillow_bonus);
+                }
+                for (searched_noisies.slice()) |searched_move| {
+                    self.histories.updateNoisy(board, searched_move, hist_depth, false, 0);
+                }
+                break;
+            }
+            alpha_raises += 1;
+        }
+    }
+
+    if (num_legal == 0) {
+        const mated_score = evaluation.matedIn(self.ply);
+        return if (is_in_check) mated_score else 0;
+    }
+
+    if (!is_root and best_score >= beta and !evaluation.isTBScore(best_score) and !evaluation.isTBScore(alpha)) {
+        const w: i32 = @max(0, depth);
+        best_score = @intCast(@divFloor(best_score * w + beta, w + 1));
+    }
+
+    if (!is_singular_search) {
+        if (score_type == .upper and has_tt_move) {
+            best_move = tt_entry.move;
+        }
+        self.writeTT(
+            tt_pv,
+            tt_hash,
+            best_move,
+            best_score,
+            score_type,
+            depth,
+            raw_static_eval,
+        );
+
+        if (!is_in_check and (best_score <= alpha_original or
+            board.isQuiet(best_move) or
+            !SEE.scoreMove(board, best_move, 0, .pruning)))
+        {
+            if (corrected_static_eval != best_score and
+                evaluation.checkTTBound(best_score, corrected_static_eval, corrected_static_eval, score_type))
+            {
+                self.correction_histories.updateCorrection(board, cur.move, cur.prev, corrected_static_eval, best_score, depth);
+            }
+        }
+    }
+
+    return best_score;
+}
+
+const InfoType = enum {
+    completed,
+    lower,
+    upper,
+};
+
+fn writeInfo(self: *Searcher, score: i16, depth: i32, tp: InfoType, move: Move) void {
+    const elapsed = @max(1, self.limits.elapsed());
+    const type_str = switch (tp) {
+        .completed => "",
+        .lower => " lowerbound",
+        .upper => " upperbound",
+    };
+    var nodes: u64 = 0;
+    var tbhits: u64 = 0;
+    const cur_id = self.search_id.load(.seq_cst);
+    for (engine.thread_pool.searchers.items) |searcher| {
+        if (searcher.search_id.load(.seq_cst) != cur_id) {
+            continue;
+        }
+        nodes += searcher.nodes;
+        tbhits += searcher.tbhits;
+    }
+    var pv_buf: [6 * 256 + 32]u8 = undefined;
+    var fixed_buffer_pv_writer = std.Io.Writer.fixed(&pv_buf);
+    const root_board = self.searchStackRoot()[0].board;
+    {
+        if (self.pvs[0].len == 0) {
+            self.pvs[0].appendAssumeCapacity(move);
+        }
+        var board = root_board;
+        for (self.pvs[0].slice()) |pv_move| {
+            if (board.halfmove >= 100 or !board.isLegalSimple(pv_move)) break;
+            fixed_buffer_pv_writer.print("{s} ", .{pv_move.toString(&board).slice()}) catch unreachable;
+            board.makeMoveSimple(pv_move);
+        }
+    }
+    var hashfull: usize = 0;
+    if (self.tt.len >= 1000) {
+        var num_read: usize = 0;
+        outer: for (0..1000) |i| {
+            for (self.tt[i].entries) |entry| {
+                hashfull += @intFromBool(entry.flags.getAge() == self.ttage);
+                num_read += 1;
+                if (num_read == 1000) {
+                    break :outer;
+                }
+            }
+        }
+    }
+
+    const normalized_score = if (self.normalize and evaluation.EVAL_MODE == .nnue) root.wdl.normalize(score, &root_board) else score;
+
+    var wdl_buf: [16]u8 = undefined;
+    var wdl_writer = std.Io.Writer.fixed(&wdl_buf);
+    if (self.show_wdl) {
+        const w, const d, const l = root.wdl.wdlModel(score, &root_board);
+        wdl_writer.print(" wdl {} {} {}", .{ w, d, l }) catch unreachable;
+    }
+
+    write("info depth {} seldepth {} score {s}{s}{s} nodes {} nps {} hashfull {} tbhits {} time {} pv {s}\n", .{
+        depth,
+        self.seldepth,
+        evaluation.formatScore(normalized_score).slice(),
+        wdl_writer.buffered(),
+        type_str,
+        nodes,
+        @as(u128, nodes) * std.time.ns_per_s / elapsed,
+        hashfull,
+        tbhits,
+        (elapsed + std.time.ns_per_ms / 2) / std.time.ns_per_ms,
+        std.mem.trim(u8, fixed_buffer_pv_writer.buffered(), &std.ascii.whitespace),
+    });
+}
+
+fn retainOnlyDuplicates(slice: []u64) usize {
+    std.sort.pdq(u64, slice, void{}, std.sort.asc(u64));
+    var write_idx: usize = 0;
+    var last: u64 = 0;
+    var count: usize = 0;
+    for (slice) |hash| {
+        if (hash == last) {
+            count += 1;
+            if (count == 2) {
+                slice[write_idx] = last;
+                write_idx += 1;
+            }
+        } else {
+            count = 1;
+        }
+        last = hash;
+    }
+    return write_idx;
+}
+
+/// we make the previous position hashes only contain hashes that occur twice, so that we can just search for the current hash in isRepetition()
+fn fixupPreviousPositionHashes(self: *Searcher) void {
+    self.previous_position_hashes.len = @intCast(retainOnlyDuplicates(self.previous_position_hashes.slice()));
+}
+
+fn initSearchStack(self: *Searcher, params: Params) void {
+    const board = &params.board;
+    const previous_positions = params.previous_positions.slice();
+    const previous_moves = params.previous_moves.slice();
+
+    std.debug.assert(
+        (previous_positions.len == 0 and previous_moves.len == 0) or
+            previous_positions.len == previous_moves.len + 1,
+    );
+
+    if (previous_positions.len == 0) {
+        self.searchStackRoot()[0].init(board, TypedMove.init(), TypedMove.init(), .{}, 0);
+        self.hashes[0] = board.hash;
+        return;
+    }
+
+    std.debug.assert(previous_positions[previous_positions.len - 1].getHashWithHalfmove() == board.getHashWithHalfmove());
+
+    const usable_moves: u8 = @intCast(@min(previous_moves.len, STACK_PADDING + 1));
+    if (usable_moves == 0) {
+        self.searchStackRoot()[0].init(board, TypedMove.init(), TypedMove.init(), .{}, 0);
+        self.hashes[0] = board.hash;
+        return;
+    }
+
+    var evals: EvalPair = .{};
+    var remaining = usable_moves;
+    while (remaining > 0) {
+        remaining -= 1;
+        const offset = remaining;
+        const move_idx = previous_moves.len - 1 - offset;
+        const entry = self.stackEntry(-@as(i64, @intCast(offset)));
+        const move = previous_moves[move_idx];
+        const board_before = &previous_positions[move_idx];
+        const board_after = &previous_positions[move_idx + 1];
+        const move_typed = TypedMove.fromBoard(
+            board_before,
+            if (move_idx > 0) previous_moves[move_idx - 1] else Move.init(),
+            move,
+        );
+        const prev_typed = if (move_idx == 0)
+            TypedMove.init()
+        else
+            TypedMove.fromBoard(
+                &previous_positions[move_idx - 1],
+                if (move_idx > 1) previous_moves[move_idx - 2] else Move.init(),
+                previous_moves[move_idx - 1],
+            );
+        entry.init(
+            board_after,
+            move_typed,
+            prev_typed,
+            evals,
+            usable_moves - @as(u8, @intCast(offset)),
+        );
+        entry.move_is_noisy = board_before.isNoisy(move);
+
+        self.eval_context.initRoot(board_after);
+        const raw_static_eval = self.eval_context.handle(0).eval(board_after);
+        _, const corrected_static_eval = self.correction_histories.correct(
+            board_after,
+            move_typed,
+            prev_typed,
+            self.applyContempt(raw_static_eval),
+        );
+        entry.static_eval = corrected_static_eval;
+        entry.corrected_eval = corrected_static_eval;
+        switch (board_after.stm) {
+            inline else => |stm| evals = evals.updateWith(stm, corrected_static_eval),
+        }
+    }
+    self.hashes[0] = board.hash;
+}
+
+fn dbgHit(self: *Searcher, comptime name: []const u8, a: bool, b: bool) void {
+    return self.dbg(name, @intFromBool(a == b));
+}
+
+pub fn ensureInvariants(self: *Searcher) void {
+    if (self.is_ready) {
+        return;
+    }
+    self.is_ready = true;
+    self.seldepth = 0;
+    self.ply = 0;
+    self.nodes = 0;
+    self.tbhits = 0;
+    self.root_move = null;
+    self.root_score = null;
+    self.pvs[0].len = 0;
+    for (&self.search_stack) |*stack_entry| {
+        stack_entry.reset();
+    }
+    @memset(std.mem.asBytes(&self.node_counts), 0);
+}
+
+fn init(self: *Searcher, params: Params, is_main_thread: bool) void {
+    self.ensureInvariants();
+    self.limits = params.limits;
+    self.syzygy_depth = params.syzygy_depth;
+    self.is_main_thread = is_main_thread;
+    self.should_stop.store(false, .release);
+    self.stop.store(false, .release);
+    self.previous_position_hashes.len = 0;
+    self.contempt = params.contempt;
+    self.normalize = params.normalize;
+    self.minimal = params.minimal;
+    self.show_wdl = params.show_wdl;
+    var num_repetitions: u8 = 0;
+    for (params.previous_positions.slice()) |previous_position| {
+        const previous_hash = previous_position.hash;
+        if (params.board.hash == previous_hash) {
+            num_repetitions += 1;
+        }
+        self.previous_position_hashes.append(previous_hash) catch @panic("too many hashes!");
+    }
+    self.winning_root_moves = .{};
+    if (root.pyrrhic.probeRootDTZ(&params.board, num_repetitions > 0)) |root_probe| {
+        _, const moves = root_probe;
+        for (moves.slice()) |scored| {
+            self.winning_root_moves.append(scored.move) catch unreachable;
+        }
+    }
+    self.fixupPreviousPositionHashes();
+
+    self.initSearchStack(params);
+    const root_board = &self.searchStackRoot()[0].board;
+    self.eval_context.initRoot(root_board);
+    self.histories.age();
+    self.ttage +%= 1;
+}
+
+fn pickBestMove(b: *const Board) struct { i16, Move } {
+    var votes = std.mem.zeroes([64][64]i64);
+    var best_move = Move.init();
+    var best_score: i16 = -evaluation.INF_SCORE;
+    var max_score: i32 = std.math.minInt(i32);
+    const cur_id = engine.thread_pool.searchers.items[0].search_id.load(.seq_cst);
+    for (engine.thread_pool.searchers.items) |searcher| {
+        if (searcher.search_id.load(.seq_cst) != cur_id) {
+            continue;
+        }
+        max_score = @max(max_score, searcher.full_width_score);
+    }
+
+    for (engine.thread_pool.searchers.items) |searcher| {
+        if (searcher.search_id.load(.seq_cst) != cur_id) {
+            continue;
+        }
+        const move = searcher.root_move orelse continue;
+        switch (b.stm) {
+            inline else => |stm| {
+                if (!b.isLegal(stm, move)) {
+                    write("info string Illegal move {s} encountered in root\n", .{move.toString(b).slice()});
+                    continue;
+                }
+            },
+        }
+        const score = TUNABLES.voting_score_max - std.math.clamp(max_score - searcher.full_width_score, 0, TUNABLES.voting_score_max);
+        const normalized = searcher.full_width_score_normalized;
+        const d = searcher.limits.root_depth;
+
+        const vote: i64 = (d * 16 + TUNABLES.voting_depth_offset) * (score + TUNABLES.voting_score_offset) + TUNABLES.voting_offset;
+
+        const entry = &votes[move.from().toInt()][move.to().toInt()];
+        entry.* += vote;
+
+        if (evaluation.isTBScore(normalized) or evaluation.isTBScore(best_score)) {
+            if (normalized > best_score) {
+                best_score = normalized;
+                best_move = move;
+            }
+        } else if (entry.* > votes[best_move.from().toInt()][best_move.to().toInt()]) {
+            best_score = normalized;
+            best_move = move;
+        }
+    }
+    return .{ best_score, best_move };
+}
+
+pub fn startSearch(self: *Searcher, params: Params, is_main_thread: bool, quiet: bool) void {
+    self.init(params, is_main_thread);
+    self.is_ready = false;
+    _ = self.search_id.fetchAdd(1, .seq_cst);
+
+    var previous_score: i32 = 0;
+
+    {
+        const tt_entry, const tt_hit = self.readTT(params.board.hash);
+
+        if (tt_hit and
+            tt_entry.flags.getScoreType() != .none and
+            tt_entry.score != evaluation.INF_SCORE)
+        {
+            previous_score = tt_entry.score;
+        } else {
+            previous_score = self.rawEval();
+        }
+    }
+
+    var previous_move: ?Move = null;
+    var completed_depth: i32 = 0;
+    self.eval_stability = 0;
+    self.move_stability = 0;
+    self.full_width_score = 0;
+    var average_score: i64 = 0;
+    for (1..MAX_PLY) |d| {
+        const depth: i32 = @intCast(d);
+        self.limits.root_depth = depth;
+        var quantized_window: i64 = TUNABLES.aspiration_initial + (average_score * TUNABLES.aspiration_score_mult >> 14);
+        var aspiration_lower: i32 = @intCast(@max(previous_score - (quantized_window >> 10), -evaluation.INF_SCORE));
+        var aspiration_upper: i32 = @intCast(@min(previous_score + (quantized_window >> 10), evaluation.INF_SCORE));
+        var failhigh_reduction: i32 = 0;
+        var score = -evaluation.INF_SCORE;
+        switch (params.board.stm) {
+            inline else => |stm| while (true) {
+                defer quantized_window = quantized_window * TUNABLES.aspiration_multiplier >> 10;
+
+                score = self.search(
+                    true,
+                    true,
+                    stm,
+                    aspiration_lower,
+                    aspiration_upper,
+                    @max(1, depth - (failhigh_reduction >> 10)),
+                    false,
+                );
+                if (self.stop.load(.acquire)) {
+                    break;
+                }
+                const should_print = is_main_thread and
+                    !quiet and
+                    !self.minimal and
+                    !evaluation.isMateScore(score) and
+                    self.root_move != null;
+                if (score >= aspiration_upper) {
+                    aspiration_lower = @intCast(@max(aspiration_upper - (quantized_window >> 10), aspiration_lower));
+                    aspiration_upper = @intCast(@min(score + (quantized_window >> 10), evaluation.INF_SCORE));
+                    failhigh_reduction = @min(failhigh_reduction + TUNABLES.failhigh_add, TUNABLES.failhigh_max);
+                    if (should_print) {
+                        if (self.root_move) |root_move| {
+                            self.writeInfo(score, depth, .lower, root_move);
+                        }
+                    }
+                } else if (score <= aspiration_lower) {
+                    aspiration_upper = aspiration_lower;
+                    aspiration_lower = @intCast(@max(score - (quantized_window >> 10), -evaluation.INF_SCORE));
+                    failhigh_reduction = failhigh_reduction * TUNABLES.failhigh_mult >> 10;
+                    if (should_print) {
+                        if (self.root_move) |root_move| {
+                            self.writeInfo(score, depth, .upper, root_move);
+                        }
+                    }
+                } else {
+                    const stabilised_score = if (@abs(score) < 2) 0 else score;
+
+                    self.full_width_score = stabilised_score;
+                    self.full_width_score_normalized = root.wdl.normalize(stabilised_score, &self.searchStackRoot()[0].board);
+                    break;
+                }
+            },
+        }
+        if (@abs(previous_score - score) < TUNABLES.eval_stab_margin) {
+            self.eval_stability = self.eval_stability + 1;
+        } else {
+            self.eval_stability = 0;
+        }
+        if (previous_move == self.root_move) {
+            self.move_stability = self.move_stability + 1;
+        } else {
+            self.move_stability = 0;
+        }
+        previous_score = score;
+        previous_move = self.root_move;
+
+        average_score = if (d == 1) score else @divTrunc(average_score + @as(i64, score) * score, 2);
+
+        completed_depth = depth;
+        if (is_main_thread) {
+            if (!quiet and !self.minimal) {
+                std.debug.assert(self.root_move != null);
+                self.writeInfo(self.full_width_score, depth, .completed, self.root_move.?);
+            }
+        }
+
+        if (self.limits.checkRoot(
+            self.nodes,
+            depth,
+            score,
+        )) {
+            break;
+        }
+        if (is_main_thread and self.limits.soft_time != null) {
+            var eval_stability: u32 = 0;
+            var move_stability: u32 = 0;
+            var best_move_count: u64 = 0;
+            var total_nodes: u64 = 0;
+            for (engine.thread_pool.searchers.items) |searcher| {
+                eval_stability += searcher.eval_stability;
+                if (searcher.root_move == self.root_move) {
+                    move_stability += searcher.move_stability;
+                }
+
+                total_nodes += searcher.nodes;
+                best_move_count += searcher.node_counts[self.root_move.?.from().toInt()][self.root_move.?.to().toInt()];
+            }
+            const num_searchers: u32 = @intCast(engine.thread_pool.searchers.items.len);
+            if (self.limits.checkRootTime(
+                eval_stability * 1024 / num_searchers,
+                move_stability * 1024 / num_searchers,
+                best_move_count,
+                total_nodes,
+            )) {
+                break;
+            }
+        }
+        if (self.stop.load(.acquire) or engine.shouldStopSearching()) {
+            break;
+        }
+        self.seldepth = 0;
+    }
+
+    if (is_main_thread) {
+        if (!quiet) {
+            const board: *const Board = &self.stackEntry(0).board;
+            const score, var move = pickBestMove(board);
+            _ = score;
+            if (move.isNull()) {
+                const tt_entry, const tt_hit = self.readTT(board.hash);
+                switch (board.stm) {
+                    inline else => |stm| {
+                        if (tt_hit and
+                            board.isLegal(stm, tt_entry.move))
+                        {
+                            move = tt_entry.move;
+                        }
+                    },
+                }
+
+                if (move.isNull()) {
+                    var list = movegen.MoveListReceiver{};
+                    movegen.generateAll(board, &list);
+                    for (list.vals.slice()) |mv| {
+                        switch (board.stm) {
+                            inline else => |stm| {
+                                if (board.isLegal(stm, mv)) {
+                                    move = mv;
+                                    break;
+                                }
+                            },
+                        }
+                    }
+                }
+            }
+            if (self.minimal) {
+                self.writeInfo(self.full_width_score, completed_depth, .completed, move);
+            }
+            write("bestmove {s}\n", .{move.toString(board).slice()});
+        }
+        engine.stopSearch();
+    }
+}

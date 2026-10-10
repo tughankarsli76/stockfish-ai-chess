@@ -1,0 +1,96 @@
+{
+  "name": "Lichess Elite \u2014 January\u2013November 2025, Stockfish-filtered",
+  "source": "https://database.nikonoel.fr/",
+  "downloads": [
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-01.zip",
+      "bytes": 82724777,
+      "sha256": "f2fa14565bcdaba7ad6de6a4f8f2348d0f9f8f262935c46e61925c5acce6f7b7"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-02.zip",
+      "bytes": 73306272,
+      "sha256": "f52be39848def68b179b5f8b7d32db59058cbb84154bac3cfd91407229e84480"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-03.zip",
+      "bytes": 86953240,
+      "sha256": "6ab16fdc53197f2e6977c2867e3d790aa0be6259ebd06ae1a4d88e9525ad3960"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-04.zip",
+      "bytes": 82676273,
+      "sha256": "8a25af7e0f9c7f7d0d1bda2276785e7d31a3febdae817946519ca43422a0b987"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-05.zip",
+      "bytes": 92014539,
+      "sha256": "fc38024b82ae326566d1b9b0fad676c145cd32938309424887c257a5711c3990"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-06.zip",
+      "bytes": 85210660,
+      "sha256": "f07ea8f22bc2bc53696cbbde885ba83e78a93eb1187ed2d84942a85b252c46fe"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-07.zip",
+      "bytes": 83612119,
+      "sha256": "359ede2617548a3dbb1c780549fdffab1f59cf174d4f8bb4f882b190847f3f4b"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-08.zip",
+      "bytes": 82142390,
+      "sha256": "06a40ce151547b6a7322ce7407c47581e5d58baf83ae4960b5958bcf4a45dbd3"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-09.zip",
+      "bytes": 78763489,
+      "sha256": "81e554084af620c1b5822b7d776f4f06b4dee5a50c68727df912329af2a51b48"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-10.zip",
+      "bytes": 80571984,
+      "sha256": "b1679464608a8fdc1185fdc52a5cce1de454330d73d346bf734ded70461a7cf9"
+    },
+    {
+      "url": "https://database.nikonoel.fr/lichess_elite_2025-11.zip",
+      "bytes": 80347217,
+      "sha256": "1ffa577aa0a1352fa04c9a890a6706049a3a79edc52810b136758d1e2a1a2eab"
+    }
+  ],
+  "license": "CC0-1.0",
+  "games": 3144775,
+  "positions": 292790,
+  "moves": 362078,
+  "maxPly": 40,
+  "minGamesPerLine": 8,
+  "minPositionGames": 12,
+  "minMoveShare": 0.01,
+  "minGameScore": 0.35,
+  "ratings": "2500+ versus 2300+, excluding bullet",
+  "percentages": "Relative observed move counts among retained book moves",
+  "excludedGames": 1075,
+  "readGames": 3145850,
+  "canonicalizedEnPassantKeys": 3,
+  "equivalentPositionRecordsDiscarded": 0,
+  "duplicateMoveRecordsDiscarded": 8680,
+  "engineScreen": {
+    "engine": "Stockfish 19",
+    "sha256": "a38c1daacc60cd0487d5ee90fdb56ba4ee04c5f269d7088455f9150b4e224c58",
+    "positionsScreened": 342952,
+    "multiPV": 3,
+    "minimumDepth": 6,
+    "maxLossCentipawns": 60,
+    "minimumScoreCentipawns": -100,
+    "usualLimits": {
+      "depth": 10,
+      "nodes": 12000
+    },
+    "commonLimits": {
+      "minimumPositionGames": 1000,
+      "depth": 14,
+      "nodes": 150000
+    },
+    "note": "Finite engine screening, not a guarantee. Only supported moves in an evaluated top-three batch are retained; unsupported positions fall back to engine search."
+  }
+}

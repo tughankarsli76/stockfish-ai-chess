@@ -1,0 +1,71 @@
+{
+  "archiveURL": "https://github.com/tughankarsli76/stockfish-ai-chess/releases/download/v1.4-build21-source/Stockfish-AI-Chess-1.4-build21-source.tar.gz",
+  "archiveSHA256": "303efc98dfbf9779dec4ce660c4bebf53506a3d7e085f0188b135628e48a5e81",
+  "files": [
+    {
+      "path": "engine/Obsidian-16.0/net87perm.bin",
+      "bytes": 30905920,
+      "sha256": "26cc34cc2f8df06d2c0c0cc0c2fade6cd354326c5c73e363fa6284d3e3362b16"
+    },
+    {
+      "path": "engine/cinder-0.6.1/lib/nnue/nnue.bin.zst",
+      "bytes": 44319099,
+      "sha256": "8036a4da52ad5099824c211388e3e135680c806cc1b8f7d5b03831aa41ab2b7b"
+    },
+    {
+      "path": "engine/clover-9.1/src/quantised.nnue",
+      "bytes": 13806144,
+      "sha256": "605aa6d9cc676f299a81e048e3c4c4cca8c9899c977b2d49a7bb0c0de202b114"
+    },
+    {
+      "path": "engine/halogen-16.0.0/src/150521a9.nn",
+      "bytes": 19305792,
+      "sha256": "150521a9957beb7fe90395dd5b134f75cde4e6dfc95e5d5fdee80031e7c7c9cb"
+    },
+    {
+      "path": "engine/halogen-16.0.0/src/verbatim-ios.nn",
+      "bytes": 19109440,
+      "sha256": "f2f15c56582279f0527e7cfed79cdd1373a89bdace27b8321cf683b069de74c0"
+    },
+    {
+      "path": "engine/pawnocchio-2.0.1-src/pawnocchio-nets/networks/pp_new2.nnue",
+      "bytes": 68444224,
+      "sha256": "8b1d78b2908d330ace30ab69c3679a44db8176e0d6bf4116b60da8c383a4bc17"
+    },
+    {
+      "path": "engine/plentychess-8.0.0/0178r.bin",
+      "bytes": 47804242,
+      "sha256": "663e0531ac71c6c7c6d3bc4f1fac923bf69136f9786fa1da5c4ac25382aee54b"
+    },
+    {
+      "path": "engine/plentychess-8.0.0/processed.bin",
+      "bytes": 53111616,
+      "sha256": "5cedef19778f1bb784e181fc013543127d1fdcde227795710b1a48f6e53d79cd"
+    },
+    {
+      "path": "engine/reckless-0.9.0/networks/v54-5478683c.nnue",
+      "bytes": 63266880,
+      "sha256": "5478683cb1bababde29ae8f29468a99846726548fc6a0ed54cac40ab6d38efbf"
+    },
+    {
+      "path": "engine/starzix-6.1/src/net.bin",
+      "bytes": 15736834,
+      "sha256": "2ef2c339a0eb17a06d64b91d96a3b374750f58600a973d1521a12d1452320034"
+    },
+    {
+      "path": "engine/stockfish-progress/nn-1a298aa575a0.nnue",
+      "bytes": 98511183,
+      "sha256": "1a298aa575a085434d29027978dc36867fe9c5bcea9376654b7a8eba1e52dfc2"
+    },
+    {
+      "path": "engine/stockfish-progress/src/nn-1a298aa575a0.nnue",
+      "bytes": 98511183,
+      "sha256": "1a298aa575a085434d29027978dc36867fe9c5bcea9376654b7a8eba1e52dfc2"
+    },
+    {
+      "path": "engine/viridithas-20.0.0/viridithas.nnue.zst",
+      "bytes": 52442657,
+      "sha256": "066c172e22c25ee3d3b4084ad44ff761426f906a9c536cabd0127d17413d0585"
+    }
+  ]
+}

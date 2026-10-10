@@ -1,0 +1,6 @@
+{
+  "base": "sf_19",
+  "purpose": "Periodic real search-node reporting",
+  "binarySha256": "44642b454da7f3092fd903a906ae85d26f3420e215a11b87f6df51bc1b1c723b",
+  "benchmarkNodes": 170203
+}

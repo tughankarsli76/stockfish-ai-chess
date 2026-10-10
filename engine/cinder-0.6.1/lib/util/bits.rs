@@ -1,0 +1,225 @@
+use crate::util::{Int, Num, Unsigned, ones};
+use bytemuck::{NoUninit, Zeroable, zeroed};
+use derive_more::with_trait::{Debug, Display};
+use std::{marker::Destruct, ops::*};
+
+#[cfg(test)]
+use proptest::prelude::*;
+
+/// A fixed width collection of bits.
+#[derive(Debug, Display, Copy, Hash, Zeroable)]
+#[derive_const(Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[cfg_attr(test, derive(test_strategy::Arbitrary))]
+#[cfg_attr(test, arbitrary(bound(T, Self: Debug, RangeInclusive<T>: Strategy<Value = T>)))]
+#[debug("Bits({_0:b})")]
+#[display("{_0:b}")]
+#[repr(transparent)]
+pub struct Bits<T, const W: u32>(
+    #[cfg_attr(test, strategy(<Self as Num>::MIN..=<Self as Num>::MAX))] T,
+)
+where
+    T: Unsigned;
+
+unsafe impl<T: Unsigned, const W: u32> NoUninit for Bits<T, W> {}
+
+const unsafe impl<T: [const] Unsigned + 'static, const W: u32> Num for Bits<T, W> {
+    type Repr = T;
+    const MIN: Self::Repr = zeroed();
+    const MAX: Self::Repr = ones::<u128>(W).cast();
+}
+
+const unsafe impl<T: [const] Unsigned + 'static, const W: u32> Int for Bits<T, W> {}
+
+const impl<T: [const] Unsigned, const W: u32> Bits<T, W> {
+    #[expect(dead_code)]
+    const ASSERT: () = const { assert!(size_of::<T>() * 8 >= W as usize) };
+
+    /// The bit width.
+    pub const BITS: u32 = W;
+
+    /// Whether this is a superset of `bits`.
+    #[inline(always)]
+    pub fn contains(self, bits: &Self) -> bool {
+        self.get() & bits.get() == bits.get()
+    }
+
+    /// Returns a slice of bits.
+    #[inline(always)]
+    pub fn slice<R: [const] Destruct + [const] RangeBounds<u32>>(self, r: R) -> Self {
+        let a = match r.start_bound() {
+            Bound::Included(&i) => i,
+            Bound::Excluded(&i) => i + 1,
+            Bound::Unbounded => 0,
+        };
+
+        let b = match r.end_bound() {
+            Bound::Included(&i) => i + 1,
+            Bound::Excluded(&i) => i,
+            Bound::Unbounded => W,
+        };
+
+        Bits::new((self.get() & ones(b)) >> a.cast())
+    }
+
+    /// Shifts bits into the collection.
+    #[inline(always)]
+    pub fn push<U: [const] Unsigned, const N: u32>(&mut self, bits: Bits<U, N>) {
+        *self = Bits::new((self.get() << N.cast()) & ones(W) ^ bits.cast());
+    }
+
+    /// Shifts bits out of the collection.
+    #[inline(always)]
+    pub fn pop<U: [const] Unsigned, const N: u32>(&mut self) -> Bits<U, N> {
+        let bits = Bits::new(self.cast::<U>() & ones(N));
+        *self = Bits::new(self.get() >> N.cast());
+        bits
+    }
+}
+
+const impl<T: Unsigned, const W: u32> Default for Bits<T, W> {
+    #[inline(always)]
+    fn default() -> Self {
+        zeroed()
+    }
+}
+
+const impl<T: [const] Unsigned, const W: u32> Not for Bits<T, W> {
+    type Output = Self;
+
+    #[inline(always)]
+    fn not(self) -> Self::Output {
+        self ^ Bits::new(ones(W))
+    }
+}
+
+const impl<T: [const] Unsigned, const W: u32> BitAnd for Bits<T, W> {
+    type Output = Self;
+
+    #[inline(always)]
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Self(self.0.bitand(rhs.0))
+    }
+}
+
+const impl<T: [const] Unsigned, const W: u32> BitAndAssign for Bits<T, W> {
+    #[inline(always)]
+    fn bitand_assign(&mut self, rhs: Self) {
+        self.0.bitand_assign(rhs.0);
+    }
+}
+
+const impl<T: [const] Unsigned, const W: u32> BitOr for Bits<T, W> {
+    type Output = Self;
+
+    #[inline(always)]
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self(self.0.bitor(rhs.0))
+    }
+}
+
+const impl<T: [const] Unsigned, const W: u32> BitOrAssign for Bits<T, W> {
+    #[inline(always)]
+    fn bitor_assign(&mut self, rhs: Self) {
+        self.0.bitor_assign(rhs.0);
+    }
+}
+
+const impl<T: [const] Unsigned, const W: u32> BitXor for Bits<T, W> {
+    type Output = Self;
+
+    #[inline(always)]
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        Self(self.0.bitxor(rhs.0))
+    }
+}
+
+const impl<T: [const] Unsigned, const W: u32> BitXorAssign for Bits<T, W> {
+    #[inline(always)]
+    fn bitxor_assign(&mut self, rhs: Self) {
+        self.0.bitxor_assign(rhs.0);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fmt::Debug;
+    use test_strategy::proptest;
+
+    #[proptest]
+    fn can_be_constructed_from_raw_collection_of_bits(n: u8) {
+        assert_eq!(Bits::<_, 8>::new(n), Bits(n));
+    }
+
+    #[proptest]
+    fn get_returns_raw_collection_of_bits(b: Bits<u8, 5>) {
+        assert_eq!(b.get(), b.0);
+    }
+
+    #[proptest]
+    fn slice_retrieves_range_of_bits(b: Bits<u8, 8>, #[strategy(..8u32)] i: u32) {
+        assert_eq!(b.slice(0..), b.slice(..));
+        assert_eq!(b.slice(..8), b.slice(..));
+        assert_eq!(b.slice(0..8), b.slice(..));
+
+        assert_eq!(b.slice(i..i), Bits::default());
+    }
+
+    #[proptest]
+    #[should_panic]
+    #[cfg_attr(miri, ignore)]
+    fn slice_panics_if_index_is_out_of_range(b: Bits<u64, 48>, #[strategy(48u32..)] i: u32) {
+        b.slice(i..i);
+    }
+
+    #[proptest]
+    fn always_contains_prefix(b: Bits<u8, 8>, #[strategy(..=8u32)] i: u32) {
+        assert!(b.contains(&b.slice(..i)));
+    }
+
+    #[proptest]
+    fn push_shifts_bits_into_collection(a: Bits<u8, 3>, b: Bits<u16, 9>, c: Bits<u32, 27>) {
+        let mut bits = Bits::<u64, 39>::default();
+
+        bits.push(a);
+        bits.push(b);
+        bits.push(c);
+
+        assert_eq!(bits.slice(36..).get(), u64::from(a.get()));
+        assert_eq!(bits.slice(27..36).get(), u64::from(b.get()));
+        assert_eq!(bits.slice(..27).get(), u64::from(c.get()));
+    }
+
+    #[proptest]
+    #[should_panic]
+    #[cfg_attr(miri, ignore)]
+    fn push_panics_on_overflow(mut a: Bits<u8, 3>, b: Bits<u16, 9>) {
+        a.push(b);
+    }
+
+    #[proptest]
+    fn pop_removes_pushed_bits(a: Bits<u8, 3>, b: Bits<u16, 9>, c: Bits<u32, 27>) {
+        let mut bits = Bits::<u64, 39>::default();
+
+        bits.push(a);
+        bits.push(b);
+        bits.push(c);
+
+        assert_eq!(bits.pop(), c);
+        assert_eq!(bits.pop(), b);
+        assert_eq!(bits.pop(), a);
+    }
+
+    #[proptest]
+    #[should_panic]
+    #[cfg_attr(miri, ignore)]
+    fn pop_panics_on_underflow(mut a: Bits<u8, 3>) {
+        a.pop::<u16, 9>();
+    }
+
+    #[proptest]
+    fn not_inverts_bits(b: Bits<u8, 5>) {
+        assert_ne!((!b).get(), !b.get());
+        assert_eq!((!b).get(), !b.get() & ones::<u8>(5));
+    }
+}

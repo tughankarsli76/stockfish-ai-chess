@@ -1,0 +1,124 @@
+[package]
+name = "cinder"
+version = "0.6.1"
+authors = ["Bruno Dutra <brunocodutra@gmail.com>"]
+edition = "2024"
+description = "A hobby chess engine"
+repository = "https://github.com/brunocodutra/cinder.git"
+license = "GPL-3.0"
+readme = "README.md"
+keywords = ["chess"]
+default-run = "cinder"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(coverage)'] }
+
+[features]
+spsa = ["dep:rand", "dep:ron", "dep:serde"]
+trainer = ["dep:bullet", "dep:bullet_trainer", "dep:rand"]
+no_panic = ["dep:no-panic"]
+
+[dependencies]
+anyhow = { version = "1.0.102", default-features = false, features = ["std"] }
+atomic = { version = "0.6.1", default-features = false, features = ["std"] }
+bytemuck = { version = "1.25.0", default-features = false, features = [
+    "extern_crate_std",
+    "latest_stable_rust",
+    "nightly_portable_simd",
+] }
+byteorder = { version = "1.5.0", default-features = false, features = ["std"] }
+clap = { version = "4.6.0", default-features = false, features = [
+    "derive",
+    "error-context",
+    "help",
+    "std",
+] }
+derive_more = { version = "2.1.1", default-features = false, features = [
+    "as_ref",
+    "debug",
+    "deref",
+    "deref_mut",
+    "display",
+    "error",
+    "from",
+    "into_iterator",
+] }
+futures = { version = "0.3.32", default-features = false, features = [
+    "async-await",
+    "executor",
+    "std",
+] }
+memmap2 = { version = "0.9.10", default-features = false }
+nom = { version = "8.0.0", default-features = false, features = ["std"] }
+rustc-hash = { version = "2.1.2", default-features = false, features = ["std"] }
+
+rand = { version = "0.10.1", optional = true, default-features = false, features = [
+    "std",
+    "thread_rng",
+] }
+
+# spsa
+ron = { version = "0.12.1", optional = true, default-features = false, features = [
+    "std",
+] }
+serde = { version = "1.0.228", optional = true, default-features = false, features = [
+    "derive",
+    "std",
+] }
+
+# trainer
+bullet = { git = "https://github.com/jw1912/bullet", package = "bullet_lib", optional = true, default-features = false }
+bullet_trainer = { git = "https://github.com/jw1912/bullet", package = "bullet-trainer", optional = true, default-features = false }
+
+# no_panic
+no-panic = { version = "0.1.36", default-features = false, optional = true }
+
+# windows
+[target.'cfg(target_os = "windows")'.dependencies]
+windows-sys = { version = "0.61.2", features = ["Win32_Storage_FileSystem"] }
+
+[dev-dependencies]
+proptest = { version = "1.11.0" }
+rand = { version = "0.10.1" }
+reqwest = { version = "0.13.4", features = ["blocking"] }
+tempfile = { version = "3.27.0" }
+test-strategy = { version = "0.4.5" }
+
+[build-dependencies]
+anyhow = { version = "1.0.102" }
+ruzstd = { version = "0.9.0" }
+
+[profile.dev]
+opt-level = 3
+
+[profile.release]
+codegen-units = 1
+strip = "none"
+lto = true
+
+[profile.dist]
+inherits = "release"
+panic = "abort"
+strip = true
+
+[lib]
+name = "cinder"
+path = "lib/lib.rs"
+
+[[bin]]
+name = "cinder"
+path = "bin/cinder.rs"
+
+[[bin]]
+name = "spsa"
+path = "bin/spsa.rs"
+required-features = ["spsa"]
+
+[[bin]]
+name = "trainer"
+path = "bin/trainer.rs"
+required-features = ["trainer"]
+
+[[test]]
+name = "syzygy"
+path = "tests/syzygy.rs"

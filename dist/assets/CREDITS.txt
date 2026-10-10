@@ -1,0 +1,49 @@
+Merida chess pieces by Armando Hernandez Marroquin, GPLv2 or later.
+Source: https://github.com/lichess-org/lila/tree/master/public/piece/merida
+Modified 2026-09-14: gradient fills replaced with flat white; dark outlines set to black to match the user reference. Piece shapes unchanged.
+License: pieces/LICENSE.txt
+
+Wood texture: Lichess/lila authors and pirouetti, AGPLv3 or later.
+Source: https://github.com/lichess-org/lila/blob/master/public/images/board/wood.jpg
+Texture file unchanged; warm color overlays applied via stylesheet.
+License: BOARD-LICENSE.txt
+Original upstream attribution: ATTRIBUTION.md
+
+Classic chess pieces by Colin M.L. Burnett, GPLv2 or later.
+Source: https://github.com/lichess-org/lila/tree/master/public/piece/cburnett
+Files are unmodified; installed under pieces/classic.
+License: pieces/LICENSE.txt
+
+Maple board texture: Lichess/lila authors and pirouetti, AGPLv3 or later.
+Source: https://github.com/lichess-org/lila/blob/463329af9a4b75cb1daeb046f4dba0d0ab375aea/public/images/board/maple.jpg
+The unmodified Maple texture used by Lichess Mobile; installed as maple3.jpg.
+License: BOARD-LICENSE.txt
+
+Walnut board texture: Lichess/lila authors and pirouetti, AGPLv3 or later.
+Source: https://github.com/lichess-org/lila/blob/master/public/images/board/wood4.jpg
+Texture file unchanged, installed as walnut.jpg.
+License: BOARD-LICENSE.txt
+
+Additional piece sets, downloaded unmodified from https://github.com/lichess-org/lila/tree/master/public/piece on 2026-09-14:
+Chessnut — Alexis Luengas, Apache 2.0. Source: public/piece/chessnut.
+Fantasy, Celtic, Spatial — Maurizio Monge, MIT. Sources: public/piece/fantasy, public/piece/celtic, public/piece/spatial.
+Pixel — therealqtpi and Lila contributors, AGPLv3 or later. Source: public/piece/pixel.
+RhosGFX — RhosGFX, CC0 1.0. Source: public/piece/rhosgfx.
+Each set includes its LICENSE.txt under assets/pieces/<set>/. SVG artwork is unmodified.
+
+Nine more sets from https://github.com/lichess-org/lila/tree/master/public/piece (2026-09-14):
+Mono — Thibault Duplessis and Colin M.L. Burnett, GPLv2+. Modified: gray fill/stroke recolored for distinct white and black pieces; shapes unchanged.
+Letter — usolando, AGPLv3+.
+Pirouetti — pirouetti, AGPLv3+.
+Shapes — flugsio, CC BY-SA 4.0. https://github.com/flugsio/chess_shapes
+Kiwen Suwi — neverRare, CC BY 4.0. https://github.com/neverRare
+Firi — James Faure, CC BY 4.0. https://github.com/jfaure/Firi-pieceset
+MPChess — Maxime Chupin, GPLv3+. https://github.com/chupinmaxime
+Totoy — Kosal Sen, CC BY 4.0.
+Papercut — Nikolay Anzarov, CC BY 4.0. https://nikoichu.itch.io/
+Individual source directories correspond to the assets/pieces/<set>/ directory names. Each includes LICENSE.txt. All SVGs except Mono are unmodified.
+
+Optional move and capture sounds: unchanged Lichess Mobile Standard recordings,
+GPLv3 or later. Source, authors, license and restoration details are in
+audio/ATTRIBUTION.txt and tools/import-lichess-move-sound.py.
+Optional haptics use the native iOS feedback generator.

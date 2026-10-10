@@ -1,0 +1,32 @@
+name: CD
+
+on:
+  push:
+    tags: "v*"
+
+jobs:
+  publish:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-26.04-arm, ubuntu-latest, windows-11-arm, windows-latest, macOS-latest]
+    steps:
+    - uses: actions/checkout@v5
+    - run: make linux-aarch64-neon
+      if: matrix.os == 'ubuntu-26.04-arm'
+    - run: make linux-x86-64-sse4 linux-x86-64-avx2 linux-x86-64-avx512
+      if: matrix.os == 'ubuntu-latest'
+    - run: make windows-aarch64-neon
+      if: matrix.os == 'windows-11-arm'
+    - run: make windows-x86-64-sse4 windows-x86-64-avx2 windows-x86-64-avx512
+      if: matrix.os == 'windows-latest'
+    - run: make mac-aarch64-neon
+      if: matrix.os == 'macOS-latest'
+    - run: ls "${{ github.workspace }}/target/bin/"
+    - uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: "${{ github.workspace }}/target/bin/*"
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true

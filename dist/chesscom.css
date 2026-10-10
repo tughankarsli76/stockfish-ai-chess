@@ -1,0 +1,27 @@
+.chesscom-screen{box-sizing:border-box;width:min(480px,100%);height:min(956px,100dvh);max-width:100%;max-height:100dvh;margin:auto;padding:0;border:0;border-radius:12px;background:#f2f2f7;color:#111;overflow:auto}
+.cc-heading{position:sticky;top:0;z-index:1;display:grid;grid-template-columns:90px minmax(0,1fr) 90px;align-items:center;min-height:85px;padding:0 14px;background:#f2f2f7}
+.cc-heading h2{font-size:18px;text-align:center;margin:0;overflow-wrap:anywhere}
+.cc-heading button{font-size:18px;color:#111;min-height:44px;padding:8px 6px;text-align:left}
+.cc-heading button:last-child:not(:first-child){text-align:right}
+.cc-heading .cc-add{font-size:32px;font-weight:300}
+.cc-section{font-size:13px;color:#8b8b93;font-weight:400;margin:0;padding:34px 21px 8px}
+.cc-list{border-block:1px solid #dedee3;background:white}
+.cc-row{display:flex;align-items:center;gap:12px;box-sizing:border-box;width:100%;min-height:44px;padding:10px 21px;border:0;border-radius:0;background:white;color:#111;text-align:left;font-size:17px}
+.cc-row+.cc-row,.cc-favourite+.cc-favourite{border-top:1px solid #e3e3e7}
+.cc-value{margin-left:auto;color:#777;overflow-wrap:anywhere;text-align:right}
+.cc-chevron{margin-left:auto;color:#c4c4c8;font-size:27px;line-height:20px}
+.cc-value+.cc-chevron{margin-left:0}
+.cc-player{min-height:57px;padding-block:5px;gap:15px}
+.cc-player-text{display:flex;flex-direction:column;min-width:0;gap:4px;overflow-wrap:anywhere}
+.cc-player small,.cc-game small{font-size:12px;color:#888;display:block;margin-top:3px}
+.cc-avatar{position:relative;display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border-radius:50%;background:#e3e7ef;color:#536888;font-size:15px;overflow:hidden}
+.cc-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cc-help{margin:0;padding:8px 21px 22px;font-size:13px;color:#8b8b93;line-height:1.5;background:#f2f2f7}
+.cc-list:has(.cc-help){border:0}
+.cc-favourite{display:flex}.cc-favourite>.cc-row{flex:1;min-width:0}
+.cc-remove{color:#b42318;padding:10px 16px;font-size:23px}
+.cc-message{font-size:14px;margin:16px 21px;line-height:1.5;color:#656570}
+.cc-input{display:block;padding:20px;font-size:14px;color:#777}
+.cc-input input{box-sizing:border-box;display:block;width:100%;margin-top:10px;padding:12px;font:inherit;font-size:18px;border:1px solid #ddd;border-radius:6px;background:white;color:#111}
+.cc-game>span:first-child{min-width:0;overflow-wrap:anywhere}.cc-retry{margin:0 15px;color:#087dff}
+@media(max-width:500px){.chesscom-screen{width:100%;height:100dvh;border-radius:0}}

@@ -1,0 +1,198 @@
+use crate::search::{Depth, Line, Score};
+use crate::{chess::Move, util::Num};
+use derive_more::with_trait::Deref;
+use std::hash::{Hash, Hasher};
+use std::{cmp::Ordering, ops::Neg};
+
+/// The principal variation.
+#[derive(Debug, Clone, Copy, Deref)]
+#[cfg_attr(test, derive(test_strategy::Arbitrary))]
+pub struct Pv<const N: usize = { Depth::MAX as usize }> {
+    #[deref]
+    score: Score,
+    moves: Line<N>,
+}
+
+impl<const N: usize> Pv<N> {
+    /// Constructs a principal variation.
+    #[inline(always)]
+    pub fn new(score: Score, moves: Line<N>) -> Self {
+        Self { score, moves }
+    }
+
+    /// An empty principal variation.
+    #[inline(always)]
+    pub fn empty(score: Score) -> Self {
+        Self::new(score, Line::empty())
+    }
+
+    /// The score from the point of view of the side to move.
+    #[inline(always)]
+    pub fn score(&self) -> Score {
+        self.score
+    }
+
+    /// The sequence of [`Move`]s in this principal variation.
+    #[inline(always)]
+    pub fn moves(&self) -> &Line<N> {
+        &self.moves
+    }
+
+    /// The first [`Move`]s in this principal variation.
+    #[inline(always)]
+    pub fn head(&self) -> Option<Move> {
+        self.moves.head()
+    }
+
+    /// Raises the score to at least `lower`.
+    #[inline(always)]
+    pub fn raise(self, lower: Score) -> Self {
+        self.clip(lower, Score::upper())
+    }
+
+    /// Lowers the score to at most `upper`.
+    #[inline(always)]
+    pub fn lower(self, upper: Score) -> Self {
+        self.clip(Score::lower(), upper)
+    }
+
+    /// Constrains the score between `lower` and `upper`.
+    #[inline(always)]
+    pub fn clip(self, lower: Score, upper: Score) -> Self {
+        Pv::new(self.score.clip(lower, upper), self.moves)
+    }
+
+    /// Truncates to a principal variation of a different length.
+    #[inline(always)]
+    pub fn truncate<const M: usize>(self) -> Pv<M> {
+        Pv::new(self.score, self.moves.truncate())
+    }
+
+    /// Transposes to a principal variation to a move.
+    #[inline(always)]
+    pub fn transpose(self, head: Move) -> Self {
+        Pv::new(self.score, Line::cons(head, self.moves))
+    }
+}
+
+impl<const N: usize> Eq for Pv<N> {}
+
+impl<const N: usize> PartialEq for Pv<N> {
+    #[inline(always)]
+    fn eq(&self, other: &Self) -> bool {
+        self.score.eq(&other.score)
+    }
+}
+
+impl<const N: usize> Ord for Pv<N> {
+    #[inline(always)]
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.score.cmp(&other.score)
+    }
+}
+
+impl<const N: usize> PartialOrd for Pv<N> {
+    #[inline(always)]
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl<T, const N: usize> PartialEq<T> for Pv<N>
+where
+    Score: PartialEq<T>,
+{
+    #[inline(always)]
+    fn eq(&self, other: &T) -> bool {
+        self.score.eq(other)
+    }
+}
+
+impl<T, const N: usize> PartialOrd<T> for Pv<N>
+where
+    Score: PartialOrd<T>,
+{
+    #[inline(always)]
+    fn partial_cmp(&self, other: &T) -> Option<Ordering> {
+        self.score.partial_cmp(other)
+    }
+}
+
+impl<const N: usize> Hash for Pv<N> {
+    #[inline(always)]
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.score.hash(state);
+    }
+}
+
+impl<const N: usize> Neg for Pv<N> {
+    type Output = Self;
+
+    #[inline(always)]
+    fn neg(mut self) -> Self::Output {
+        self.score = -self.score;
+        self
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test_strategy::proptest;
+
+    #[proptest]
+    #[allow(clippy::nonminimal_bool, clippy::double_comparisons)]
+    fn pv_ordering_is_consistent(p: Pv, q: Pv) {
+        assert_eq!(p == q, p.partial_cmp(&q) == Some(Ordering::Equal));
+        assert_eq!(p < q, p.partial_cmp(&q) == Some(Ordering::Less));
+        assert_eq!(p > q, p.partial_cmp(&q) == Some(Ordering::Greater));
+        assert_eq!(p <= q, p < q || p == q);
+        assert_eq!(p >= q, p > q || p == q);
+        assert_eq!(p != q, !(p == q));
+    }
+
+    #[proptest]
+    fn pv_with_larger_score_is_larger(p: Pv, q: Pv) {
+        assert_eq!(p < q, p.score() < q.score());
+    }
+
+    #[proptest]
+    fn clamping_constrains_score_to_interval(pv: Pv, l: Score, #[filter(#r >= #l)] r: Score) {
+        assert_eq!(pv.clip(l, r).score(), pv.score().clip(l, r));
+    }
+
+    #[proptest]
+    fn clamping_preserves_moves(pv: Pv, l: Score, #[filter(#r >= #l)] r: Score) {
+        assert_eq!(pv.clip(l, r).moves(), pv.moves());
+    }
+
+    #[proptest]
+    fn negation_changes_score(pv: Pv) {
+        assert_eq!(pv.neg().score(), -pv.score());
+    }
+
+    #[proptest]
+    fn negation_preserves_moves(pv: Pv) {
+        assert_eq!(pv.clone().moves(), pv.neg().moves());
+    }
+
+    #[proptest]
+    fn truncate_preserves_score(pv: Pv) {
+        assert_eq!(pv.score(), pv.truncate::<0>().score());
+    }
+
+    #[proptest]
+    fn truncate_discards_moves(pv: Pv) {
+        assert_eq!(pv.moves().truncate::<2>(), *pv.truncate::<2>().moves());
+    }
+
+    #[proptest]
+    fn transpose_preserves_score(pv: Pv, m: Move) {
+        assert_eq!(pv.transpose(m).score(), pv.score());
+    }
+
+    #[proptest]
+    fn transpose_prepends_move(pv: Pv, m: Move) {
+        assert_eq!(pv.transpose(m).head(), Some(m));
+    }
+}

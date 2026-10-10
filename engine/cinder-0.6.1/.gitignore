@@ -1,0 +1,12 @@
+/target
+/engines
+/checkpoints
+/data
+/proptest-regressions
+*.proptest-regressions
+.vscode
+cobertura.xml
+lcov.info
+perf.data
+perf.data.old
+flamegraph.svg

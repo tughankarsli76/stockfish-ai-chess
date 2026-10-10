@@ -1,0 +1,30 @@
+.historical-games-screen,.historical-game-screen{background:#f3f2f8}
+.historical-heading{height:auto;min-height:82px;padding:14px 18px;position:sticky;top:0;z-index:3;background:#f3f2f8;border-bottom:1px solid #dfdfe4}
+.historical-heading h2{font-size:18px;line-height:1.25;overflow-wrap:normal}
+.historical-heading button{font-size:17px;gap:7px}
+.historical-search{display:grid;grid-template-columns:1fr;gap:7px;padding:16px 20px 0}
+.historical-search label{font-size:13px;color:#62626e}
+.historical-search :is(input,select){min-height:44px;width:100%;border:1px solid #d7d7df;border-radius:9px;background:white;color:#171717;padding:10px 12px;font-size:16px}
+.historical-search label[for=historicalEra]{margin-top:7px}
+.historical-count{padding:0 20px;color:#74747e;font-size:13px}
+.historical-games-list{padding-bottom:24px}
+.historical-game-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:16px 20px;background:white;color:#171717;text-align:left;border-bottom:1px solid #e3e3eb;min-height:100px}
+.historical-game-row>span:first-child{min-width:0}
+.historical-game-row :is(strong,span>span,small){display:block}
+.historical-game-row strong{font-size:17px;line-height:1.25;margin-bottom:5px}
+.historical-game-row span>span{font-size:14px;line-height:1.4}
+.historical-game-row small{font-size:12px;color:#74747e;margin-top:5px}
+.historical-chevron{font-size:27px;color:#aaa;flex-shrink:0}
+.historical-empty{padding:20px;color:#666;text-align:center}
+.historical-game-info{padding:14px 20px}
+.historical-game-info p{margin:0 0 7px;font-size:15px}
+#historicalPlayers{font-weight:600}
+#historicalEvent{color:#74747e;font-size:13px}
+.historical-result{display:inline-block;border-radius:999px;padding:4px 9px;background:#e4e9f3;font-size:12px}
+.historical-context{padding:0 20px 24px}
+.historical-context p{font-size:14px;line-height:1.6}
+.historical-context .primary{width:100%;min-height:46px;margin:14px 0 0;text-align:center;font-size:16px}
+.historical-context .historical-analysis-help{color:#74747e;font-size:12px;margin:8px 0}
+.historical-games-screen :is(input,select,button):focus-visible,.historical-game-screen :is(input,button,a):focus-visible{outline:2px solid #087dff;outline-offset:-2px}
+.historical-heading button:is(:focus,:focus-visible){outline:none}
+@media(max-width:380px){.historical-heading h2{font-size:16px}.historical-heading button{font-size:15px}}

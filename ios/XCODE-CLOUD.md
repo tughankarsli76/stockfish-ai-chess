@@ -1,0 +1,21 @@
+# Phone to TestFlight workflow
+
+Version 1.5 development starts from the released 1.4 build 21 source. The GitHub `develop` branch contains editable interface, native integration and engine sources. The 13 large engine model files stay in the immutable public build 21 source asset and are restored with checksum verification. No credentials or compiler installations are committed.
+
+## Xcode Cloud configuration
+
+Open `ios/StockfishChess.xcodeproj` from the `develop` checkout in Xcode. Choose Integrate → Create Workflow, select Stockfish AI Chess with bundle ID `com.tughankarsli.stockfishaichess` and team `KQVRWBVGS7`, and connect this GitHub repository.
+
+Use a workflow named **Phone Development** with an Apple Silicon environment, Xcode 27.0 (or a compatible later release), branch-change start condition limited to `develop`, and an iOS Archive action using the shared StockfishChess scheme and Release configuration. Start the cloud build sequence at 22. Set TestFlight internal testing as the delivery postaction and select the owner's internal tester group. Keep App Store releases manual.
+
+Apple discovers `ios/ci_scripts/ci_post_clone.sh` automatically. It restores model inputs, installs Rust nightly-2026-08-16 and Zig 0.16.0, runs all web tests, then regenerates the project using version 1.5 and the cloud build number. The first real cloud archive must pass before this workflow is considered working. This setup has no automatic App Review submission or public release action.
+
+## Ask an AI agent from your phone
+
+Use a Codex Cloud environment connected to this GitHub repository. Select the `develop` branch when starting work. Its setup needs Node 24 or newer; web changes can be tested on Linux without downloading the native models. Ask the agent to make the change, run `npm test`, and open a pull request targeting `develop`.
+
+Review the change on your phone and merge it into `develop`. The branch commit triggers the Xcode Cloud archive. After Apple processes the build, install it through TestFlight. For native changes, use the cloud archive and relevant device tests to validate the result.
+
+ChatGPT mobile Remote can also control a connected Mac, but that route requires the Mac to remain available. A Codex Cloud task plus Xcode Cloud builds provides the workflow when the Mac is offline.
+
+Sources: [Apple first workflow guide](https://developer.apple.com/documentation/xcode/configuring-your-first-xcode-cloud-workflow), [Apple custom scripts](https://developer.apple.com/documentation/xcode/writing-custom-build-scripts), [Codex Cloud](https://learn.chatgpt.com/docs/cloud), [ChatGPT mobile Remote](https://developers.openai.com/blog/mastering-codex-remote-for-engineering).

@@ -1,0 +1,32 @@
+#pragma once
+
+#include <array>
+#include "types.h"
+#include "board.h"
+#include "search.h"
+#include "nnue.h"
+
+const Eval EVAL_MATE = 30000;
+const Eval EVAL_MATE_IN_MAX_PLY = EVAL_MATE - MAX_PLY;
+
+const Eval EVAL_TBWIN = EVAL_MATE_IN_MAX_PLY - 1000;
+const Eval EVAL_TBWIN_IN_MAX_PLY = EVAL_TBWIN - MAX_PLY;
+
+const Eval EVAL_INFINITE = 31000;
+const Eval EVAL_NONE = 31010;
+
+extern int PIECE_VALUES[Piece::TOTAL + 1];
+
+Eval evaluate(Board* board, NNUE* nnue, std::array<int, 2>& optimism);
+
+std::string formatEval(Eval value);
+
+bool SEE(Board* board, Move move, int threshold);
+
+constexpr Eval mateIn(int ply) {
+    return EVAL_MATE - ply;
+}
+
+constexpr Eval matedIn(int ply) {
+    return -EVAL_MATE + ply;
+}

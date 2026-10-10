@@ -1,0 +1,1852 @@
+     NET ID | general concept                          | notes
+------------|------------------------------------------|-----------------------------------------------
+      viri0 | first network 90% eval, 10% WDL          | much weaker than the HCE.
+            | 30 epochs, batch size 16384, lr 1e-2     |
+            | trained on the mountain of games from    |
+            | old Viridithas 2.X.X versions            |
+------------|------------------------------------------|-----------------------------------------------
+      viri1 | second network, same data as viri0, but  | net used in v3.0.0, crushes HCE.
+            | data was shuffled, which fixed problems. |
+------------|------------------------------------------|-----------------------------------------------
+      viri2 | third network, pure WDL.                 | none
+------------|------------------------------------------|-----------------------------------------------
+      viri3 | fourth network, pure evaluation.         | none
+------------|------------------------------------------|-----------------------------------------------
+      viri4 | fifth network, 50/50 WDL/eval.           | none
+------------|------------------------------------------|-----------------------------------------------
+   viri5-10 | fiddling with parameters and data        | nothing improved on viri1.
+------------|------------------------------------------|-----------------------------------------------
+     viri11 | filtering of noisy positions, more data. | first improvement on viri1, ~20 Elo.
+------------|------------------------------------------|-----------------------------------------------
+     viri12 | viri11 data reanalyzed with viri11.      | +50 Elo, worried about overfitting.
+            |                                          | net used in v4.0.0.
+------------|------------------------------------------|-----------------------------------------------
+     viri13 | lichess-elite games analysed with HCE,   | +20 Elo.
+            | merged with the viri12 data.             |
+------------|------------------------------------------|-----------------------------------------------
+     viri14 | viri13 data reanalyzed with viri13,      | +25 Elo.
+            | deduplicated using a new tool i wrote.   | 
+------------|------------------------------------------|-----------------------------------------------
+     viri15 | same as viri14, but trying 120 epochs,   | -41.6 +/- 7.5 Elo, LOS: 0.0 %
+            | and batch size 8192.                     | vs viri14.
+------------|------------------------------------------|-----------------------------------------------
+     viri16 | same as viri14, but trying 80 epochs,    | 111.6 +/- 18.4 Elo, LOS: 100.0 %
+            | and lr drop at 30 epochs                 | vs viri14.
+------------|------------------------------------------|-----------------------------------------------
+     viri17 | injected 320K positions from viri16      | 16.0 +/- 12.1, LOS: 99.5 %
+            | into viri14 data.                        | vs viri16.
+------------|------------------------------------------|-----------------------------------------------
+     viri18 | re-evaluated whole viri17 data with      | 23.9 +/- 7.2, LOS: 100.0 %
+            | viri17.                                  | vs viri17.
+------------|------------------------------------------|-----------------------------------------------
+     viri19 | same as viri18, but with 90% WDL focus.  | -75.3 +/- 8.0, LOS: 0.0 %
+            | not intended to gain, just to test.      | vs viri18.
+------------|------------------------------------------|-----------------------------------------------
+     viri20 | trained on 320K viri18 self-play games   | -106.2 +/- 21.2, LOS: 0.0 %
+            | from the uhobook, eval'd with viri18.    | vs viri18.
+------------|------------------------------------------|-----------------------------------------------
+     viri21 | those 320K viri18 games mixed in to the  | 7.6 +/- 6.5, LOS: 98.9 %
+            | big pile of data use to train viri18.    | vs viri18.
+            | NOTE/WARN: shuffled based on FEN hash.   |
+------------|------------------------------------------|-----------------------------------------------
+     viri22 | viri21 data re-evaluated with HCE at     | -10.5 +/- 4.5, LOS: 0.0 %
+            | depth 8.                                 | vs viri21.
+------------|------------------------------------------|-----------------------------------------------
+     viri23 | viri22 data re-evaluated with viri22.    | -23.5 +/- 9.9, LOS: 0.0 %
+            | Hopefully will be less overfitted.       | vs viri21.
+------------|------------------------------------------|-----------------------------------------------
+     viri24 | viri21 data with 25% WDL focus.          | 16.1 +/- 7.6, LOS: 100.0 %
+            |                                          | vs viri21.
+------------|------------------------------------------|-----------------------------------------------
+     viri25 | 320K viri24 self-play games from uhobook | 1.0 +/- 12.2, LOS: 56.3 %
+            | injected into viri24 data.               | vs viri24.
+            | NOTE/WARN: shuffled based on FEN hash.   | I don't really trust this net, weird results.
+------------|------------------------------------------|-----------------------------------------------
+     viri26 | turns out those 320K games were eval'd   | 7.1 +/- 6.5, LOS: 98.3 %
+            | with HCE, so we redid it.                | vs viri24.
+            | didn't pass SPRT, but it's still better. |
+------------|------------------------------------------|-----------------------------------------------
+     viri27 | viri26 data but 40% WDL focus.           | 8.0 +/- 6.6, LOS: 99.1 %
+            |                                          | vs viri26.
+------------|------------------------------------------|-----------------------------------------------
+     viri28 | same as viri27 but with LR=5e-3.         | 2.3 +/- 6.6, LOS: 75.3 %
+            |                                          | vs viri27.
+------------|------------------------------------------|-----------------------------------------------
+     viri29 | combination of pure viri data            | ~ -60 elo vs viri28
+            | from v5.1.0, v6.0.0, and v6.0.0-dev      | seems that either the Lichess Elite data has
+            |                                          | really important stuff to learn, or 960k games
+            |                                          | is not enough to train a good net.
+------------|------------------------------------------|-----------------------------------------------
+     viri30 | 320K viri28 self-play games from uhobook | 7.2 +/- 6.7, LOS: 98.2 %
+            | injected into viri28 data.               | vs viri28.
+------------|------------------------------------------|-----------------------------------------------
+     viri31 | viri30 data re-evaluated with viri30.    | -3.0 +/- 6.6, LOS: 18.7 %
+            | feeling somewhat discouraged.            | vs viri30.
+------------|------------------------------------------|-----------------------------------------------
+     viri33 | experiment with some Frozenight training | 12.3 +/- 6.9, LOS: 100.0 %, DrawRatio: 39.1 %
+            | params while I work up the energy to     | vs viri30.
+            | implement a new arch.                    |
+            | (LR = 0.0001, 45 epochs, WDL 10%, 384N)  |
+------------|------------------------------------------|-----------------------------------------------
+     viri34 | same as viri33, but with 512 neurons.    | -31.8 +/- 11.4, LOS: 0.0 %, DrawRatio: 42.2 %
+            |                                          | vs viri33.
+------------|------------------------------------------|-----------------------------------------------
+     viri35 | injected 320K viri34 self-play games     | 4.3 +/- 6.7, LOS: 89.7 %, DrawRatio: 41.3 %
+            | from uhobook into the viri31 data.       | vs viri33.
+            | same training setup as viri33.           |
+------------|------------------------------------------|-----------------------------------------------
+     viri36 | viri35 data with 40% WDL focus.          | 16.2 +/- 7.6, LOS: 100.0 %, DrawRatio: 41.6 %
+            |                                          | vs viri35.
+------------|------------------------------------------|-----------------------------------------------
+     viri37 | viri36 data + 60M of the new datagen     | -58.1 +/- 15.4, LOS: 0.0 %, DrawRatio: 34.2 %
+            | FENs.                                    | vs viri36.
+            | datagen does not handle noisy-move       |
+            | exclusion, and might have other issues,  |
+            | so this isn't a damning refutation of    |
+            | the new datagen.                         |
+------------|------------------------------------------|-----------------------------------------------
+     viri38 | 80M viri36 FENs (run_2023-02-14_23-54-59 | -87.6 +/- 19.1, LOS: 0.0 %, DrawRatio: 32.5 %
+            | _1000000g-64t-tb5-nnue-d8)               | vs viri36.
+            | This was with "fixed" datagen, which is  |
+            | disheartening.                           |
+------------|------------------------------------------|-----------------------------------------------
+     viri39 | Those 80M FENs + the viri36 training     | 24.8 +/- 9.6, LOS: 100.0 %, DrawRatio: 37.3 %
+            | data.                                    | vs viri36.
+            | Seems like the main problem was the      |
+            | simple reduction in dataset size.        |
+------------|------------------------------------------|-----------------------------------------------
+     viri40 | 88M more FENs added to the viri39 data.  | -5.9 +/- 6.6, LOS: 4.1 %, DrawRatio: 42.7 %
+            |                                          | vs viri39.
+------------|------------------------------------------|-----------------------------------------------
+     viri41 | interleave all the viri40 data for more  | 6.0 +/- 7.4, LOS: 94.4 %, DrawRatio: 40.3 %
+            | homogeneous training.                    | vs viri39.
+------------|------------------------------------------|-----------------------------------------------
+     viri42 | add 2.5M viri41 games to the viri41 data | -1.7 +/- 6.6, LOS: 31.3 %, DrawRatio: 40.5 %
+            | it would be 5M, but I accidentally       | vs viri41.
+            | deleted half of it, like an idiot.       |
+------------|------------------------------------------|-----------------------------------------------
+     viri43 | same as viri42, but with 30% WDL focus.  | 8.7 +/- 5.3, LOS: 99.9 %, DrawRatio: 36.5 %
+            |                                          | vs viri41.
+------------|------------------------------------------|-----------------------------------------------
+     viri44 | viri43 with 512 neurons.                 | 19.1 +/- 8.3, LOS: 100.0 %, DrawRatio: 33.3 %
+            |                                          | vs viri43.
+------------|------------------------------------------|-----------------------------------------------
+     viri45 | couple days worth of datagen with viri44 | -27.0 +/- 10.6, LOS: 0.0 %, DrawRatio: 31.1 %
+            | added to the pile of viri44 data.        | vs viri44.
+------------|------------------------------------------|-----------------------------------------------
+     viri46 | viri44 data reshuffled on the off-chance | -11.2 +/- 7.0, LOS: 0.1 %, DrawRatio: 30.9 %
+            | that it would help. 45 epochs.           | vs viri44.
+------------|------------------------------------------|-----------------------------------------------
+     viri47 | viri44 data with 20% WDL focus.          | -28.8 +/- 10.9, LOS: 0.0 %, DrawRatio: 30.7 %
+            | 65 epochs.                               | vs viri44.
+------------|------------------------------------------|-----------------------------------------------
+     viri48 | inject extra data into viri45 data.      | essentially indistinguishable from viri44.
+------------|------------------------------------------|-----------------------------------------------
+     viri49 | Switch to squared ReLU instead of linear | 35.8 +/- 11.6, LOS: 100.0 %, DrawRatio: 44.2 %
+            | ReLU. (viri48 data)                      | vs viri44.
+------------|------------------------------------------|-----------------------------------------------
+     viri51 | Same as viri49 but training on 450M RL   | ELO   | -68.36 +- 14.74 (95%)
+            | FENs.                                    | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.99 (-2.94, 2.94) [0.00, 3.00]
+            |       (whoops! forgot to shuffle)        | GAMES | N: 1184 W: 207 L: 437 D: 540
+            |                                          | vs viri49.
+------------|------------------------------------------|-----------------------------------------------
+     viri52 | Same as viri51, training on 450M RL      | ELO   | -16.40 +- 9.40 (95%)
+            | FENs, but shuffled this time.            | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            | The weakness of smaller datasets is      | LLR   | -3.02 (-2.94, 2.94) [0.00, 5.00]
+            | apparent.                                | GAMES | N: 2672 W: 617 L: 743 D: 1312
+            |                                          | vs viri49.
+------------|------------------------------------------|-----------------------------------------------
+     viri53 | The viri49 dataset + 450M RL FENs give   | ELO   | 6.95 +- 4.99 (95%)
+            | a 1.35B FEN dataset.                     | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.98 (-2.94, 2.94) [0.00, 5.00]
+            |                                          | GAMES | N: 9704 W: 2632 L: 2438 D: 4634
+            |                                          | vs viri49.
+------------|------------------------------------------|-----------------------------------------------
+     viri54 | Testing a PSQT-esque skip connection,    | ELO   | -504.03 +- 252.80 (95%)
+            | running on the smaller viri49 data with  | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            | only 45 epochs for speed.                | LLR   | -2.98 (-2.94, 2.94) [-10.00, 0.00]
+            | (turns out sign on the pqst was wrong)   | GAMES | N: 96 W: 3 L: 89 D: 4
+            |                                          | vs viri53.
+------------|------------------------------------------|-----------------------------------------------
+     viri56 | viri53 using AdamW instead of Adam.      | ELO   | 10.16 +- 6.37 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.97 (-2.94, 2.94) [0.00, 5.00]
+            |                                          | GAMES | N: 5816 W: 1568 L: 1398 D: 2850
+            |                                          | vs viri53.
+------------|------------------------------------------|-----------------------------------------------
+     viri58 | viri56 with doubled batch-size.          | ELO   | -2.73 +- 4.75 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.98 (-2.94, 2.94) [0.00, 5.00]
+            |                                          | GAMES | N: 10448 W: 2623 L: 2705 D: 5120
+            |                                          | vs viri56.
+------------|------------------------------------------|-----------------------------------------------
+    hugenet | viri58 with 1024 neurons.                | ELO   | 20.20 +- 9.42 (95%)
+         59 |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.97 (-2.94, 2.94) [0.00, 5.00]
+            |                                          | GAMES | N: 2600 W: 722 L: 571 D: 1307
+            |                                          | vs viri58.
+------------|------------------------------------------|-----------------------------------------------
+   luminary | hugenet with 768 neurons, trained with   | ELO   | 1.12 +- 3.82 (95%)
+         60 | ~110M extra viri58 FENs, and ~270M extra | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            | hugenet FENs.                            | LLR   | 0.01 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 15488 W: 3808 L: 3758 D: 7922
+            |                                          | vs hugenet. (did not merge)
+------------|------------------------------------------|-----------------------------------------------
+   gemstone | luminary with the dataset pruned down to | STC: 
+         61 | 963M positions from only non-bugged      | ELO   | 6.14 +- 3.85 (95%)
+            | datagen runs.                            | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            | no lichess, first net with DFRC data.    | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 15896 W: 4181 L: 3900 D: 7815
+            |                                          | LTC:
+            |                                          | ELO   | 7.02 +- 4.11 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 13208 W: 3323 L: 3056 D: 6829
+            |                                          | DFRC:
+            |                                          | ELO   | 133.02 +- 28.39 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 3.03 (-2.94, 2.94) [0.00, 5.00]
+            |                                          | GAMES | N: 408 W: 204 L: 55 D: 149
+            |                                          | vs hugenet.
+------------|------------------------------------------|-----------------------------------------------
+     gemini | gemstone with ~250M extra DFRC FENs      | STC:
+         62 | generated with gemstone.                 | ELO   | -5.11 +- 4.22 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -3.01 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 12912 W: 3111 L: 3301 D: 6500
+            |                                          | DFRC:
+            |                                          | ELO   | 18.36 +- 6.96 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 4488 W: 1171 L: 934 D: 2383
+            |                                          | vs gemstone.
+------------|------------------------------------------|-----------------------------------------------
+   grimoire | gemini with 444M extra classical chess   | STC:
+         63 | FENs.                                    | ELO   | -0.37 +- 2.90 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -1.51 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 27224 W: 6717 L: 6746 D: 13761
+            |                                          | vs gemstone.
+------------|------------------------------------------|-----------------------------------------------
+    echelon | Proof-of-concept HalfKA network. Uses a  | est. -80 Elo vs gemstone.
+         64 | small 64x2 feature transformer, CReLU    | 
+            | activation, batch size 16384, and 35     | 
+            | epochs. Trained on the gemini dataset to | 
+            | maximise variety of king positioning.    | 
+------------|------------------------------------------|-----------------------------------------------
+  excalibur | echelon with 384x2 feature transformer,  | ELO   | -4.6 +- 4.9 (95%)
+         65 | and using SCReLU activation.             | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 10414 W: 2719 L: 2857 D: 4838
+            |                                          | vs gemstone.
+------------|------------------------------------------|-----------------------------------------------
+     zhudun | excalibur with 768x2 feature transformer | STC:
+         66 | with 134M extra FENs generated using     | ELO   | -0.49 +- 2.23 (95%)
+            | excalibur. (using excalibur over         | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            | gemstone for the extra FENs because      | LLR   | -2.97 (-2.94, 2.94) [0.00, 3.00]
+            | i want to get selfplay to reveal any     | GAMES | N: 48992 W: 12875 L: 12944 D: 23173
+            | halfka-induced overfitting to help the   | LTC:
+            | next net)                                | ELO   | 7.67 +- 4.38 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 12098 W: 3162 L: 2895 D: 6041
+            |                                          | vs gemstone.
+------------|------------------------------------------|-----------------------------------------------
+    arcanum | zhudun retrained with exponentially      | STC:
+         67 | decreasing LR (10 epochs)                | ELO   | -15.84 +- 7.13 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 4720 W: 1113 L: 1328 D: 2279
+            |                                          | vs zhudun
+------------|------------------------------------------|-----------------------------------------------
+  astralite | gemstone-arch, with 386M extra zhudun    | v2 STC:
+         68 | FENs. 20 epochs with lr 0.001, wdl 0.3,  | ELO   | 5.32 +- 3.55 (95%)
+            | then three different continuations:      | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            | v1: 5 epochs lr 0.0001, wdl 0.3          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            | v2: 5 epochs lr 0.0001, wdl 0.4          | GAMES | N: 19464 W: 5304 L: 5006 D: 9154
+            | v3: 5 epochs lr 0.0001, wdl 0.5          | vs zhudun.
+            |                                          | v2 LTC:
+            | This arch is faster than zhudun, so it   | ELO   | -0.06 +- 3.78 (95%)
+            | gets better performance in STC, but      | SPRT  | 40.0+0.40s Threads=1 Hash=16MB
+            | scales poorly.                           | LLR   | -0.72 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 16322 W: 4105 L: 4108 D: 8109
+            |                                          | vs zhudun.
+            |                                          | v1 STC:
+            |                                          | ELO   | -1.10 +- 2.47 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 35952 W: 8471 L: 8585 D: 18896
+            |                                          | vs astralite-v2.
+            |                                          | v3 STC:
+            |                                          | ELO   | -3.87 +- 3.79 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 15816 W: 3795 L: 3971 D: 8050
+            |                                          | vs astralite-v2.
+------------|------------------------------------------|-----------------------------------------------
+  alchemist | astralite but trained with wdl 0.4 the   | STC:
+         69 | whole time.                              | ELO   | -0.06 +- 1.87 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 66792 W: 16861 L: 16872 D: 33059
+            |                                          | vs astralite-v2.
+------------|------------------------------------------|-----------------------------------------------
+    majesty | HalfKA + 768nn + 0.4 WDL + 15 epochs,    | STC:
+         70 | lr-drop 10, dataset of only 766M FRC     | ELO   | -106.16 +- 19.05 (95%)
+            | positions generated using zhudun.        | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            | Either dataset was too small or might    | GAMES | N: 776 W: 109 L: 339 D: 328
+            | have been shuffled wrong.                | vs zhudun.
+------------|------------------------------------------|-----------------------------------------------
+         xi | alchemist using marlinflow's cuda boards | STC:
+         71 |                                          | ELO   | 0.00 +- 0.00 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 0.00 (-2.94, 2.94) [0.00, 3.00]
+            | makes me think that it's broken.         | GAMES | N: 112 W: 0 L: 112 D: 0
+            |                                          | vs astralite-v2.
+------------|------------------------------------------|-----------------------------------------------
+marlineater | alchemist with WDL 1.0.                  | STC:
+         72 |                                          | ELO   | -35.43 +- 10.52 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 2224 W: 474 L: 700 D: 1050
+            |                                          | vs astralite-v2.
+------------|------------------------------------------|-----------------------------------------------
+    neutron | another uninspired alchemist variation   | STC:
+         73 |                                          | ELO   | -1.17 +- 2.63 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 34544 W: 8869 L: 8985 D: 16690
+            |                                          | vs astralite-v2.
+------------|------------------------------------------|-----------------------------------------------
+ piledriver | alchemist with a PSQT subnet!            | - test 1 was -196 elo
+         74 |                                          | - test 2 was -295 elo
+            |                                          | discovered that I had mis-implemented the
+            |                                          | memory layout of the subnet weights.
+            |                                          | STC:
+            |                                          | ELO   | 1.50 +- 1.88 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 0.85 (-2.25, 2.89) [0.00, 3.00]
+            | testing methodology was a bit of a mess  | GAMES | N: 69952 W: 18803 L: 18500 D: 32649
+            | but this is promising either way.        | vs zhudun.
+------------|------------------------------------------|-----------------------------------------------
+        cyc | 1024x2 relative network, lr 0.001        | STC (epoch 5)
+         75 | drop every 4 epochs, 15 epochs total,    | ELO   | -9.60 +- 6.46 (95%)
+            | lr-drop-gamma of 0.3, wdl 0.4.           | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.29 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 5792 W: 1433 L: 1593 D: 2766
+            |                                          | vs zhudun.
+            |                                          | STC (epoch 11)
+            |                                          | ELO   | 10.80 +- 5.46 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.91 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 8304 W: 2353 L: 2095 D: 3856
+            |                                          | vs zhudun.
+            |                                          | LTC (epoch 11)
+            |                                          | ELO   | 7.66 +- 4.41 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.89 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 11892 W: 3108 L: 2846 D: 5938
+            |                                          | vs zhudun.
+            |                                          | net was then merged, next test is vs. self
+            |                                          | STC (epoch 15)
+            |                                          | ELO   | 5.33 +- 3.49 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.92 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 18256 W: 4529 L: 4249 D: 9478
+            |                                          | vs cyc-epoch11.
+------------|------------------------------------------|-----------------------------------------------
+      omega | 1536x2, otherwise identical to cyc.      | STC (epoch 14)
+         76 |                                          | ELO   | -2.51 +- 3.72 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.25 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 16624 W: 4083 L: 4203 D: 8338
+            |                                          | vs cyc (epoch 15).
+            |                                          | LTC (epoch 14)
+            |                                          | ELO   | 1.98 +- 1.60 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.90 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 85312 W: 20504 L: 20017 D: 44791
+            |                                          | vs cyc (epoch 15).
+------------|------------------------------------------|-----------------------------------------------
+   vanguard | replication of omega using JW's bullet   | STC regression
+         77 | trainer.                                 | ELO   | 0.2 +/- 2.2 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | GAMES | N: 48792 W: 12720 L: 12687 D: 23385
+            |                                          | vs omega.
+------------|------------------------------------------|-----------------------------------------------
+       elua | 1024x2 HalfKA network trained using JW's | Issues with the feature factoriser
+         78 | bullet trainer, with vanguard's          | resulted in bugs that are unclear to me.
+            | hyperparameters.                         | 
+------------|------------------------------------------|-----------------------------------------------
+   callosum | 1024x2 HalfKA network trained using JW's | STC (epoch 15)
+         79 | bullet trainer, with vanguard's          | ELO   | -35.56 +- 12.24 (95%)
+            | hyperparameters, but without a feature   | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            | factoriser.                              | LLR   | -2.26 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 1696 W: 375 L: 548 D: 773
+            |                                          | vs omega.
+------------|------------------------------------------|-----------------------------------------------
+    artemis | same arch as omega / vanguard, with 497M | STC:
+         80 | additional positions generated using     | ELO   | 4.27 +- 3.04 (95%)
+            | omega.                                   | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.91 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 24752 W: 6288 L: 5984 D: 12480
+            |                                          | vs omega.
+------------|------------------------------------------|-----------------------------------------------
+     lilith | 1024x2 net with four buckets, trained    | fixed-nodes:
+         81 | using JW's bullet trainer, with          | ELO   | -14.37 +- 8.14 (95%)
+            | artemis's hyperparameters.               | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.29 (-2.25, 2.89) [0.00, 3.00]
+            | STC test interrupted early, as f-nodes   | GAMES | N: 4208 W: 1177 L: 1351 D: 1680
+            | looked terrible and lilith is faster,    | vs artemis.
+            | so will scale less well than artemis.    | STC:
+            |                                          | ELO   | 1.73 +- 8.32 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 0.07 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 3408 W: 878 L: 861 D: 1669
+            |                                          | vs artemis.
+------------|------------------------------------------|-----------------------------------------------
+    jupiter | same as artemis, but starting LR was 10x | fixed-nodes:
+         82 | higher. (0.01)                           | ELO   | -180.47 +- 27.29 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.09 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 528 W: 58 L: 310 D: 160
+            |                                          | vs artemis.
+------------|------------------------------------------|-----------------------------------------------
+    newcomb | artemis with new lr schedule:            | fixed-nodes, epoch 25:
+         83 | initial LR : 0.01                        | ELO   | -170.74 +- 31.69 (95%)
+            | lr gamma   : 0.1                         | SPRT  | N=25000 Threads=1 Hash=16MB
+            | lr step    : every 9 epochs              | LLR   | -2.31 (-2.25, 2.89) [0.00, 3.00]
+            | epochs     : 25                          | GAMES | N: 448 W: 70 L: 274 D: 104
+            |                                          | vs artemis.
+            |                                          |
+            |                                          | fixed-nodes, epoch 15:
+            |                                          | ELO   | -212.01 +- 36.32 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.41 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 384 W: 45 L: 254 D: 85
+            | what a load of garbage.                  | vs artemis.
+------------|------------------------------------------|-----------------------------------------------
+   * qa-181 | not a new network, but a re-quantisation | STC:
+         80 | of artemis so that more optimal SIMD     | ELO   | 16.76 +- 6.68 (95%)
+            | can be used for inference.               | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.92 (-2.25, 2.89) [0.00, 3.00]
+            |                                          | GAMES | N: 4896 W: 1271 L: 1035 D: 2590
+            |                                          | vs artemis-qa-255.
+------------|------------------------------------------|-----------------------------------------------
+   signalis | four-buckets horizontally mirrored       | LTC:
+         84 | 1536x2 network, trained with artemis's   | ELO   | 5.47 +- 3.57 (95%)
+            | hyperparameters.                         | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.89 (-2.25, 2.89) [0.00, 3.00]
+            | initial run had a bug, so this is ID'd   | GAMES | N: 17672 W: 4452 L: 4174 D: 9046
+            | as signalis2-epoch15 in OB.              | vs artemis.
+            |                                          |
+            | bucketing scheme is shown in the         |
+            | network release.                         |
+------------|------------------------------------------|-----------------------------------------------
+    gestalt | nine-buckets horizontally mirrored       | fixed-nodes:
+         85 | 1536x2 network, with larger dataset.     | Elo   | 34.12 +- 9.08 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 3.07 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2564 W: 880 L: 629 D: 1055
+            |                                          | Penta | [46, 237, 513, 392, 94]
+            |                                          | https://chess.swehosting.se/test/5868/
+            |                                          | vs. signalis
+            |                                          |
+            |                                          | STC:
+            |                                          | Elo   | 23.64 +- 7.02 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2988 W: 864 L: 661 D: 1463
+            |                                          | Penta | [23, 274, 712, 447, 38]
+            |                                          | https://chess.swehosting.se/test/5869/
+            |                                          | vs. signalis
+------------|------------------------------------------|-----------------------------------------------
+   semiotic | gestalt with bigger dataset and eight    | fixed-nodes:
+         86 | material-count output buckets.           | Elo   | 19.76 +- 6.80 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 3.06 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 4348 W: 1365 L: 1118 D: 1865
+            |                                          | Penta | [87, 437, 919, 604, 127]
+            |                                          | https://chess.swehosting.se/test/7374/
+            |                                          | vs. gestalt
+            |                                          |
+            |                                          | STC:
+            |                                          | Elo   | 23.89 +- 6.91 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2826 W: 781 L: 587 D: 1458
+            |                                          | Penta | [14, 257, 686, 433, 23]
+            |                                          | https://chess.swehosting.se/test/7376/
+            |                                          | vs. gestalt
+------------|------------------------------------------|-----------------------------------------------
+   skirmish | gestalt with the tweaks enumerated at    | fixed-nodes:
+         87 | end of the second ANNUEP blogpost        | Elo   | 14.81 +- 5.85 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.97 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 5492 W: 1663 L: 1429 D: 2400
+            |                                          | Penta | [92, 569, 1254, 675, 156]
+            |                                          | https://chess.swehosting.se/test/7391/
+            |                                          | vs. semiotic
+            |                                          |
+            |                                          | STC:
+            |                                          | Elo   | 6.82 +- 3.55 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 10540 W: 2673 L: 2466 D: 5401
+            |                                          | Penta | [42, 1197, 2628, 1318, 85]
+            |                                          | https://chess.swehosting.se/test/7396/
+            |                                          | vs. semiotic
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | 0.72 +- 3.75 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -0.00 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 7760 W: 1758 L: 1742 D: 4260
+            |                                          | Penta | [6, 862, 2146, 842, 24]
+            |                                          | https://chess.swehosting.se/test/7398/
+            |                                          | vs. semiotic
+            |                                          |
+            |                                          | cosmo.tardis.ac/2024/07/15/nnue-research-02/
+------------|------------------------------------------|-----------------------------------------------
+    compact | semiotic with smaller dataset, much      | v1 (60sb, 5b fens) fixed-nodes:
+         88 | shorter training run, and cosine lr.     | Elo   | -107.30 +- 15.74 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.11 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 952 W: 165 L: 450 D: 337
+            |                                          | Penta | [86, 161, 185, 40, 4]
+            |                                          | https://chess.swehosting.se/test/7444/
+            |                                          | vs. semiotic
+            |                                          | 
+            |                                          | v2 (60sb, 8b fens) fixed-nodes:
+            |                                          | Elo   | -43.56 +- 10.61 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 1836 W: 400 L: 629 D: 807
+            |                                          | Penta | [70, 298, 369, 153, 28]
+            |                                          | https://chess.swehosting.se/test/7445/
+            |                                          | vs. semiotic
+            |                                          | 
+            |                                          | v3 (82sb, 8b fens) fixed-nodes:
+            |                                          | Elo   | -26.55 +- 8.18 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.12 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 3042 W: 754 L: 986 D: 1302
+            |                                          | Penta | [102, 435, 627, 307, 50]
+            |                                          | https://chess.swehosting.se/test/7447/
+            |                                          | vs. semiotic
+            |                                          | 
+            |                                          | v4 (160sb, 8b fens) fixed-nodes:
+            |                                          | Elo   | -8.47 +- 4.81 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.08 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 8570 W: 2331 L: 2540 D: 3699
+            |                                          | Penta | [217, 1108, 1803, 981, 176]
+            |                                          | https://chess.swehosting.se/test/7448/
+            |                                          | vs. semiotic
+------------|------------------------------------------|-----------------------------------------------
+   eternity | 13-buckets 2048x2 net, trained for 200   | fixed-nodes:
+         89 | superbatches with cosine lr.             | Elo   | -1.97 +- 2.72 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            | performance was sufficiently close to    | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            | semiotic to make me think it was         | Games | N: 26234 W: 7280 L: 7429 D: 11525
+            | possible to beat semiotic with a much    | Penta | [616, 3174, 5625, 3147, 555]
+            | shorter training run.                    | https://chess.swehosting.se/test/7479/
+            |                                          | vs. semiotic
+------------|------------------------------------------|-----------------------------------------------
+   everedge | semiotic but trained with WDL warmup to  | fixed-nodes:
+         90 | 0.5 over the course of 160 superbatches. | Elo   | -5.78 +- 4.10 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 11490 W: 3123 L: 3314 D: 5053
+            |                                          | Penta | [260, 1472, 2450, 1325, 238]
+            |                                          | https://chess.swehosting.se/test/7481/
+            |                                          | vs. semiotic
+------------|------------------------------------------|-----------------------------------------------
+  pendragon | 2048x2 net with an extra billion         | fixed-nodes v1:
+         91 | fens from semiotic injected.             | Elo   | 5.93 +- 3.53 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            | first version had 13 buckets and trained | LLR   | 2.99 (-2.94, 2.94) [0.00, 3.00]
+            | for 400 superbatches.                    | Games | N: 16004 W: 4664 L: 4391 D: 6949
+            |                                          | Penta | [375, 1805, 3375, 2066, 381]
+            | second version had 16 buckets and a      | https://chess.swehosting.se/test/7580/
+            | king bucket feature factoriser which     | vs. semiotic
+            | significantly increased time per batch,  | 
+            | so run was much longer despite also      | fixed-nodes v2:
+            | running for 400 superbatches.            | Elo   | 31.64 +- 8.76 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2588 W: 874 L: 639 D: 1075
+            |                                          | Penta | [44, 234, 539, 397, 80]
+            |                                          | https://chess.swehosting.se/test/7587/
+            |                                          | vs. semiotic
+            |                                          | 
+            |                                          | STC v2:
+            |                                          | Elo   | 0.51 +- 3.01 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -0.22 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 15616 W: 3704 L: 3681 D: 8231
+            |                                          | Penta | [133, 1860, 3771, 1939, 105]
+            |                                          | https://chess.swehosting.se/test/7588/
+            |                                          | vs. semiotic
+            |                                          | 
+            |                                          | LTC v2:
+            |                                          | Elo   | 4.83 +- 2.85 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 14880 W: 3434 L: 3227 D: 8219
+            |                                          | Penta | [43, 1658, 3832, 1863, 44]
+            |                                          | https://chess.swehosting.se/test/7590/
+            |                                          | vs. semiotic
+------------|------------------------------------------|-----------------------------------------------
+hyperstition| 2048x2 -pairwise> 16 -> 32 -> 1 net.     | fixed-nodes:
+         92 | crelu/screlu/screlu activations.         | Elo   | 42.88 +- 10.08 (95%)
+            | trained under identical conditions to    | SPRT  | N=25000 Threads=1 Hash=16MB
+            | pendragon.                               | LLR   | 3.09 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2036 W: 718 L: 468 D: 850
+            |                                          | Penta | [28, 183, 394, 337, 76]
+            |                                          | https://chess.swehosting.se/test/7766/
+            |                                          | vs. pendragon
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | 9.44 +- 4.12 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 7028 W: 1661 L: 1470 D: 3897
+            |                                          | Penta | [14, 760, 1772, 957, 11]
+            |                                          | https://chess.swehosting.se/test/7788/
+            |                                          | vs. pendragon
+------------|------------------------------------------|-----------------------------------------------
+       lila | the final hyperstition weight file,      | fixed-nodes:
+         93 | trained for 100 more superbatches with a | Elo   | 2.42 +- 1.89 (95%)
+            | 0.0005 -> 0.0005 * 0.3^3 lr cosine lr    | SPRT  | N=25000 Threads=1 Hash=16MB
+            | schedule, and including couple hundred   | LLR   | 3.00 (-2.94, 2.94) [0.00, 3.00]
+            | million datapoints generated using       | Games | N: 52732 W: 14703 L: 14336 D: 23693
+            | hyperstition. No other changes to the    | Penta | [1019, 6368, 11343, 6499, 1137]
+            | training setup.                          | https://chess.swehosting.se/test/8011/
+            |                                          | vs. hyperstition
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | 4.04 +- 2.52 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 17712 W: 3992 L: 3786 D: 9934
+            |                                          | Penta | [17, 1966, 4693, 2154, 26]
+            |                                          | https://chess.swehosting.se/test/8056/
+            |                                          | vs. hyperstition
+------------|------------------------------------------|-----------------------------------------------
+    voyager | the hyperstition arch, trained on the    | fixed-nodes:
+         94 | new bullet version with extra fens       | Elo   | 9.80 +- 4.68 (95%)
+            | generated using hyperstition & lila.     | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.97 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 8652 W: 2578 L: 2334 D: 3740
+            |                                          | Penta | [166, 956, 1869, 1138, 197]
+            |                                          | https://chess.swehosting.se/test/8717/
+            |                                          | vs. lila
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | 8.73 +- 4.00 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 7724 W: 1854 L: 1660 D: 4210
+            |                                          | Penta | [26, 833, 1947, 1033, 23]
+            |                                          | https://chess.swehosting.se/test/8718/
+            |                                          | vs. lila
+------------|------------------------------------------|-----------------------------------------------
+     helios | voyager fine-tuned on a dataset rescored | fixed-nodes:
+            | using TD with lambda = 0.05              | Elo   | -3.55 +- 3.31 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 16836 W: 4521 L: 4693 D: 7622
+            |                                          | Penta | [350, 2079, 3683, 2005, 301]
+            |                                          | https://chess.swehosting.se/test/8939/
+            |                                          | vs. voyager
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -4.05 +- 3.09 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 12526 W: 2730 L: 2876 D: 6920
+            |                                          | Penta | [31, 1563, 3219, 1421, 29]
+            |                                          | https://chess.swehosting.se/test/8940/
+            |                                          | vs. voyager
+------------|------------------------------------------|-----------------------------------------------
+ jackhammer | attempt at a PSQT subnet. inference      | fixed-nodes:
+            | was likely written wrongly.              | Elo   | -41.40 +- 10.05 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.99 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 1838 W: 424 L: 642 D: 772
+            |                                          | Penta | [62, 287, 394, 159, 17]
+            |                                          | https://chess.swehosting.se/test/9016/
+            |                                          | vs. voyager
+------------|------------------------------------------|-----------------------------------------------
+   nostromo | attempt at lots of skip connections and  | fixed-nodes:
+            | a psqt subnet. inference also likely     | Elo   | -10.44 +- 5.26 (95%)
+            | to be bugged.                            | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.00 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 6692 W: 1770 L: 1971 D: 2951
+            |                                          | Penta | [157, 867, 1444, 776, 102]
+            |                                          | https://chess.swehosting.se/test/9108/
+            |                                          | vs. voyager
+------------|------------------------------------------|-----------------------------------------------
+ temperance | continued training on top of voyager for | fixed-nodes:
+            | 200 superbatches with halved lr.         | Elo   | 6.44 +- 3.66 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 13432 W: 3789 L: 3540 D: 6103
+            |                                          | Penta | [212, 1574, 2956, 1701, 273]
+            |                                          | https://chess.swehosting.se/test/9168/#
+            |                                          | vs. voyager
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | 4.99 +- 2.87 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.99 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 14414 W: 3329 L: 3122 D: 7963
+            |                                          | Penta | [30, 1617, 3716, 1804, 40]
+            |                                          | https://chess.swehosting.se/test/9169/
+            |                                          | vs. voyager
+------------|------------------------------------------|-----------------------------------------------
+   colossus | 3072x16 -> (16 -> 64 -> 1)x8 network.    | Elo   | 23.83 +- 7.22 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            | tremendous performance at fixed-nodes,   | LLR   | 3.20 (-2.94, 2.94) [0.00, 3.00]
+            | but obviously far too slow for real play.| Games | N: 3636 W: 1132 L: 883 D: 1621
+            |                                          | Penta | [53, 372, 762, 535, 96]
+            |                                          | https://chess.swehosting.se/test/9339/
+            |                                          | vs. temperance
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | -21.52 +- 6.67 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2780 W: 547 L: 719 D: 1514
+            |                                          | Penta | [13, 421, 685, 267, 4]
+            |                                          | https://chess.swehosting.se/test/9353/
+            |                                          | vs. temperance
+------------|------------------------------------------|-----------------------------------------------
+ blackheart | 2048x16 -> (16 -> 32 -> 1)x8 master arch | fixed-nodes:
+            | but with a PSQT skip connection, linear  | Elo   | -2.41 +- 2.94 (95%)
+            | lr schedule and noisy output buckets.    | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 22902 W: 6596 L: 6755 D: 9551
+            |                                          | Penta | [557, 2776, 4897, 2711, 510]
+            |                                          | https://chess.swehosting.se/test/9577/
+            |                                          | vs. temperance
+------------|------------------------------------------|-----------------------------------------------
+   goldsoul | 200 standard post-training superbatches  | fixed-nodes:
+            | on top of blackheart.                    | Elo   | 2.38 +- 1.88 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 55336 W: 16303 L: 15924 D: 23109
+            |                                          | Penta | [1246, 6447, 11921, 6790, 1264]
+            |                                          | https://chess.swehosting.se/test/9578/
+            |                                          | vs. temperance
+            |                                          |
+            |                                          | STC:
+            |                                          | Elo   | -2.52 +- 2.72 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 20026 W: 5009 L: 5154 D: 9863
+            |                                          | Penta | [224, 2438, 4779, 2403, 169]
+            |                                          | https://chess.swehosting.se/test/9582/
+            |                                          | vs. temperance
+------------|------------------------------------------|-----------------------------------------------
+   godsword | 200 WDL=0.75 superbatches on top of      | fixed-nodes:
+            | blackheart.                              | Elo   | -4.29 +- 3.65 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 14668 W: 4247 L: 4428 D: 5993
+            |                                          | Penta | [380, 1735, 3216, 1692, 311]
+            |                                          | https://chess.swehosting.se/test/9580/
+            |                                          | vs. temperance
+            |                                          |
+            |                                          | STC:
+            |                                          | Elo   | -6.62 +- 4.13 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 9186 W: 2269 L: 2444 D: 4473
+            |                                          | Penta | [127, 1173, 2125, 1084, 84]
+            |                                          | https://chess.swehosting.se/test/9583/
+            |                                          | vs. temperance
+------------|------------------------------------------|-----------------------------------------------
+perseverance| 200 superbatches filtering data before   | fixed-nodes:
+            | 2023-04-01, and upsampling data          | Elo   | 7.24 +- 3.94 (95%)
+            | generated by colossus by 4x.             | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 3.01 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 12578 W: 3725 L: 3463 D: 5390
+            |                                          | Penta | [267, 1410, 2715, 1588, 309]
+            |                                          | https://chess.swehosting.se/test/9601/
+            |                                          | vs. temperance
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | 8.44 +- 3.90 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 7946 W: 1966 L: 1773 D: 4207
+            |                                          | Penta | [31, 829, 2049, 1044, 20]
+            |                                          | https://chess.swehosting.se/test/9602/
+            |                                          | vs. temperance
+------------|------------------------------------------|-----------------------------------------------
+    kolibri | fresh run including some UHO Lichess     | fixed-nodes:
+            | data generated using perseverance.       | Elo   | 0.15 +- 1.41 (95%)
+            | linear lr schedule.                      | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.10 (-2.94, 2.94) [0.00, 3.00]
+            | merged for the DFRC performance.         | Games | N: 98426 W: 28680 L: 28637 D: 41109
+            |                                          | Penta | [2282, 11657, 21257, 11770, 2247]
+            |                                          | https://chess.swehosting.se/test/9891/
+            |                                          | vs. perseverance
+            |                                          |
+            |                                          | STC:
+            |                                          | Elo   | 0.11 +- 3.38 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -0.42 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 12964 W: 3330 L: 3326 D: 6308
+            |                                          | Penta | [126, 1575, 3070, 1591, 120]
+            |                                          | https://chess.swehosting.se/test/9894/
+            |                                          | vs. perseverance
+            |                                          |
+            |                                          | fixed-nodes DFRC:
+            |                                          | Elo   | 6.54 +- 3.90 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 15946 W: 4805 L: 4505 D: 6636
+            |                                          | Penta | [523, 1872, 2944, 2050, 584]
+            |                                          | https://chess.swehosting.se/test/9897/
+            |                                          | vs. perseverance
+------------|------------------------------------------|-----------------------------------------------
+    requiem | Uses the farseer output bucket layout,   | fixed-nodes:
+            | small amount of extra DFRC book data,    | Elo   | -1.29 +- 2.36 (95%)
+            | less early-ply filtering, adds l4=32     | SPRT  | N=25000 Threads=1 Hash=16MB
+            | and uses skip connection (final layer    | LLR   | -3.02 (-2.94, 2.94) [0.00, 3.00]
+            | dotprod is on the concatentation of the  | Games | N: 34692 W: 10078 L: 10207 D: 14407
+            | previous two layers' output).            | Penta | [779, 4199, 7520, 4068, 780]
+            | final lr dropped by x0.3.                | https://chess.swehosting.se/test/9945/
+            |                                          | vs. kolibri
+            | less filtering probably ruined it.       |
+            |                                          | STC:
+            |                                          | Elo   | -10.62 +- 4.92 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.97 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 5758 W: 1344 L: 1520 D: 2894
+            |                                          | Penta | [46, 776, 1408, 606, 43]
+            |                                          | https://chess.swehosting.se/test/9946/
+            |                                          | vs. kolibri
+------------|------------------------------------------|-----------------------------------------------
+     sensei | 8192x2 -(pairwise)> 16 -> 64 -> 1 net.   | fixed-nodes:
+            | crelu/screlu/screlu activations.         | Elo   | 35.57 +- 9.22 (95%)
+            | no buckets, input or output.             | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 3.05 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2372 W: 820 L: 578 D: 974
+            |                                          | Penta | [32, 224, 485, 360, 85]
+            |                                          | https://chess.swehosting.se/test/9979/
+            |                                          | vs. kolibri
+------------|------------------------------------------|-----------------------------------------------
+    alembic | normal hyperstition arch, distilled from | fixed-nodes:
+            | sensei. farseer buckets.                 | Elo   | -12.69 +- 5.77 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            | very depressed about how bad this was.   | LLR   | -3.08 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 5918 W: 1660 L: 1876 D: 2382
+            |                                          | Penta | [157, 778, 1267, 638, 119]
+            |                                          | https://chess.swehosting.se/test/9990/
+            |                                          | vs. kolibri
+            |                                          | 
+            |                                          | STC:
+            |                                          | Elo   | -25.95 +- 7.62 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -3.00 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2616 W: 553 L: 748 D: 1315
+            |                                          | Penta | [33, 418, 584, 257, 16]
+            |                                          | https://chess.swehosting.se/test/9991/
+            |                                          | vs. kolibri
+------------|------------------------------------------|-----------------------------------------------
+     umwelt | very standard from-scratch net with      | fixed-nodes:
+            | farseer buckets and some more 25knodes   | Elo   | -2.18 +- 2.79 (95%)
+            | data.                                    | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 24186 W: 6764 L: 6916 D: 10506
+            |                                          | Penta | [498, 3027, 5167, 2931, 470]
+            |                                          | https://chess.swehosting.se/test/10275/
+            |                                          | vs. kolibri
+            |                                          |
+            |                                          | STC:
+            |                                          | Elo   | -4.82 +- 3.47 (95%)
+            |                                          | SPRT  | 8.0+0.08s Threads=1 Hash=16MB
+            |                                          | LLR   | -2.99 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 11744 W: 2775 L: 2938 D: 6031
+            |                                          | Penta | [99, 1499, 2816, 1382, 76]
+            |                                          | https://chess.swehosting.se/test/10276/
+            |                                          | vs. kolibri
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | -4.54 +- 3.27 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 11548 W: 2546 L: 2697 D: 6305
+            |                                          | Penta | [35, 1478, 2899, 1327, 35]
+            |                                          | https://chess.swehosting.se/test/10279/
+            |                                          | vs. kolibri
+------------|------------------------------------------|-----------------------------------------------
+      falke | fine-tune of kolibri with old data       | fixed-nodes:
+            | cleaned out and 25knode data upsampled.  | Elo   | 4.54 +- 2.96 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.97 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 20808 W: 5893 L: 5621 D: 9294
+            |                                          | Penta | [396, 2394, 4526, 2718, 370]
+            |                                          | https://chess.swehosting.se/test/10323/
+            |                                          | vs. kolibri
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | 13.86 +- 5.07 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 4564 W: 1127 L: 945 D: 2492
+            |                                          | Penta | [8, 449, 1195, 613, 17]
+            |                                          | https://chess.swehosting.se/test/10324/
+            |                                          | vs. kolibri
+------------|------------------------------------------|-----------------------------------------------
+  synthesis | four-headed network (value, W, D, L)     | fixed-nodes (value head):
+            | trained on standard value-blend target   | Elo   | -14.70 +- 6.23 (95%)
+            | and a cross-entropy loss against WDL.    | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.00 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 4966 W: 1316 L: 1526 D: 2124
+            |                                          | Penta | [131, 669, 1038, 569, 76]
+            |                                          | https://chess.swehosting.se/test/10427/
+            |                                          | vs. falke
+            |                                          | 
+            |                                          | fixed-nodes (WDL heads):
+            |                                          | Elo   | -17.25 +- 6.67 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.97 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 4132 W: 1017 L: 1222 D: 1893
+            |                                          | Penta | [102, 572, 867, 479, 46]
+            |                                          | https://chess.swehosting.se/test/10431/
+            |                                          | vs. synthesis-value
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -33.72 +- 4.80 (95%)
+            |                                          | Conf  | 60.0+0.60s Threads=1 Hash=128MB
+            |                                          | Games | N: 5002 W: 959 L: 1443 D: 2600
+            |                                          | Penta | [21, 830, 1266, 380, 4]
+            |                                          | https://chess.swehosting.se/test/10657/
+            |                                          | vs. falke
+------------|------------------------------------------|-----------------------------------------------
+    delenda | fresh retrain with full network          | fixed-nodes:
+            | factorisation.                           | Elo   | 7.81 +- 4.08 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.99 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 11082 W: 3261 L: 3012 D: 4809
+            |                                          | Penta | [203, 1230, 2470, 1391, 247]
+            |                                          | https://chess.swehosting.se/test/10740/
+            |                                          | vs. falke
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | 2.06 +- 1.61 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | 2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 47132 W: 11259 L: 10979 D: 24894
+            |                                          | Penta | [115, 5554, 11997, 5736, 164]
+            |                                          | https://chess.swehosting.se/test/10741/
+            |                                          | vs. falke
+------------|------------------------------------------|-----------------------------------------------
+  wavefront | a variety of 50-superbatch retraining    | https://chess.swehosting.se/test/10601/
+            | experiments to test direct viripack data | https://chess.swehosting.se/test/10606/
+            |                                          | https://chess.swehosting.se/test/10611/
+            | all terrible.                            | https://chess.swehosting.se/test/10613/
+            |                                          | https://chess.swehosting.se/test/10617/
+------------|------------------------------------------|-----------------------------------------------
+    scorpio | factorised (apart from L1), training     | fixed-nodes:
+            | using the viribinpack dataloader.        | Elo   | -50.65 +- 11.13 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            | because upsampling-via-dual-interleaving | LLR   | -2.98 (-2.94, 2.94) [0.00, 3.00]
+            | puts the duplicate records in the same   | Games | N: 1582 W: 353 L: 582 D: 647
+            | area of the data file, this probably had | Penta | [57, 275, 317, 124, 18]
+            | bugged data.                             | https://chess.swehosting.se/test/10761/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+     legion | delenda finetune on new data.            | fixed-nodes:
+            | loading from naively interleaved         | Elo   | -43.14 +- 10.05 (95%)
+            | viribinpacks.                            | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.30 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2032 W: 488 L: 739 D: 805
+            |                                          | Penta | [92, 288, 439, 173, 24]
+            |                                          | https://chess.swehosting.se/test/10763/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ iridescent | same as legion with 4gb mixing buffer.   | fixed-nodes:
+            |                                          | Elo   | -48.90 +- 11.15 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.06 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 1702 W: 382 L: 620 D: 700
+            |                                          | Penta | [78, 268, 338, 148, 19]
+            |                                          | https://chess.swehosting.se/test/10765/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+inquisition | same as legion/iridescent with standard  | fixed-nodes:
+            | full-shuffled bulletformat dataloading.  | Elo   | -33.65 +- 8.51 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.50 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2662 W: 665 L: 922 D: 1075
+            |                                          | Penta | [83, 411, 550, 254, 33]
+            |                                          | https://chess.swehosting.se/test/10768/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+   resonant | i actually cannot remember what the      | resonant fixed-nodes:
+      angel | difference between these nets is.        | Elo   | -14.89 +- 6.18 (95%)
+            | at least one of them upsampled the new   | SPRT  | N=25000 Threads=1 Hash=16MB
+            | data and cleaned out the old stuff.      | LLR   | -2.97 (-2.94, 2.94) [0.00, 3.00]
+            | probably only angel? not sure.           | Games | N: 4740 W: 1241 L: 1444 D: 2055
+            |                                          | Penta | [94, 674, 1017, 511, 74]
+            | i wish i wrote things down instead of    | https://chess.swehosting.se/test/10779/
+            | just YOLOing them into new runs.         | vs. delenda
+            |                                          | 
+            | the important part is that legion        | angel fixed-nodes:
+            | through angel are all on top of a merged | Elo   | -15.40 +- 6.26 (95%)
+            | delenda weight file, so they have been   | SPRT  | N=25000 Threads=1 Hash=16MB
+            | trained without a factoriser.            | LLR   | -3.09 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 4900 W: 1290 L: 1507 D: 2103
+            |                                          | Penta | [112, 709, 993, 556, 80]
+            |                                          | https://chess.swehosting.se/test/10782/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+  broadside | direct finetune on top of the non-merged | fixed-nodes:
+            | delenda checkpoint, with new data.       | Elo   | -1.63 +- 2.50 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            | clearly, factorisation is massive, even  | LLR   | -2.97 (-2.94, 2.94) [0.00, 3.00]
+            | for fine-tuning runs. lesson learned.    | Games | N: 29188 W: 8132 L: 8269 D: 12787
+            |                                          | Penta | [558, 3611, 6366, 3528, 531]
+            |                                          | https://chess.swehosting.se/test/10787/
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | -3.16 +- 2.79 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 15380 W: 3464 L: 3604 D: 8312
+            |                                          | Penta | [40, 1903, 3932, 1787, 28]
+            |                                          | https://chess.swehosting.se/test/10788/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+     spigot | same as broadside, but removing data     | fixed-nodes:
+            | before 2024-05-01, and 4x upsampling all | Elo   | -18.62 +- 6.63 (95%)
+            | 25knodes data.                           | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.24 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 4222 W: 1095 L: 1321 D: 1806
+            |                                          | Penta | [116, 548, 958, 424, 65]
+            |                                          | https://chess.swehosting.se/test/10790/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ foundation | broadside trained locally via viripacks, | fixed-nodes:
+            | 6gb mixing buffer, uniform sampling.     | Elo   | -27.76 +- 7.91 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.34 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2972 W: 758 L: 995 D: 1219
+            |                                          | Penta | [96, 400, 669, 287, 34]
+            |                                          | https://chess.swehosting.se/test/10797/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ retrochron | fresh retrain, cosine lr, uniform data   | fixed-nodes:
+            | initial_lr = 0.001                       | Elo   | 2.13 +- 3.51 (95%)
+            | final_lr = 0.001 * 0.3^3                 | SPRT  | N=25000 Threads=1 Hash=16MB
+            | sbs = 800, wdl = 0.4                     | LLR   | 0.70 (-2.94, 2.94) [0.00, 3.00]
+            | sf-style dual activation.                | Games | N: 14988 W: 4424 L: 4332 D: 6232
+            |                                          | Penta | [303, 1729, 3338, 1821, 303]
+            |                                          | https://chess.swehosting.se/test/10983/
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | -4.92 +- 3.35 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 10600 W: 2384 L: 2534 D: 5682
+            |                                          | Penta | [26, 1333, 2730, 1187, 24]
+            |                                          | https://chess.swehosting.se/test/10985/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+  vengeance | same as retrochron, trained with ranger. | fixed-nodes:
+            |                                          | Elo   | 4.63 +- 3.67 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | 2.00 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 13896 W: 4093 L: 3908 D: 5895
+            |                                          | Penta | [249, 1657, 3005, 1734, 303]
+            |                                          | https://chess.swehosting.se/test/10996/
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | Elo   | -9.87 +- 4.67 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 5880 W: 1290 L: 1457 D: 3133
+            |                                          | Penta | [22, 815, 1429, 656, 18]
+            |                                          | https://chess.swehosting.se/test/10998/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+   fixpoint | 200sb wdl 0.5 on retrochron with         | fixed-nodes:
+            | binpacks.                                | Elo   | -33.84 +- 9.37 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.00 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2348 W: 579 L: 807 D: 962
+            |                                          | Penta | [78, 374, 456, 230, 36]
+            |                                          | https://chess.swehosting.se/test/11002/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ inflection | 200sb wdl 0.4 on retrochron with         | fixed-nodes:
+            | binpacks.                                | 
+            |                                          | 
+            |                                          | 
+            |                                          | 
+            |                                          | 
+            |                                          | 
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ basilisk.4 | 200sb wdl 0.4 on retrochron.             | fixed-nodes:
+            |                                          | Elo   | 0.71 +- 0.75 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.10 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 334956 W: 95151 L: 94462 D: 145343
+            |                                          | Penta | [6382, 40832, 72896, 40451, 6917]
+            |                                          | https://chess.swehosting.se/test/11037/
+            |                                          | vs. delenda
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -8.80 +- 4.35 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 6318 W: 1409 L: 1569 D: 3340
+            |                                          | Penta | [22, 818, 1628, 680, 11]
+            |                                          | https://chess.swehosting.se/test/11038/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ basilisk.5 | 200sb wdl 0.5 on retrochron.             | fixed-nodes:
+            |                                          | Elo   | -0.31 +- 1.76 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.97 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 59884 W: 17047 L: 17101 D: 25736
+            |                                          | Penta | [1180, 7288, 13067, 7220, 1187]
+            |                                          | https://chess.swehosting.se/test/11039/
+            |                                          | vs. delenda
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -7.40 +- 4.00 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.98 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 7470 W: 1689 L: 1848 D: 3933
+            |                                          | Penta | [27, 946, 1938, 807, 17]
+            |                                          | https://chess.swehosting.se/test/11040/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ basilisk.6 | 200sb wdl 0.6 on retrochron.             | fixed-nodes:
+            |                                          | Elo   | -4.85 +- 3.74 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.08 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 13670 W: 3819 L: 4010 D: 5841
+            |                                          | Penta | [328, 1682, 2925, 1653, 247]
+            |                                          | https://chess.swehosting.se/test/11057/
+            |                                          | vs. delenda
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -5.47 +- 3.55 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 9852 W: 2241 L: 2396 D: 5215
+            |                                          | Penta | [36, 1257, 2490, 1112, 31]
+            |                                          | https://chess.swehosting.se/test/11060/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ basilisk.7 | 200sb wdl 0.7 on retrochron.             | fixed-nodes:
+            |                                          | Elo   | -13.95 +- 5.93 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.05 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 5160 W: 1370 L: 1577 D: 2213
+            |                                          | Penta | [117, 682, 1153, 547, 81]
+            |                                          | https://chess.swehosting.se/test/11058/
+            |                                          | vs. delenda
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -5.77 +- 3.59 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.97 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 9338 W: 2122 L: 2277 D: 4939
+            |                                          | Penta | [30, 1182, 2390, 1047, 20]
+            |                                          | https://chess.swehosting.se/test/11062/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ basilisk.8 | 200sb wdl 0.8 on retrochron.             | fixed-nodes:
+            |                                          | Elo   | -19.27 +- 7.09 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.01 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 3898 W: 1004 L: 1220 D: 1674
+            |                                          | Penta | [108, 551, 800, 429, 61]
+            |                                          | https://chess.swehosting.se/test/11059/
+            |                                          | vs. delenda
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -10.67 +- 4.86 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 5504 W: 1203 L: 1372 D: 2929
+            |                                          | Penta | [31, 748, 1349, 607, 17]
+            |                                          | https://chess.swehosting.se/test/11063/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ basilisk.9 | 200sb wdl 0.9 on retrochron.             | fixed-nodes:
+            |                                          | Elo   | -26.61 +- 8.26 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2760 W: 681 L: 892 D: 1187
+            |                                          | Penta | [82, 391, 598, 274, 35]
+            |                                          | https://chess.swehosting.se/test/11061/
+            |                                          | vs. delenda
+            |                                          | 
+            |                                          | LTC:
+            |                                          | Elo   | -22.81 +- 6.95 (95%)
+            |                                          | SPRT  | 40.0+0.40s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.95 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 2654 W: 532 L: 706 D: 1416
+            |                                          | Penta | [15, 413, 632, 265, 2]
+            |                                          | https://chess.swehosting.se/test/11074/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+   division | full data, linear lr decay, .4->.65      | VLTC:
+            | wdl schedule.                            | Elo   | -3.63 +- 2.92 (95%)
+            |                                          | SPRT  | 120.0+1.20s Threads=1 Hash=128MB
+            |                                          | LLR   | -2.96 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 13590 W: 3066 L: 3208 D: 7316
+            |                                          | Penta | [24, 1679, 3530, 1539, 23]
+            |                                          | https://chess.swehosting.se/test/11276/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+  timepiece | fine-tune of division at WDL .65, 200 SB | fixed-nodes:
+            |                                          | Elo   | -9.23 +- 4.89 (95%)
+            |                                          | SPRT  | N=25000 Threads=1 Hash=16MB
+            |                                          | LLR   | -3.10 (-2.94, 2.94) [0.00, 3.00]
+            |                                          | Games | N: 7794 W: 2136 L: 2343 D: 3315
+            |                                          | Penta | [166, 1028, 1696, 861, 146]
+            |                                          | https://chess.swehosting.se/test/11710/
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+    oculist | rebase on latest bullet w/ ValueTrainer. | fixed-nodes:
+            |                                          | https://ob.expositor.dev/test/15/
+            | trained on full data. (might have been   |  PERF −11.33 ± 5.31 ELO (−16.64 LO −6.03 HI ELO)
+            | opening-filtered data from prev, my test |  CONF 25000 NODES (1 THREAD 16 MB CACHE)
+            | hygiene is absymal)                      |   LLR −3.19 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          | GAMES 6654 (1797 W 2843 D 2014 L = 27.0% W 42.7% D 30.3% L)
+            |                                          | PENTA 126⁺² 710⁺¹ 1462⁰ 879⁻¹ 150⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | STC:
+            |                                          | https://ob.expositor.dev/test/16/
+            |                                          |  PERF −18.28 ± 6.31 ELO (−24.60 LO −11.98 HI ELO)
+            |                                          |  CONF 8.0+0.08 SEC (1 THREAD 16 MB CACHE)
+            |                                          |   LLR −2.97 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          | GAMES 3424 (757 W 1730 D 937 L = 22.1% W 50.5% D 27.4% L)
+            |                                          | PENTA 17⁺² 343⁺¹ 820⁰ 507⁻¹ 25⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://ob.expositor.dev/test/17/
+            |                                          |  PERF −10.79 ± 4.64 ELO (−15.44 LO −6.16 HI ELO)
+            |                                          |  CONF 40.0+0.40 SEC (1 THREAD 128 MB CACHE)
+            |                                          |   LLR −3.04 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          | GAMES 5248 (1131 W 2823 D 1294 L = 21.6% W 53.8% D 24.7% L)
+            |                                          | PENTA 5⁺² 536⁺¹ 1384⁰ 689⁻¹ 10⁻²
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+     modern | removing new data; using 400cp filtered  | STC: 
+            | openings.                                | https://ob.expositor.dev/test/19/
+            |                                          |  PERF −10.34 ± 4.80 ELO (−15.14 LO −5.54 HI ELO)
+            |                                          |  CONF 8.0+0.08 SEC (1 THREAD 16 MB CACHE)
+            |                                          |   LLR −2.96 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          | GAMES 5714 (1330 W 2884 D 1500 L = 23.3% W 50.5% D 26.3% L)
+            |                                          | PENTA 25⁺² 623⁺¹ 1396⁰ 783⁻¹ 30⁻²
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ ins.m.able | removing new data.                       | STC:
+            |                                          | https://ob.expositor.dev/test/25/
+            |                                          |  PERF −16.71 ± 6.01 ELO (−22.72 LO −10.71 HI ELO)
+            |                                          |  CONF 8.0+0.08 SEC (1 THREAD 16 MB CACHE)
+            |                                          |   LLR −2.95 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          | GAMES 3662 (830 W 1826 D 1006 L = 22.7% W 49.9% D 27.5% L)
+            |                                          | PENTA 18⁺² 364⁺¹ 894⁰ 534⁻¹ 21⁻²
+            |                                          | vs. delenda 
+------------|------------------------------------------|-----------------------------------------------
+      vixen | very much more of the same, fiddling.    | fixed-nodes:
+            |                                          | https://ob.expositor.dev/test/172/
+            |                                          |   LLR −2.95 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −7.40 ± 4.62 ELO = −12.02 LO −2.78 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 9254 = 2647W 3763D 2844L = 28.6%W 40.7%D 30.7%L
+            |                                          | PENTA 195⁺² 1056⁺¹ 1964⁰ 1181⁻¹ 231⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://ob.expositor.dev/test/173/
+            |                                          |   LLR −3.02 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −15.25 ± 5.48 ELO = −20.73 LO −9.79 HI ELO
+            |                                          |  CONF 40+²/₅ SEC with 1 THREAD 128 MB CACHE
+            |                                          | GAMES 3806 = 819W 2001D 986L = 21.5%W 52.6%D 25.9%L
+            |                                          | PENTA 6⁺² 369⁺¹ 982⁰ 544⁻¹ 2⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | DFRC STC:
+            |                                          | https://ob.expositor.dev/test/174/
+            |                                          |   LLR −3.06 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −6.84 ± 4.05 ELO = −10.89 LO −2.79 HI ELO
+            |                                          |  CONF 8+¹/₁₂ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 9092 = 2137W 4639D 2316L = 23.5%W 51.0%D 25.5%L
+            |                                          | PENTA 77⁺² 1043⁺¹ 2151⁰ 1174⁻¹ 101⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | DFRC LTC:
+            |                                          | https://ob.expositor.dev/test/175/
+            |                                          |   LLR −3.04 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −8.47 ± 4.20 ELO = −12.67 LO −4.27 HI ELO
+            |                                          |  CONF 40+²/₅ SEC with 1 THREAD 128 MB CACHE
+            |                                          | GAMES 6730 = 1397W 3772D 1561L = 20.8%W 56.0%D 23.2%L
+            |                                          | PENTA 22⁺² 692⁺¹ 1773⁰ 856⁻¹ 22⁻²
+------------|------------------------------------------|-----------------------------------------------
+  noösphere | binpacks scaled s.t. eval is normalised  | fixed-nodes:
+            | kaggle:                                  | https://ob.expositor.dev/test/177/
+            | cosmobobak/viridithas-binpacks-scaled    |   LLR −3.49 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −8.63 ± 4.53 ELO = −13.17 LO −4.10 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 9458 = 2683W 3857D 2918L = 28.4%W 40.8%D 30.9%L
+            |                                          | PENTA 190⁺² 1058⁺¹ 2045⁰ 1199⁻¹ 237⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | fixed-nodes with eval scale renorm:
+            |                                          | https://ob.expositor.dev/test/179/
+            |                                          |   LLR −3.09 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −7.18 ± 4.45 ELO = −11.63 LO −2.73 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 9918 = 2820W 4073D 3025L = 28.4%W 41.1%D 30.5%L
+            |                                          | PENTA 214⁺² 1122⁺¹ 2102⁰ 1287⁻¹ 234⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://ob.expositor.dev/test/178/
+            |                                          |   LLR −2.96 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −13.00 ± 5.16 ELO = −18.16 LO −7.84 HI ELO
+            |                                          |  CONF 40+²/₅ SEC with SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 4360 = 956W 2285D 1119L = 21.9%W 52.4%D 25.7%L
+            |                                          | PENTA 10⁺² 430⁺¹ 1135⁰ 597⁻¹ 8⁻²
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+    sol-old | pair of networks trained from small      | new vs. old fixed-nodes:
+    sol-new | amounts of only-old or only-new data.    | https://ob.expositor.dev/test/180/
+            |                                          |  PERF +13.55 ± 2.27 ELO = +11.28 LO +15.82 HI ELO
+            | L0=256 for fast training, otherwise      |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            | identical to delenda's architecture.     | GAMES 50066 = 18283W 15451D 16332L = 36.5%W 30.9%D 32.6%L
+            |                                          | PENTA 2454⁺² 5683⁺¹ 10150⁰ 4852⁻¹ 1894⁻²
+            |                                          |
+            |                                          | new vs. old STC:
+            |                                          | https://ob.expositor.dev/test/182/
+            |                                          |  PERF +20.83 ± 3.07 ELO = +17.77 LO +23.90 HI ELO
+            |                                          |  CONF 40+²/₅ SEC with 1 THREAD 128 MB CACHE
+            |                                          | GAMES 15012 = 4372W 7167D 3473L = 29.1%W 47.7%D 23.1%L
+            |                                          | PENTA 137⁺² 2277⁺¹ 3521⁰ 1490⁻¹ 81⁻²
+            |                                          |
+            |                                          | new vs. old LTC:
+            |                                          | https://ob.expositor.dev/test/184/
+            |                                          |  PERF +19.59 ± 2.89 ELO = +16.70 LO +22.47 HI ELO
+            |                                          |  CONF 120+1¹/₅ SEC with 1 THREAD 256 MB CACHE
+            |                                          | GAMES 15022 = 4202W 7464D 3356L = 28.0%W 49.7%D 22.3%L
+            |                                          | PENTA 74⁺² 2216⁺¹ 3747⁰ 1430⁻¹ 44⁻²
+            |                                          |
+            |                                          | new vs. delenda STC:
+            |                                          | https://ob.expositor.dev/test/185/
+            |                                          |  PERF −142.61 ± 2.77 ELO = −145.38 LO −139.85 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 64 MB CACHE
+            |                                          | GAMES 20146 = 1869W 8574D 9703L = 9.3%W 42.6%D 48.2%L
+            |                                          | PENTA 14⁺² 329⁺¹ 2708⁰ 5853⁻¹ 1169⁻²
+------------|------------------------------------------|-----------------------------------------------
+    stalker | sol arch on all data after 2025-01, and  | fixed-nodes:
+            | using viripacks instead of bulletformat. | https://ob.expositor.dev/test/187/
+            |                                          |   LLR +3.63 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            | 4096mb shuffle buffer.                   |  PERF +46.70 ± 10.31 ELO = +36.47 LO +57.01 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 2440 = 1013W 740D 687L = 41.5%W 30.3%D 28.2%L
+            |                                          | PENTA 155⁺² 335⁺¹ 469⁰ 203⁻¹ 58⁻²
+            |                                          | vs. sol-new
+            |                                          |
+            |                                          | STC:
+            |                                          | https://ob.expositor.dev/test/188/
+            |                                          |  PERF +36.74 ± 2.73 ELO = +34.02 LO +39.48 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20026 = 6364W 9408D 4254L = 31.8%W 47.0%D 21.2%L
+            |                                          | PENTA 340⁺² 3327⁺¹ 4530⁰ 1735⁻¹ 81⁻²
+            |                                          | vs. sol-new
+------------|------------------------------------------|-----------------------------------------------
+       fizz | stalker with random skipping = 0.75      | STC:
+            |                                          | https://ob.expositor.dev/test/189/
+            |                                          |  PERF −14.31 ± 2.64 ELO = −16.95 LO −11.66 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20022 = 4797W 9604D 5621L = 24.0%W 48.0%D 28.1%L
+            |                                          | PENTA 114⁺² 2094⁺¹ 4854⁰ 2752⁻¹ 197⁻²
+            |                                          | vs. stalker
+------------|------------------------------------------|-----------------------------------------------
+    crackle | stalker with 512 mb shuffle buffer.      | STC:
+            |                                          | https://ob.expositor.dev/test/190/
+            |                                          |  PERF −9.47 ± 2.66 ELO = −12.13 LO −6.80 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20044 = 4884W 9730D 5430L = 24.4%W 48.5%D 27.1%L
+            |                                          | PENTA 115⁺² 2277⁺¹ 4764⁰ 2679⁻¹ 187⁻²
+            |                                          | vs. stalker
+------------|------------------------------------------|-----------------------------------------------
+        pop | stalker with 16384 mb shuffle buffer.    | STC:
+            |                                          | https://ob.expositor.dev/test/191/
+            |                                          |  PERF −7.44 ± 2.65 ELO = −10.09 LO −4.79 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20048 = 4984W 9651D 5413L = 24.9%W 48.1%D 27.0%L
+            |                                          | PENTA 126⁺² 2284⁺¹ 4822⁰ 2619⁻¹ 173⁻²
+            |                                          | vs. stalker
+------------|------------------------------------------|-----------------------------------------------
+     dagger | stalker with 1600 batch warmup and with  | STC:
+            | random skipping = 5.0 / 6.0              | https://ob.expositor.dev/test/192/
+            |                                          |  PERF +3.12 ± 2.63 ELO = +0.49 LO +5.76 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20016 = 5217W 9762D 5037L = 26.1%W 48.8%D 25.2%L
+            |                                          | PENTA 156⁺² 2482⁺¹ 4892⁰ 2342⁻¹ 136⁻²
+            |                                          | vs. stalker
+------------|------------------------------------------|-----------------------------------------------
+       vega | exactly dagger, but trained on fully     | STC:
+            | shuffled bulletformat records.           | https://ob.expositor.dev/test/195/
+            |                                          |  PERF +3.87 ± 2.63 ELO = +1.24 LO +6.49 HI ELO
+            | (so no random skipping)                  |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20030 = 5246W 9761D 5023L = 26.2%W 48.7%D 25.1%L
+            |                                          | PENTA 126⁺² 2567⁺¹ 4874⁰ 2300⁻¹ 148⁻²
+            | sad that there's at least some elo here. | vs. dagger
+------------|------------------------------------------|-----------------------------------------------
+   haruspex | dagger trained on all data.              | STC:
+            |                                          | https://ob.expositor.dev/test/197/
+            |                                          |  PERF +20.05 ± 2.68 ELO = +17.37 LO +22.73 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20000 = 5818W 9517D 4665L = 29.1%W 47.6%D 23.3%L
+            |                                          | PENTA 201⁺² 3003⁺¹ 4655⁰ 2030⁻¹ 111⁻²
+            |                                          | vs. dagger
+------------|------------------------------------------|-----------------------------------------------
+     vestal | haruspex finetuned on post-2025-01 data  | STC:
+            | for 200sb from lr=0.0005 down to         | https://ob.expositor.dev/test/199/
+            | lr=0.0005 * 0.3^5, with wdl 1.0.         |  PERF −57.19 ± 2.69 ELO = −59.88 LO −54.50 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20040 = 3450W 9871D 6719L = 17.2%W 49.3%D 33.5%L
+            |                                          | PENTA 47⁺² 1341⁺¹ 4312⁰ 3936⁻¹ 384⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+     aureus | vestal with wdl 0.4.                     | STC:
+            |                                          | https://ob.expositor.dev/test/200/
+            |                                          |  PERF −9.67 ± 2.60 ELO = −12.27 LO −7.06 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20024 = 4723W 10021D 5280L = 23.6%W 50.0%D 26.4%L
+            |                                          | PENTA 116⁺² 2175⁺¹ 4895⁰ 2688⁻¹ 138⁻²
+            |                                          | vs. haruspex
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://ob.expositor.dev/test/202/
+            |                                          |  PERF −6.36 ± 2.44 ELO = −8.80 LO −3.92 HI ELO
+            |                                          |  CONF 120+1¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20046 = 4672W 10335D 5039L = 23.3%W 51.6%D 25.1%L
+            |                                          | PENTA 21⁺² 2282⁺¹ 5088⁰ 2573⁻¹ 59⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+    radiant | aureus on bulletformat.                  | STC:
+            |                                          | https://ob.expositor.dev/test/201/
+            |                                          |  PERF −13.03 ± 2.62 ELO = −15.65 LO −10.41 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20270 = 4782W 9946D 5542L = 23.6%W 49.1%D 27.3%L
+            |                                          | PENTA 116⁺² 2155⁺¹ 4896⁰ 2789⁻¹ 179⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+  hailstorm | haruspex with an LR schedule yoinked     | STC:
+            | from plentychess.                        | https://ob.expositor.dev/test/206/
+            |                                          |  PERF −7.27 ± 2.55 ELO = −9.82 LO −4.72 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20028 = 4756W 10097D 5175L = 23.7%W 50.4%D 25.8%L
+            |                                          | PENTA 100⁺² 2200⁺¹ 5010⁰ 2589⁻¹ 115⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+   harmonic | haruspex with new clipping and higher    | STC:
+            | final lr (0.0001 * 0.3^3).               | https://ob.expositor.dev/test/210/
+            |                                          |  PERF −8.96 ± 2.61 ELO = −11.57 LO −6.35 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20172 = 4860W 9932D 5380L = 24.1%W 49.2%D 26.7%L
+            |                                          | PENTA 116⁺² 2252⁺¹ 4848⁰ 2736⁻¹ 134⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+      locke | harmonic with linear lr decay to zero.   | STC:
+            |                                          | https://ob.expositor.dev/test/212/
+            |                                          |  PERF −45.23 ± 2.79 ELO = −48.02 LO −42.45 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20100 = 4173W 9152D 6775L = 20.8%W 45.5%D 33.7%L
+            |                                          | PENTA 79⁺² 1576⁺¹ 4545⁰ 3364⁻¹ 486⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+   hadamard | haruspex with 3x the training time.      | STC:
+            |                                          | https://ob.expositor.dev/test/215/
+            |                                          |  PERF +1.90 ± 2.58 ELO = −0.68 LO +4.48 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20114 = 5062W 10100D 4952L = 25.2%W 50.2%D 24.6%L
+            |                                          | PENTA 139⁺² 2434⁺¹ 4989⁰ 2388⁻¹ 107⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+    elessar | haruspex with the l1 factoriser removed. | STC:
+            |                                          | https://ob.expositor.dev/test/221/
+            |                                          |  PERF −0.31 ± 2.62 ELO = −2.93 LO +2.31 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20022 = 5007W 9990D 5025L = 25.0%W 49.9%D 25.1%L
+            |                                          | PENTA 141⁺² 2394⁺¹ 4918⁰ 2422⁻¹ 136⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+    rubicon | elessar with an l1->l3 skip connexion.   | STC:
+            |                                          | https://ob.expositor.dev/test/222/
+            |                                          |  PERF −10.23 ± 2.61 ELO = −12.84 LO −7.62 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20046 = 4775W 9906D 5365L = 23.8%W 49.4%D 26.8%L
+            |                                          | PENTA 113⁺² 2188⁺¹ 4860⁰ 2720⁻¹ 142⁻²
+            |                                          | vs. haruspex
+------------|------------------------------------------|-----------------------------------------------
+     muscle | elessar with l3=64.                      | fixed-nodes:
+            |                                          | https://ob.expositor.dev/test/234/
+            |                                          |  PERF −2.83 ± 2.38 ELO = −5.21 LO −0.45 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 41140 = 13038W 14729D 13373L = 31.7%W 35.8%D 32.5%L
+            |                                          | PENTA 1329⁺² 4708⁺¹ 8339⁰ 4687⁻¹ 1507⁻²
+            |                                          | vs. elessar
+            |                                          |
+            |                                          | STC:
+            |                                          | https://ob.expositor.dev/test/235/
+            |                                          |  PERF −9.36 ± 1.86 ELO = −11.22 LO −7.50 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 40036 = 9509W 19940D 10587L = 23.8%W 49.8%D 26.4%L
+            |                                          | PENTA 260⁺² 4388⁺¹ 9672⁰ 5410⁻¹ 288⁻²
+            |                                          | vs. elessar
+------------|------------------------------------------|-----------------------------------------------
+      delta | accidentally-weird quartic relu net      | STC:
+            |                                          | https://ob.expositor.dev/test/260/
+            |                                          |  PERF −5.56 ± 2.59 ELO = −8.16 LO −2.97 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20114 = 4822W 10148D 5144L = 24.0%W 50.5%D 25.6%L
+            |                                          | PENTA 105⁺² 2311⁺¹ 4949⁰ 2541⁻¹ 151⁻²
+            |                                          | vs. elessar
+------------|------------------------------------------|-----------------------------------------------
+   brackish | elessar with sf-style dualact on l2+3    | STC:
+            |                                          | https://ob.expositor.dev/test/261/
+            |                                          |  PERF −5.52 ± 2.61 ELO = −8.13 LO −2.91 HI ELO
+            |                                          |  CONF 20+¹/₅ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 20156 = 4970W 9896D 5290L = 24.7%W 49.1%D 26.2%L
+            |                                          | PENTA 99⁺² 2364⁺¹ 4896⁰ 2556⁻¹ 163⁻²
+            |                                          | vs. elessar
+------------|------------------------------------------|-----------------------------------------------
+      hapax | elessar scaled up to l0=2048.            | fixed-nodes:
+            |                                          | https://ob.expositor.dev/test/300/
+            |                                          |   LLR −3.35 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −2.31 ± 2.69 ELO = −5.01 LO +0.38 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 26448 = 7770W 10732D 7946L = 29.4%W 40.6%D 30.0%L
+            |                                          | PENTA 579⁺² 3040⁺¹ 5836⁰ 3164⁻¹ 605⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | DFRC fixed-nodes:
+            |                                          | https://ob.expositor.dev/test/301/
+            |                                          |   LLR +3.33 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +21.84 ± 7.09 ELO = +14.76 LO +28.93 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 4556 = 1538W 1766D 1252L = 33.8%W 38.8%D 27.5%L
+            |                                          | PENTA 176⁺² 635⁺¹ 877⁰ 479⁻¹ 111⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | STC:
+            |                                          | https://ob.expositor.dev/test/311/
+            |                                          |   LLR −2.95 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −1.65 ± 2.24 ELO = −3.89 LO +0.60 HI ELO
+            |                                          |  CONF 8+¹/₁₂ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 25724 = 6343W 12916D 6465L = 24.7%W 50.2%D 25.1%L
+            |                                          | PENTA 122⁺² 3056⁺¹ 6369⁰ 3208⁻¹ 107⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://ob.expositor.dev/test/312/
+            |                                          |   LLR −3.03 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −3.08 ± 2.69 ELO = −5.77 LO −0.39 HI ELO
+            |                                          |  CONF 40+²/₅ SEC with 1 THREAD 128 MB CACHE
+            |                                          | GAMES 15914 = 3760W 8253D 3901L = 23.6%W 51.9%D 24.5%L
+            |                                          | PENTA 33⁺² 1785⁺¹ 4170⁰ 1946⁻¹ 23⁻²
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+ hapax-1k.5 | hapax with 200sb of 0.5 wdl finetuning   | fixed-nodes:
+            |                                          | https://ob.expositor.dev/test/315/
+            |                                          |   LLR −3.06 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −6.73 ± 4.23 ELO = −10.96 LO −2.51 HI ELO
+            |                                          |  CONF 25 KNODE with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 9908 = 2758W 4200D 2950L = 27.8%W 42.4%D 29.8%L
+            |                                          | PENTA 145⁺² 1161⁺¹ 2203⁰ 1247⁻¹ 198⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | STC:
+            |                                          | https://ob.expositor.dev/test/316/
+            |                                          |   LLR −3.16 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −5.46 ± 3.45 ELO = −8.91 LO −2.02 HI ELO
+            |                                          |  CONF 8+¹/₁₂ SEC with 1 THREAD 16 MB CACHE
+            |                                          | GAMES 10618 = 2560W 5331D 2727L = 24.1%W 50.2%D 25.7%L
+            |                                          | PENTA 44⁺² 1176⁺¹ 2710⁰ 1327⁻¹ 52⁻²
+            |                                          | vs. delenda
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://ob.expositor.dev/test/317/
+            |                                          |   LLR −2.97 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −6.97 ± 3.87 ELO = −10.84 LO −3.11 HI ELO
+            |                                          |  CONF 40+²/₅ SEC with 1 THREAD 128 MB CACHE
+            |                                          | GAMES 7724 = 1737W 4095D 1892L = 22.5%W 53.0%D 24.5%L
+            |                                          | PENTA 12⁺² 839⁺¹ 2004⁰ 996⁻¹ 11⁻²
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+    eleison | 0.4 -> 1.0 WDL & eval rescaling.         | VLTC:
+            |                                          | https://ob.expositor.dev/test/357/
+            |                                          |   LLR +2.96 (−2.94 LO +2.94 HI BOUNDS for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +9.27 ± 4.03 ELO = +5.25 LO +13.30 HI ELO
+            |                                          |  CONF 120+1.2 SEC 1 THREAD 256 MB CACHE
+            |                                          | GAMES 6820 = 1723W 3556D 1541L = 25.3%W 52.1%D 22.6%L
+            |                                          | PENTA 5⁺² 890⁺¹ 1800⁰ 712⁻¹ 3⁻²
+            |                                          | vs. delenda
+------------|------------------------------------------|-----------------------------------------------
+   anaphora | WDL outputs trained excl. on hard WDL.   | fixed-nodes:
+            |                                          | https://test.expositor.dev/test/380/
+            |                                          |   LLR −3.42 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −15.41 ± 5.99 ELO = −21.40 LO −9.43 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 5482 = 1523W 2193D 1766L = 27.8%W 40.0%D 32.2%L
+            |                                          | PENTA 95⁺² 610⁺¹ 1143⁰ 743⁻¹ 150⁻²
+            |                                          | vs. eleison
+            |                                          | 
+            |                                          | LTC:
+            |                                          | https://test.expositor.dev/test/378/
+            |                                          |   LLR −2.99 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −18.49 ± 6.03 ELO = −24.52 LO −12.48 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 3122 = 665W 1626D 831L = 21.3%W 52.1%D 26.6%L
+            |                                          | PENTA 3⁺² 289⁺¹ 814⁰ 449⁻¹ 6⁻²
+            |                                          | vs. eleison
+------------|------------------------------------------|-----------------------------------------------
+    mnestic | 16×(758→3072×2)→8×(16→128→3) WDL net.    | fixed-nodes:
+            |                                          | https://test.expositor.dev/test/392/
+            |                                          |   LLR −3.22 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −1.19 ± 2.22 ELO = −3.41 LO +1.03 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 38568 = 11282W 15872D 11414L = 29.3%W 41.2%D 29.6%L
+            |                                          | PENTA 804⁺² 4578⁺¹ 8425⁰ 4636⁻¹ 841⁻²
+            |                                          | vs. eleison
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://test.expositor.dev/test/398/
+            |                                          |  PERF −32.59 ± 3.37 ELO = −35.96 LO −29.24 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 10188 = 1962W 5311D 2915L = 19.3%W 52.1%D 28.6%L
+            |                                          | PENTA 10⁺² 794⁺¹ 2554⁰ 1705⁻¹ 31⁻²
+            |                                          | vs. eleison
+------------|------------------------------------------|-----------------------------------------------
+   sentinel | eleison scaled up to L0_out = 2560.      | fixed-nodes:
+            |                                          | https://test.expositor.dev/test/410/
+            |                                          |   LLR +3.09 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +19.04 ± 6.60 ELO = +12.46 LO +25.63 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 4494 = 1431W 1878D 1185L = 31.8%W 41.8%D 26.4%L
+            |                                          | PENTA 118⁺² 639⁺¹ 943⁰ 465⁻¹ 82⁻²
+            |                                          | vs. eleison
+            |                                          |
+            |                                          | VLTC:
+            |                                          | https://test.expositor.dev/test/413/
+            |                                          |   LLR −2.97 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −0.21 ± 1.33 ELO = −1.54 LO +1.13 HI ELO
+            |                                          |  CONF 80+0.8 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 61980 = 14505W 32933D 14542L = 23.4%W 53.1%D 23.5%L
+            |                                          | PENTA 38⁺² 7191⁺¹ 16513⁰ 7192⁻¹ 56⁻²
+            |                                          | vs. eleison
+------------|------------------------------------------|-----------------------------------------------
+   inimical | sentinel with more high-quality data.    | fixed-nodes:
+            |                                          | https://test.expositor.dev/test/426/
+            |                                          |   LLR +3.47 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +22.50 ± 6.76 ELO = +15.76 LO +29.26 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 4160 = 1334W 1761D 1065L = 32.1%W 42.3%D 25.6%L
+            |                                          | PENTA 124⁺² 562⁺¹ 913⁰ 421⁻¹ 60⁻²
+            |                                          | vs. eleison
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://test.expositor.dev/test/427/
+            |                                          |   LLR +2.95 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +2.90 ± 2.04 ELO = +0.86 LO +4.94 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 27094 = 6558W 14204D 6332L = 24.2%W 52.4%D 23.4%L
+            |                                          | PENTA 41⁺² 3249⁺¹ 7181⁰ 3047⁻¹ 29⁻²
+            |                                          | vs. eleison
+------------|------------------------------------------|-----------------------------------------------
+     kismet | use material count to scale between WDL  | fixed-nodes:
+            | and search.                              | https://test.expositor.dev/test/431/
+            |                                          |   LLR −3.11 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −4.28 ± 3.51 ELO = −7.80 LO −0.77 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 15170 = 4369W 6245D 4556L = 28.8%W 41.2%D 30.0%L
+            |                                          | PENTA 301⁺² 1737⁺¹ 3351⁰ 1866⁻¹ 330⁻²
+            |                                          | vs. inimical
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://test.expositor.dev/test/433/
+            |                                          |   LLR −2.98 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −20.89 ± 6.41 ELO = −27.30 LO −14.49 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 2798 = 588W 1454D 756L = 21.0%W 52.0%D 27.0%L
+            |                                          | PENTA 5⁺² 247⁺¹ 729⁰ 411⁻¹ 7⁻²
+            |                                          | vs. inimical
+------------|------------------------------------------|-----------------------------------------------
+equilibrium | replace search scores in dataset with    | fixed-nodes:
+            | output of inimical.                      | https://test.expositor.dev/test/441/
+            |                                          |   LLR −3.47 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −2.72 ± 2.78 ELO = −5.51 LO +0.06 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 24108 = 6847W 10225D 7036L = 28.4%W 42.4%D 29.2%L
+            |                                          | PENTA 456⁺² 2860⁺¹ 5301⁰ 2913⁻¹ 524⁻²
+            |                                          | vs. inimical
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://test.expositor.dev/test/444/
+            |                                          |   LLR −2.97 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −3.12 ± 2.73 ELO = −5.85 LO −0.40 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 15350 = 3635W 7942D 3773L = 23.7%W 51.7%D 24.6%L
+            |                                          | PENTA 21⁺² 1748⁺¹ 3990⁰ 1904⁻¹ 12⁻²
+            |                                          | vs. inimical
+------------|------------------------------------------|-----------------------------------------------
+  preceptor | 16×(768→4096×2)→8×(32→32→1) teacher.     | fixed-nodes:
+            |                                          | https://test.expositor.dev/test/447/
+            |                                          |   LLR +3.15 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +19.92 ± 6.55 ELO = +13.38 LO +26.47 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 4156 = 1342W 1710D 1104L = 32.3%W 41.1%D 26.6%L
+            |                                          | PENTA 97⁺² 579⁺¹ 921⁰ 427⁻¹ 54⁻²
+            |                                          | vs. inimical
+------------|------------------------------------------|-----------------------------------------------
+  voltarine | replace search scores in dataset with    | fixed-nodes:
+            | output of preceptor.                     | https://test.expositor.dev/test/452/
+            |                                          |   LLR −2.98 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −2.44 ± 2.88 ELO = −5.32 LO +0.44 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 22360 = 6420W 9363D 6577L = 28.7%W 41.9%D 29.4%L
+            |                                          | PENTA 425⁺² 2666⁺¹ 4858⁰ 2789⁻¹ 442⁻²
+            |                                          | vs. inimical
+            |                                          |
+            |                                          | STC:
+            |                                          | https://test.expositor.dev/test/453/
+            |                                          |   LLR −3.02 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −3.19 ± 2.85 ELO = −6.05 LO −0.34 HI ELO
+            |                                          |  CONF 8+0.08 SEC 1 THREAD 16 MB CACHE
+            |                                          | GAMES 16218 = 3936W 8197D 4085L = 24.3%W 50.5%D 25.2%L
+            |                                          | PENTA 81⁺² 1902⁺¹ 4003⁰ 2033⁻¹ 90⁻²
+            |                                          | vs. inimical
+------------|------------------------------------------|-----------------------------------------------
+  synchrony | standard recipe, remove output buckets   | fixed-nodes:
+            |                                          | https://test.expositor.dev/test/459/
+            |                                          |   LLR +3.22 (−2.94 LO +2.94 HI BND for −3.00 LO +0.00 HI ELO)
+            |                                          |  PERF +1.06 ± 2.14 ELO = −1.08 LO +3.20 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 41008 = 11926W 17281D 11801L = 29.1%W 42.1%D 28.8%L
+            |                                          | PENTA 847⁺² 5008⁺¹ 8900⁰ 4921⁻¹ 828⁻²
+            |                                          | vs. inimical
+            |                                          |
+            |                                          | STC:
+            |                                          | https://test.expositor.dev/test/460/
+            |                                          |   LLR −1.08 (−2.94 LO +2.94 HI BND for −3.00 LO +0.00 HI ELO)
+            |                                          |  PERF −1.10 ± 1.33 ELO = −2.43 LO +0.22 HI ELO
+            |                                          |  CONF 8+0.08 SEC 1 THREAD 16 MB CACHE
+            |                                          | GAMES 73948 = 18127W 37459D 18362L = 24.5%W 50.7%D 24.8%L
+            |                                          | PENTA 360⁺² 8821⁺¹ 18358⁰ 9094⁻¹ 341⁻²
+            |                                          | vs. inimical
+------------|------------------------------------------|-----------------------------------------------
+    noumena | 400sb finetune of inimical with WDL=1.0  | STC:
+            |                                          | https://test.expositor.dev/test/462/
+            |                                          |   LLR +2.95 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +2.32 ± 1.76 ELO = +0.55 LO +4.08 HI ELO
+            |                                          |  CONF 8+0.08 SEC 1 THREAD 16 MB CACHE
+            |                                          | GAMES 40212 = 9952W 20576D 9684L = 24.7%W 51.2%D 24.1%L
+            |                                          | PENTA 150⁺² 4953⁺¹ 10177⁰ 4667⁻¹ 159⁻²
+            |                                          | vs. inimical
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://test.expositor.dev/test/463/
+            |                                          |   LLR +3.05 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +2.38 ± 1.74 ELO = +0.64 LO +4.13 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 36436 = 8629W 19428D 8379L = 23.7%W 53.3%D 23.0%L
+            |                                          | PENTA 33⁺² 4338⁺¹ 9740⁰ 4060⁻¹ 47⁻²
+            |                                          | vs. inimical
+------------|------------------------------------------|-----------------------------------------------
+  hyperphor | WDL-head network trained via MSE on      | fixed-nodes:
+            | expected-value computation from win and  | https://test.expositor.dev/test/466/
+            | draw probabilities, yoshie's idea        |  PERF −8.86 ± 4.16 ELO = −13.02 LO −4.69 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 11106 = 3124W 4575D 3407L = 28.1%W 41.2%D 30.7%L
+            |                                          | PENTA 189⁺² 1326⁺¹ 2325⁰ 1439⁻¹ 274⁻²
+            |                                          | vs. noumena
+------------|------------------------------------------|-----------------------------------------------
+    goibniu | WDL-head network trained on composite of | fixed-nodes:
+            | MSE and CE on intermediate nodes, 2stage | https://test.expositor.dev/test/469/
+            | fine-tuned on WDL=1.0                    |   LLR +2.95 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +4.13 ± 2.82 ELO = +1.31 LO +6.94 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 24004 = 7111W 10067D 6826L = 29.6%W 41.9%D 28.4%L
+            |                                          | PENTA 538⁺² 2981⁺¹ 5186⁰ 2822⁻¹ 475⁻²
+            |                                          | vs. noumena
+            |                                          |
+            |                                          | STC:
+            |                                          | https://test.expositor.dev/test/471/
+            |                                          |   LLR −3.01 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −6.00 ± 3.69 ELO = −9.69 LO −2.31 HI ELO
+            |                                          |  CONF 8+0.08 SEC 1 THREAD 16 MB CACHE
+            |                                          | GAMES 9384 = 2210W 4802D 2372L = 23.6%W 51.2%D 25.3%L
+            |                                          | PENTA 42⁺² 1031⁺¹ 2401⁰ 1159⁻¹ 59⁻²
+            |                                          | vs. noumena
+            |                                          |
+            |                                          | LTC:
+            |                                          | https://test.expositor.dev/test/472/
+            |                                          |   LLR −2.99 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −4.78 ± 3.28 ELO = −8.07 LO −1.50 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 10970 = 2550W 5719D 2701L = 23.2%W 52.1%D 24.6%L
+            |                                          | PENTA 9⁺² 1271⁺¹ 2791⁰ 1388⁻¹ 26⁻²
+            |                                          | vs. noumena
+            |                                          |
+            |                                          | limited VLTC:
+            |                                          | https://test.expositor.dev/test/473/
+            |                                          |  PERF +2.54 ± 7.33 ELO = −4.79 LO +9.87 HI ELO
+            |                                          |  CONF 120+1.0 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 2052 = 483W 1101D 468L = 23.5%W 53.7%D 22.8%L
+            |                                          | PENTA 2⁺² 245⁺¹ 545⁰ 234⁻¹ 0⁻²
+            |                                          | vs. noumena
+------------|------------------------------------------|-----------------------------------------------
+   flourish | inimical with HardSwish1 activation on   | STC:
+            | l1 and l2 instead of SCReLU.             | https://test.expositor.dev/test/474/
+            |                                          |   LLR −3.13 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −9.03 ± 4.86 ELO = −13.89 LO −4.17 HI ELO
+            |                                          |  CONF 25 KNODE 1 THREAD 16 MB CACHE
+            |                                          | GAMES 8122 = 2271W 3369D 2482L = 28.0%W 41.5%D 30.6%L
+            |                                          | PENTA 153⁺² 912⁺¹ 1772⁰ 1019⁻¹ 205⁻²
+            |                                          | vs. inimical
+------------|------------------------------------------|-----------------------------------------------
+    flounce | flourish with HardSwish6. Block-sparsity | LTC:
+            | has been ruined, drop of 70% → 50%.      | https://test.expositor.dev/test/479/
+            |                                          |   LLR −3.03 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF −0.95 ± 1.79 ELO = −2.75 LO +0.84 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 35796 = 8633W 18432D 8731L = 24.1%W 51.5%D 24.4%L
+            |                                          | PENTA 50⁺² 4195⁺¹ 9315⁰ 4283⁻¹ 55⁻²
+            |                                          | vs. noumena
+------------|------------------------------------------|-----------------------------------------------
+   sibilant | flounce with L0_out activations given an | LTC:
+            | L1-norm penalty to encourage sparsity.   | https://test.expositor.dev/test/490/
+            |                                          |   LLR +3.04 (−2.94 LO +2.94 HI BND for +0.00 LO +3.00 HI ELO)
+            |                                          |  PERF +5.90 ± 3.11 ELO = +2.80 LO +9.01 HI ELO
+            |                                          |  CONF 40+0.4 SEC 1 THREAD 128 MB CACHE
+            |                                          | GAMES 11660 = 2918W 6022D 2720L = 25.0%W 51.6%D 23.3%L
+            |                                          | PENTA 22⁺² 1437⁺¹ 3100⁰ 1259⁻¹ 12⁻²
+            |                                          | vs. noumena
+------------|------------------------------------------|-----------------------------------------------

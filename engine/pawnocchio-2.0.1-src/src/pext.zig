@@ -1,0 +1,112 @@
+// pawnocchio, UCI chess engine
+// Copyright (C) 2025 Jonathan Hallström
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+const std = @import("std");
+const attack_array_generation = @import("attack_array_generation.zig");
+const root = @import("root.zig");
+const Square = root.Square;
+const Bitboard = root.Bitboard;
+
+pub const AttackEntry = struct {
+    mask: u64,
+    mask_full: u64,
+    offs: u32,
+
+    pub fn isMaskInverted() bool {
+        return false;
+    }
+
+    pub inline fn getRookIndex(self: AttackEntry, occ: u64) u64 {
+        return self.offs + Bitboard.pext(occ, self.mask);
+    }
+
+    pub inline fn getBishopIndex(self: AttackEntry, occ: u64) u64 {
+        return self.offs + Bitboard.pext(occ, self.mask);
+    }
+};
+
+const BISHOP_ATTACK_ENTRIES = blk: {
+    @setEvalBranchQuota(1 << 30);
+    var res: [64]AttackEntry = undefined;
+    var offs: u32 = 0;
+    for (0..64) |sq| {
+        const relevant = Bitboard.bishopRelevantSquares(1 << sq);
+        const full = Bitboard.bishopAttackSquares(1 << sq);
+        res[sq] = .{
+            .mask = relevant,
+            .mask_full = full,
+            .offs = offs,
+        };
+        offs += @as(u32, 1) << @intCast(@popCount(relevant));
+    }
+
+    if (offs != BISHOP_ARRAY_SIZE) @compileError("bug");
+
+    break :blk res;
+};
+const ROOK_ATTACK_ENTRIES = blk: {
+    @setEvalBranchQuota(1 << 30);
+    var res: [64]AttackEntry = undefined;
+    var offs: u32 = 0;
+    for (0..64) |sq| {
+        const relevant = Bitboard.rookRelevantSquares(1 << sq);
+        const full = Bitboard.rookAttackSquares(1 << sq);
+        res[sq] = .{
+            .mask = relevant,
+            .mask_full = full,
+            .offs = offs,
+        };
+        offs += @as(u32, 1) << @intCast(@popCount(relevant));
+    }
+
+    if (offs != ROOK_ARRAY_SIZE) @compileError("bug");
+
+    break :blk res;
+};
+const ROOK_ARRAY_SIZE = 102400;
+const BISHOP_ARRAY_SIZE = 5248;
+
+const COMPRESSED_ROOK_ATTACKS = true;
+
+var bishop_attacks: [BISHOP_ARRAY_SIZE]u64 = undefined;
+var rook_attacks: [ROOK_ARRAY_SIZE]if (COMPRESSED_ROOK_ATTACKS) u16 else u64 = undefined;
+
+pub fn init() void {
+    attack_array_generation.generateBishopAttackArrayInPlace(BISHOP_ATTACK_ENTRIES, &bishop_attacks);
+    if (COMPRESSED_ROOK_ATTACKS) {
+        attack_array_generation.generateRookAttackArrayInPlaceCompressed(ROOK_ATTACK_ENTRIES, &rook_attacks);
+    } else {
+        attack_array_generation.generateRookAttackArrayInPlace(ROOK_ATTACK_ENTRIES, &rook_attacks);
+    }
+}
+
+pub fn getBishopAttacks(square: Square, blockers: u64) u64 {
+    if (@inComptime()) {
+        return attack_array_generation.computeBishopAttacks(square, blockers);
+    }
+    return bishop_attacks[@intCast(BISHOP_ATTACK_ENTRIES[square.toInt()].getBishopIndex(blockers))];
+}
+pub fn getRookAttacks(square: Square, blockers: u64) u64 {
+    if (@inComptime()) {
+        return attack_array_generation.computeRookAttacks(square, blockers);
+    }
+    if (COMPRESSED_ROOK_ATTACKS) {
+        const magic = ROOK_ATTACK_ENTRIES[square.toInt()];
+        return Bitboard.pdep(rook_attacks[@intCast(magic.getRookIndex(blockers))], magic.mask_full);
+    } else {
+        return rook_attacks[@intCast(ROOK_ATTACK_ENTRIES[square.toInt()].getRookIndex(blockers))];
+    }
+}

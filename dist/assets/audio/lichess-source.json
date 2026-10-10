@@ -1,0 +1,64 @@
+{
+  "source": "Lichess Mobile",
+  "repository": "https://github.com/lichess-org/mobile",
+  "commit": "738fffd17510fbbf677ab51a2b2af478592af8df",
+  "theme": "standard",
+  "license": "GPL-3.0-or-later",
+  "copyright": "Copyright (c) 2022-2023 Lichess Mobile contributors",
+  "modified": false,
+  "volume": 0.8,
+  "downloadedAtUTC": "2026-10-07T01:13:13.408698+00:00",
+  "playbackSource": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/lib/src/model/common/service/sound_service.dart",
+  "defaultsSource": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/lib/src/model/settings/general_preferences.dart",
+  "files": [
+    {
+      "file": "move-lichess.aifc",
+      "upstreamPath": "assets/sounds/standard/move.aifc",
+      "url": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/assets/sounds/standard/move.aifc",
+      "sha256": "206f97554ac06bff23af68fa47b9977ff66c2ca3640a118ee57f2539e4cefcab",
+      "bytes": 5456
+    },
+    {
+      "file": "move-lichess.mp3",
+      "upstreamPath": "assets/sounds/standard/move.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/assets/sounds/standard/move.mp3",
+      "sha256": "69902962f0c6050fb9bf3c44ce8fbe344255289df4664a4ce1698338b8da1c1b",
+      "bytes": 2214
+    },
+    {
+      "file": "LICHESS-COPYING.md",
+      "upstreamPath": "COPYING.md",
+      "url": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/COPYING.md",
+      "sha256": "f0ac2b9003d403c7a81a359ed0ad712397c48575806e44471cf401fc2f792b2a",
+      "bytes": 1620
+    },
+    {
+      "file": "LICHESS-LICENSE.txt",
+      "upstreamPath": "LICENSE",
+      "url": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149
+    },
+    {
+      "file": "capture-lichess.aifc",
+      "upstreamPath": "assets/sounds/standard/capture.aifc",
+      "url": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/assets/sounds/standard/capture.aifc",
+      "sha256": "5f69db3f3568a64c4218939188c43b38a2ed4ad0c9f28518bb96ad272565f93f",
+      "bytes": 6442
+    },
+    {
+      "file": "capture-lichess.mp3",
+      "upstreamPath": "assets/sounds/standard/capture.mp3",
+      "url": "https://raw.githubusercontent.com/lichess-org/mobile/738fffd17510fbbf677ab51a2b2af478592af8df/assets/sounds/standard/capture.mp3",
+      "sha256": "097b6078cab66f233e50fd876179e4d4ae8f85a86f1c9603c7ecc617ba1172e1",
+      "bytes": 3049
+    }
+  ],
+  "sounds": [
+    "move",
+    "capture"
+  ],
+  "analysisSource": "https://github.com/lichess-org/mobile/blob/738fffd17510fbbf677ab51a2b2af478592af8df/lib/src/model/analysis/analysis_controller.dart#L699",
+  "feedbackSource": "https://github.com/lichess-org/mobile/blob/738fffd17510fbbf677ab51a2b2af478592af8df/lib/src/model/common/service/move_feedback.dart",
+  "captureDownloadedAtUTC": "2026-10-07T08:17:57.562641+00:00"
+}

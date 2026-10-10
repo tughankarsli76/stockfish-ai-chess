@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>iPhone size preview — Stockfish AI Chess</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#dfe1e6;color:#202126;font:14px Arial,sans-serif}main{max-width:520px;margin:20px auto;padding:0 16px}h1{font-size:18px;margin:0 0 8px}p{line-height:1.5;margin:8px 0}.controls{background:#fff;border-radius:12px;padding:16px;margin-bottom:18px}label{display:flex;align-items:center;gap:12px;margin-top:12px}input{flex:1;min-width:0;accent-color:#1679e9}output{min-width:42px;font-variant-numeric:tabular-nums}button{border:1px solid #bbb;border-radius:6px;background:white;padding:8px 12px;color:#222;cursor:pointer}#screen{position:relative;margin:0 auto;background:#efeff5;box-shadow:0 6px 24px #0002;overflow:hidden}iframe{position:absolute;top:0;left:0;width:440px;height:956px;border:0;transform-origin:top left}small{display:block;color:#62636b;line-height:1.5;margin-top:10px}
+</style>
+</head>
+<body><main><section class="controls"><h1>iPhone 17 Pro Max</h1><p>Match this preview’s width to the lit display on your iPhone.</p><label>Preview size <input id="scale" type="range" min="20" max="150" step="1" aria-label="Preview scale"><output id="percent"></output></label><small>The app keeps its 440 × 956 layout. This adjusts only how large it appears on your monitor. Safari bars and the Dynamic Island are not simulated.</small></section><div id="screen"><iframe src="/" title="Stockfish AI Chess at iPhone size"></iframe></div></main>
+<script>
+const input=document.querySelector('#scale'),screen=document.querySelector('#screen'),frame=document.querySelector('iframe'),percent=document.querySelector('#percent');
+const requested=Number(new URLSearchParams(location.search).get('scale'));
+input.value=requested>0?requested:(Number(localStorage.getItem('iphone-preview-scale'))||65);
+function resize(){const scale=Number(input.value)/100;screen.style.width=(440*scale)+'px';screen.style.height=(956*scale)+'px';frame.style.transform='scale('+scale+')';percent.value=input.value+'%';localStorage.setItem('iphone-preview-scale',input.value);}
+input.addEventListener('input',resize);resize();
+</script></body></html>

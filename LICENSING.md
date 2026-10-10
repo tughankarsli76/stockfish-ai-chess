@@ -14,6 +14,10 @@ This grant covers original application contributions to the interface, native in
 
 - Stockfish, PlentyChess, Pawnocchio and Obsidian code: see the GPL licenses and notices in their respective engine directories.
 - Reckless: AGPL version 3, engine/reckless-0.9.0/LICENSE. GPLv3 section 13 and AGPLv3 section 13 permit the combination while preserving the applicable terms. Do not relabel Reckless as GPL-only.
+- Cinder 0.6.1, Halogen 16.0.0 and Clover 9.1: GPL version 3; preserve each engine's license and notices. Cinder and Clover include their network inputs in their licensed source trees. Halogen's network repository separately supplies a GPL license, copied with the pinned input.
+- Viridithas 20.0.0: MIT at the pinned release, with a CC0 network. This does not substitute the license of later development versions. Retain its MIT and network notices.
+- Starzix 6.1: WTFPL version 2, including the network in its source tree. Its ordered-map dependency is MIT and incbin is Unlicense. Retain those notices and the LC0 training-data attribution in the engine README.
+- The combined Rust host retains AGPLv3 terms for Reckless and GPLv3 terms for Cinder. Vendored crate sources, licenses and a version inventory are in engine/ios-rust-engines; they must accompany corresponding-source distributions.
 - Pawnocchio network: CC BY-SA 4.0; see engine/pawnocchio-2.0.1-src/pawnocchio-nets/LICENSE and NOTICE.txt. Other Pawnocchio assets have separate terms in assets/LICENSE.
 - Other engine networks and dependencies: preserve the accompanying licenses, source provenance and IOS-NOTES.md files. Network permissions remain part of the distribution audit.
 - chess.js: BSD-2-Clause; dist/vendor/chess-LICENSE.txt.

@@ -1,0 +1,47 @@
+ideas for viri
+MAJOR:
+- docs
+-- Crazyhouse
+
+MINOR:
+- validate this FEN properly: "r3qrk1/pppb1pbp/3p1np1/3P2B1/2PpP3/2N2PP1/PP1Q3P/R3KB1R w kq - 0 4"
+- make optimism work
+- extra features in the unused pawn backranks for NNUE
+  - opposite coloured bishops
+  - locked pawns?
+  - bishop pair
+  - passed pawns by file?
+- better errors for Fathom.
+- probcut tinkering (SF in-check trick)
+- futility tinkering
+- use history for more things
+- iir tinkering (ttmove, non-PV nodes, other fiddling)
+- eval corrhist
+  - https://github.com/connormcmonigle/seer-nnue/pull/185/files
+  - google "low-rank"
+- madvise
+  - https://github.com/expo-dev/expositor/commit/fd7a8a8db89d73974145dc068cf37179b69a0ad4
+  - https://github.com/expo-dev/expositor/blob/main/src/cache.rs
+
+ANNUEP:
+- quantisation
+- training run length
+- optimiser
+
+- raise l1 output size to 32
+- QAT
+- bucket mixing (multiple at once, etc)
+- faux-attention
+- lr sweeping
+- data filtering
+- distillation
+- threat inputs
+- KLdiv loss
+- MPE loss
+- learned routing
+- weight sharing
+- half-n-half l0 inputs
+
+How do to adversarial datagen?
+Run 5k nodes for your side AND their side, recording your evaluations
+but then make the move that the opponent produced.

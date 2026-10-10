@@ -1,0 +1,19 @@
+{
+  "displayName": "Maple",
+  "upstreamName": "Maple",
+  "authors": [
+    "the lila authors",
+    "pirouetti"
+  ],
+  "license": "AGPL-3.0-or-later",
+  "licenseFile": "BOARD-LICENSE.txt",
+  "source": "https://github.com/lichess-org/lila/blob/463329af9a4b75cb1daeb046f4dba0d0ab375aea/public/images/board/maple.jpg",
+  "sourceCommit": "463329af9a4b75cb1daeb046f4dba0d0ab375aea",
+  "mobileAsset": "https://github.com/lichess-org/flutter-chessground/blob/main/assets/boards/maple.jpg",
+  "importedAtUTC": "2026-10-08T23:21:49.120308+00:00",
+  "modified": false,
+  "matchesMobileAsset": true,
+  "width": 800,
+  "height": 800,
+  "sha256": "bb87290d35132f95df5554e8b02ecdac91805e8298be9e77024a11c3479df85b"
+}
