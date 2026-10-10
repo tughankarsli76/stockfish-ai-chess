@@ -99,6 +99,17 @@
     XCTAssertEqualObjects(after[@"engineMatch"],NSNull.null);XCTAssertEqualObjects(after[@"defaults"][@"white"],@"stockfish19");XCTAssertEqualObjects(after[@"defaults"][@"black"],@"reckless090");
     NSLog(@"REMOVED_ENGINE_MIGRATION: saved position, PGN, username and resource settings preserved");
 }
+- (void)testOptionsDetailNavigationAndModalHandoff {
+    XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for menu tests");
+    UIViewController *host=UIApplication.sharedApplication.windows.firstObject.rootViewController;
+    WKWebView *web=[host valueForKey:@"webView"];
+    XCTestExpectation *loaded=[self expectationWithDescription:@"Options board"];
+    [self waitForBoard:web expectation:loaded attempts:200];[self waitForExpectations:@[loaded] timeout:25];
+    NSDictionary *result=[self javascript:@"const tests=await import('./ios-integration-tests.js');return await tests.optionsDetailNavigation();" web:web];
+    XCTAssertEqual([result[@"pages"] count],8u);XCTAssertEqualObjects(result[@"modalGaps"],@0);
+    NSLog(@"OPTIONS_DETAIL_NAVIGATION: %@",result);
+
+}
 - (void)testTenNativeEnginesOfflineAnalysisMatchesAndStop {
     XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for engine tests");
     UIViewController *host=UIApplication.sharedApplication.windows.firstObject.rootViewController;

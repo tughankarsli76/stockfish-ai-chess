@@ -568,3 +568,45 @@ export async function obsidian(){
  results.push('Rapid cancellation and switching back to Stockfish 19 work');
  api.setTab('game');api.reset();return results;
 }
+
+// Exercise the shipped menus in WKWebView, including the modal handoff that
+// previously exposed the board/tapped row for a frame when returning to Options.
+export async function optionsDetailNavigation(){
+ const api=nativeIntegration;
+ api.stopEngineMatch();api.patch({opponent:'local',showAnalysis:false,language:'en'});
+ const cases=[['#boardButton','Board'],['#piecesButton','Pieces'],['#languageButton','Language'],['#nameButton','Your Name'],['#helpButton','Help & FAQ'],['[data-release-info="support"]','Support'],['[data-release-info="privacy"]','Privacy Policy'],['[data-release-info="credits"]','About & Credits']];
+ const frame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
+ const visible=()=>[...document.querySelectorAll('dialog[open]')];
+ const require=(ok,message)=>{if(!ok)throw Error(message);};
+ let watch=false,gaps=0;
+ const close=HTMLDialogElement.prototype.close;
+ HTMLDialogElement.prototype.close=function(...args){const result=close.apply(this,args);if(watch&&!visible().length)gaps++;return result;};
+ const rows=[];
+ try{
+  document.getElementById('toolbarOptions').click();
+  for(const [selector,title] of cases){
+   watch=true;document.querySelector(selector).click();await frame();
+   const dialog=visible()[0],header=dialog.querySelector('.dialog-heading');
+   require(visible().length===1,`${title}: only one modal must remain open`);
+   const back=header.querySelector('.options-back'),done=header.querySelector('button:last-child'),heading=header.querySelector('h2');
+   require(back?.textContent.trim()==='Options'&&done.textContent.trim()==='Done',`${title}: navigation labels`);
+   const left=back.getBoundingClientRect(),middle=heading.getBoundingClientRect(),right=done.getBoundingClientRect();
+   require(left.right<=middle.left&&middle.right<=right.left,`${title}: left/center/right must not overlap`);
+   require(left.height>=44&&right.height>=44,`${title}: touch targets`);
+   require(getComputedStyle(back).webkitTapHighlightColor==='rgba(0, 0, 0, 0)',`${title}: no gray touch overlay`);
+   dialog.scrollTop=dialog.scrollHeight;await frame();
+   const scrolled=header.getBoundingClientRect(),bounds=dialog.getBoundingClientRect();
+   require(scrolled.top>=bounds.top&&scrolled.bottom<=bounds.bottom,`${title}: navigation stays visible while scrolling`);
+   back.click();await frame();
+   require(visible().length===1&&visible()[0].id==='settingsDialog',`${title}: Options returns to menu`);
+   require(visible()[0].contains(document.activeElement),`${title}: focus stays in Options`);
+   document.querySelector(selector).click();await frame();watch=false;
+   visible()[0].querySelector('.dialog-heading button:last-child').click();await frame();
+   require(!visible().length,`${title}: Done dismisses the menu`);
+   rows.push(title);document.getElementById('toolbarOptions').click();
+  }
+  require(gaps===0,`Modal handoff exposed the board ${gaps} times`);
+  watch=false;document.querySelector('#settingsDialog [data-close]').click();
+  return {pages:rows,modalGaps:gaps};
+ }finally{HTMLDialogElement.prototype.close=close;}
+}

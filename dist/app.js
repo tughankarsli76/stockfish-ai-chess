@@ -258,7 +258,15 @@ function takeBack(){
   selected=null;promotion=null;changed();
 }
 function setTab(next,restart=false){mateCelebration.stop();const keepMatch=!restart&&matchActive()&&!engineMatch.paused&&session.live&&matchView()&&matchView(next);if(matchActive()&&!matchView(next))pauseEngineMatch();gameClock.tick();analysisPaused=false;tab=next;for(const [key,id] of [['game','playTab'],['analysis','analysisTab'],['graph','graphTab']]){$(id).classList.toggle('active',key===tab);$(id).setAttribute('aria-selected',String(key===tab));$(key==='game'?'gamePanel':key+'Panel').hidden=key!==tab;}selected=null;render();persist();if(!keepMatch)analyze();}
-function showDialog(id){if(matchActive())pauseEngineMatch();for(const d of document.querySelectorAll('dialog[open]'))d.close();$(id).showModal();suspendPermanentBrain();}
+function showDialog(id){
+  if(matchActive())pauseEngineMatch();
+  const next=$(id),previous=[...document.querySelectorAll('dialog[open]')];
+  // Keep a modal in the top layer throughout navigation so its backdrop and
+  // focus never briefly return to the board or the tapped Options row.
+  if(!next.open)next.showModal();
+  for(const dialog of previous)if(dialog!==next)dialog.close();
+  suspendPermanentBrain();
+}
 function startNewGame(mode){
   if(!['w','b','both'].includes(mode))return;
   engineMatch=null;settings.opponent=mode==='both'?'local':'computer';

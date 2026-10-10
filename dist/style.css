@@ -326,13 +326,11 @@ body[data-theme=espresso] .board-frame,body[data-theme=espresso] .setup-board-fr
 .gray-swatch,.green-swatch{background-size:25% 25%}
 .board-swatches button{border:2px solid transparent;border-radius:8px;padding:10px 6px}
 .board-swatches button[aria-pressed=true]{border-color:#087dff;background:#087dff0c}
-#boardDialog>.dialog-heading{position:sticky;top:-22px;z-index:2;background:#efeff5;padding-top:12px}
 
 .piece-choices .piece-preview{display:flex;justify-content:center;align-items:center;gap:4px}
 .piece-choices .piece-preview img{width:min(44%,75px);height:auto;aspect-ratio:1;margin:0}
 .piece-choices button{padding:14px 8px;min-width:0;border:2px solid #ccc}
 .piece-choices strong{font-size:14px}
-#piecesDialog>.dialog-heading{position:sticky;top:-22px;z-index:2;background:#efeff5;padding-top:12px}
 
 /* Ten additional palettes for play, position setup, and preview tiles. */
 body[data-theme=forest]{--light:#e6e5cf;--dark:#6b8b6b}
@@ -684,3 +682,17 @@ body .board .square.checked,body[data-theme] .board .square.checked{
 #tournamentWinner{font-size:21px;line-height:1.35;margin:10px 0 16px;overflow-wrap:anywhere}
 #tournamentFinalStandings{font-size:15px}#tournamentFinalStandings tbody tr:first-child{font-weight:700}
 #tournamentResultsDialog .tournament-points-note{font-size:13px;color:#686873;margin-top:20px}
+
+/* Options detail pages share a persistent, full-width navigation header. */
+.options-detail{--detail-padding:22px;padding-top:0}
+.release-info-screen.options-detail{--detail-padding:20px;padding-top:0}
+.options-detail>.dialog-heading{display:grid;grid-template-columns:90px minmax(0,1fr) 90px;align-items:center;position:sticky;top:0;z-index:4;min-height:58px;margin:0 calc(-1 * var(--detail-padding)) 12px;padding:6px 10px;background:#efeff5;box-sizing:border-box}
+.options-detail>.dialog-heading h2{margin:0;min-width:0;text-align:center;font-size:17px;line-height:1.25}
+.options-detail>.dialog-heading button{min-height:44px;padding:8px 4px;white-space:nowrap}
+.options-detail>.dialog-heading .options-back{display:flex;align-items:center;justify-self:start;gap:7px}
+.options-detail>.dialog-heading button:last-child{justify-self:end}
+.options-detail>.dialog-heading .back-chevron{width:10px;height:10px;border-width:2px;flex-shrink:0}
+/* WebKit must not paint a gray tap/hover rectangle while switching dialogs. */
+dialog button{-webkit-tap-highlight-color:transparent}
+dialog>.dialog-heading button:is(:hover,:active){background:transparent}
+@media(hover:none){dialog button:hover{background:transparent}}

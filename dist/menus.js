@@ -81,6 +81,7 @@ export function installMenus(api,html){
   const open=id=>api.open(id),close=()=>document.querySelectorAll('dialog[open]').forEach(d=>d.close());
   const click=(id,fn)=>{$(id).onclick=fn;};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+  document.querySelectorAll('[data-options-back]').forEach(b=>b.onclick=()=>open('settingsDialog'));
   installTournament(api);
   const tablebases=installTablebases(api);
   click('tablebasesButton',()=>tablebases.open());
@@ -186,7 +187,7 @@ export function installMenus(api,html){
     renderHash();
   }
   fetch('/api/engine/info').then(r=>{if(!r.ok)throw Error('Engine limits unavailable');return r.json();}).then(info=>{limits={maxThreads:Math.max(1,Math.floor(Number(info.maxThreads)||1)),maxHashMB:Math.max(16,Math.floor(Number(info.maxHashMB)||64)),memoryMB:Number(info.memoryMB)||0,coreInfo:info.coreInfo||{}};$('threads').disabled=false;$('hash').disabled=false;fillResourceOptions();sync();}).catch(()=>{fillResourceOptions();sync();});
-  installReleaseInfo(open);
+  installReleaseInfo(open,t);
   const defaultLinks={review:'https://apps.apple.com/app/id6817158025?action=write-review'};
   const linkLabels={review:'Write Review'};
   for(const [key,label] of Object.entries(linkLabels)){const field=document.createElement('label');field.className='field-label';field.textContent=label;const input=document.createElement('input');input.id='link-'+key;input.type=key==='email'?'email':'url';input.className='text-input';input.placeholder=key==='email'?'you@example.com':'https://';field.append(input);$('appLinksFields').append(field);}

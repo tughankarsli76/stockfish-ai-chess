@@ -10,11 +10,11 @@ Open `ios/StockfishChess.xcodeproj` from the `develop` checkout in Xcode. Choose
 
 Use a workflow named **Phone Development** with an Apple Silicon environment, Xcode 27.0 (or a compatible later release), branch-change start condition limited to `develop`, and an iOS Archive action using the shared StockfishChess scheme and Release configuration. Start the cloud build sequence at 22. Set TestFlight internal testing as the delivery postaction and select the owner's internal tester group. Keep App Store releases manual.
 
-Apple discovers `ios/ci_scripts/ci_post_clone.sh` automatically. It restores model inputs, installs Rust nightly-2026-08-16 and Zig 0.16.0, runs all web tests, then regenerates the project using version 1.5 and the cloud build number. The first real cloud archive must pass before this workflow is considered working. This setup has no automatic App Review submission or public release action.
+Apple discovers `ios/ci_scripts/ci_post_clone.sh` automatically. It restores model inputs, installs Rust nightly-2026-08-16 and Zig 0.16.0, runs all web tests, then regenerates the project using version 1.5 and the cloud build number. The end-to-end validation completed with build 25: the clean archive and TestFlight delivery succeeded, and version 1.5 (25) is Testing in Owner Testing. All 13 model checks and all 153 web tests passed in that build. This setup has no automatic App Review submission or public release action.
 
 ## Ask an AI agent from your phone
 
-Use a Codex Cloud environment connected to this GitHub repository. Select the `develop` branch when starting work. Its setup needs Node 24 or newer; web changes can be tested on Linux without downloading the native models. Ask the agent to make the change, run `npm test`, and open a pull request targeting `develop`.
+The Xcode Cloud build and delivery workflow is ready; a Codex Cloud editing environment still needs to be connected. Use a Codex Cloud environment connected to this GitHub repository. Select the `develop` branch when starting work. Its setup needs Node 24 or newer; web changes can be tested on Linux without downloading the native models. Ask the agent to make the change, run `npm test`, and open a pull request targeting `develop`.
 
 Review the change on your phone and merge it into `develop`. The branch commit triggers the Xcode Cloud archive. After Apple processes the build, install it through TestFlight. For native changes, use the cloud archive and relevant device tests to validate the result.
 

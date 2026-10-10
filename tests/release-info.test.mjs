@@ -6,7 +6,7 @@ import vm from 'node:vm';
 function releasePages(version){
  const elements=new Map(),buttons=['credits','privacy','support'].map(key=>({dataset:{releaseInfo:key}}));
  const body={innerHTML:'',title:{textContent:''},querySelector(selector){return selector==='[data-app-title]'&&this.innerHTML.includes('data-app-title')?this.title:null;}};
- const context={document:{createElement:()=>({close(){this.open=false;}}),body:{append(dialog){elements.set(dialog.id,dialog);elements.set('releaseInfoDone',{});elements.set('releaseInfoTitle',{});elements.set('releaseInfoBody',body);}},getElementById:id=>elements.get(id),querySelectorAll:()=>buttons}};
+ const context={document:{createElement:()=>({close(){this.open=false;}}),body:{append(dialog){elements.set(dialog.id,dialog);elements.set('releaseInfoDone',{});elements.set('releaseInfoBack',{});elements.set('releaseInfoBackLabel',{});elements.set('releaseInfoTitle',{});elements.set('releaseInfoBody',body);}},getElementById:id=>elements.get(id),querySelectorAll:()=>buttons}};
  if(version!==undefined){
   // Run the actual iOS bridge before opening the actual release page.
   context.window=context;context.__chessAppInfo={version};context.__chessSaved={};
