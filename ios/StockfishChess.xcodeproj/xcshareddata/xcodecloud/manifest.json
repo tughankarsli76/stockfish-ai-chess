@@ -1,0 +1,9 @@
+{
+  "id" : "5384465e-da61-4093-b179-064fc8cefac9",
+  "targets" : [
+    {
+      "id" : "4e3faf90-12dd-4342-98b0-64d9f91aa0aa",
+      "name" : "StockfishChess"
+    }
+  ]
+}
