@@ -1,5 +1,5 @@
-"""Bundle unchanged web assets and corresponding engine source/license for offline use."""
-import os,shutil,hashlib
+"""Bundle web assets and corresponding engine source/license for offline use."""
+import os,shutil,hashlib,subprocess
 from pathlib import Path
 root=Path(__file__).resolve().parent.parent
 out=Path(os.environ['TARGET_BUILD_DIR'])/os.environ['UNLOCALIZED_RESOURCES_FOLDER_PATH']
@@ -11,6 +11,17 @@ for line in (tablebases/'SHA256SUMS').read_text().splitlines():
 shutil.copytree(tablebases,out/'Tablebases',dirs_exist_ok=True)
 if (out/'Web').exists():shutil.rmtree(out/'Web')
 shutil.copytree(root/'dist',out/'Web',dirs_exist_ok=True,ignore=shutil.ignore_patterns('stockfish-18-lite-single*'))
+# Link each distributed app to the source revision used by its build, rather
+# than a historical source archive or a branch that changes after delivery.
+try:
+ revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True,stderr=subprocess.DEVNULL).strip()
+except (OSError,subprocess.CalledProcessError):
+ revision=None
+if revision:
+ release_info=out/'Web/release-info.js'
+ release_info.write_text(release_info.read_text().replace(
+  'https://github.com/tughankarsli76/stockfish-ai-chess/tree/develop',
+  'https://github.com/tughankarsli76/stockfish-ai-chess/tree/'+revision))
 licenses=out/'Licenses'
 if licenses.exists():shutil.rmtree(licenses)
 licenses.mkdir()
