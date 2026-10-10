@@ -4,6 +4,8 @@ Version 1.5 development starts from the released 1.4 build 21 source. The GitHub
 
 ## Xcode Cloud configuration
 
+Configured on October 10, 2026: GitHub's default branch is `develop`; the Apple workflow **Phone Development** watches pushes to `develop`, archives the shared StockfishChess scheme for iOS, prepares the archive for **TestFlight (Internal Testing Only)**, and delivers it to the **Owner Testing** internal group. The environment uses Latest Release (currently Xcode 27 and macOS Golden Gate 27), with clean builds enabled. Cloud numbering started at 22. The first diagnostic run verified all 13 model inputs, then exposed local compiler symlinks accidentally tracked in Git; those symlinks were removed before the archive validation run.
+
 Open `ios/StockfishChess.xcodeproj` from the `develop` checkout in Xcode. Choose Integrate → Create Workflow, select Stockfish AI Chess with bundle ID `com.tughankarsli.stockfishaichess` and team `KQVRWBVGS7`, and connect this GitHub repository.
 
 Use a workflow named **Phone Development** with an Apple Silicon environment, Xcode 27.0 (or a compatible later release), branch-change start condition limited to `develop`, and an iOS Archive action using the shared StockfishChess scheme and Release configuration. Start the cloud build sequence at 22. Set TestFlight internal testing as the delivery postaction and select the owner's internal tester group. Keep App Store releases manual.
