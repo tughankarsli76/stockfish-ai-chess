@@ -3,8 +3,8 @@ __pycache__/
 *.pyc
 .cloud-cache/
 ios/*build*/
-ios/rust-toolchain/
-ios/zig-toolchain/
+ios/rust-toolchain
+ios/zig-toolchain
 ios/zig-cache/
 ios/rust-libs/
 ios/pawn-libs/
