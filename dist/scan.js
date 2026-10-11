@@ -17,7 +17,7 @@ const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-label
     <div class="dialog-actions"><button id="scanAnother" type="button">Change Photo</button><button id="scanRead" type="button" class="primary">Read Board</button></div></div>
   <div id="scanReview" hidden><p id="scanConfidence"></p><details><summary>View original photo</summary><img id="scanReference" class="scan-reference" alt="Original chessboard photo"></details>
     <p>Check every piece and the board orientation. Tap a piece below, then a square to correct it.</p>
-    <div id="scanBoard" class="scan-board" role="group" aria-label="Review detected position"></div>
+    <div id="scanBoard" class="board scan-board" role="group" aria-label="Review detected position"></div>
     <div id="scanPalette" class="scan-palette" role="group" aria-label="Choose a piece or erase"></div>
     <div class="list"><label><span>Side to move</span><select id="scanTurn"><option value="">Choose side to move</option><option value="w">White</option><option value="b">Black</option></select></label></div>
     <details><summary>Position history</summary><p>A photo cannot show castling rights, en passant, or move counters. Set these if known. Defaults: no castling, no en passant, 0 half-moves, move 1.</p>
@@ -137,9 +137,8 @@ export function installScanner(api){
     $('scanConfidence').textContent=uncertainSquares.size?uncertainSquares.size+' squares are marked in orange for careful review. Check every piece before analyzing.':'Board read. Check every piece before analyzing.';
     const board=$('scanBoard');board.replaceChildren();
     for(let rank=8;rank>=1;rank--)for(const file of 'abcdefgh'){
-      const square=file+rank,p=draft.squares[square],button=document.createElement('button');button.type='button';button.dataset.scanSquare=square;button.className=((file.charCodeAt(0)+rank)%2?'dark':'light')+(uncertainSquares.has(square)?' uncertain':'');button.setAttribute('aria-label',square+' '+(p||'empty')+(uncertainSquares.has(square)?' — needs review':''));
+      const square=file+rank,p=draft.squares[square],button=document.createElement('button');button.type='button';button.dataset.scanSquare=square;button.className='square '+(('abcdefgh'.indexOf(file)+rank)%2?'dark':'light')+(uncertainSquares.has(square)?' uncertain':'');button.setAttribute('aria-label',square+' '+(p||'empty')+(uncertainSquares.has(square)?' — needs review':''));
       if(p){const img=document.createElement('img');img.src=pieceImage(api.state().settings.pieceSet,p===p.toUpperCase()?'w':'b',p);img.alt='';img.draggable=false;button.append(img);}
-      const coordinate=document.createElement('small');coordinate.textContent=square;button.append(coordinate);
       button.onclick=()=>{if(!palette||draft.squares[square]===palette)delete draft.squares[square];else draft.squares[square]=palette;uncertainSquares.delete(square);draft.castling=[];dialog.querySelectorAll('[data-scan-castle]').forEach(b=>b.checked=false);$('scanEp').value='-';error();renderReview();};board.append(button);
     }
     const group=$('scanPalette');group.replaceChildren();
