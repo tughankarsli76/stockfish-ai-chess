@@ -232,7 +232,6 @@ body:not(.use-toolbar) .history-nav,body:not(.use-toolbar) .position-label{displ
 .difficulty-check{display:none;color:#078af0;font-size:25px;line-height:24px}
 .difficulty-choice[aria-checked=true]{font-weight:600}
 .difficulty-choice[aria-checked=true] .difficulty-check{display:block}
-#difficultyNote{margin:0;padding:14px 21px;background:#f3f2f8;font-size:12px;color:#777}
 @media(max-width:380px){.difficulty-choice{font-size:16px;padding-inline:16px}.difficulty-choice:after{left:16px}.difficulty-heading h2{font-size:18px}.difficulty-heading button{font-size:17px}}
 
 .analysis-time-screen .mode-heading{position:sticky;top:0;z-index:2;background:#f3f2f8;border-bottom:1px solid #dfdfe4}
