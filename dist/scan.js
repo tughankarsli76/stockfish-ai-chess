@@ -5,6 +5,10 @@ import {scanDraft,checkedCorners,boardProjection,perspectiveBoard} from './scan-
 import {positionFromDraft} from './features.js';
 import {pieceImage} from './pieces.js';
 
+// Geometry uses clockwise corner order; labels follow reading order.
+const CORNER_LABELS=[1,2,4,3];
+const CORNER_CONTROL_ORDER=[0,1,3,2];
+
 const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-labelledby="scanTitle">
   <div class="mode-heading"><button id="scanBack" type="button"><span class="back-chevron" aria-hidden="true"></span><span>Game</span></button><h2 id="scanTitle">Scan and Analyze</h2><button id="scanDone" type="button">Done</button></div>
   <div id="scanChoose"><p>Choose a photo or take a picture of the whole board. Keep every square and piece visible.</p>
@@ -63,15 +67,15 @@ export function installScanner(api){
     }catch(e){error(e.message);}
     const panel=$('scanCorners');
     if(!panel.children.length){
-      for(let i=0;i<4;i++){
-        const group=document.createElement('fieldset'),legend=document.createElement('legend');legend.textContent='Corner '+(i+1);group.append(legend);
-        for(const [axis,name] of [[0,'Horizontal'],[1,'Vertical']]){const input=document.createElement('input');input.type='range';input.min='0';input.max='1000';input.dataset.cornerInput=i+'-'+axis;input.setAttribute('aria-label',name+' position of corner '+(i+1));input.oninput=()=>{corners[i][axis]=Number(input.value)/1000;initialCandidates=[];renderGrid();};group.append(input);}
+      for(const i of CORNER_CONTROL_ORDER){
+        const group=document.createElement('fieldset'),legend=document.createElement('legend');legend.textContent='Corner '+CORNER_LABELS[i];group.append(legend);
+        for(const [axis,name] of [[0,'Horizontal'],[1,'Vertical']]){const input=document.createElement('input');input.type='range';input.min='0';input.max='1000';input.dataset.cornerInput=i+'-'+axis;input.setAttribute('aria-label',name+' position of corner '+CORNER_LABELS[i]);input.oninput=()=>{corners[i][axis]=Number(input.value)/1000;initialCandidates=[];renderGrid();};group.append(input);}
         panel.append(group);
       }
     }
     corners.forEach((p,i)=>{
       const marker=document.createElementNS('http://www.w3.org/2000/svg','circle');marker.setAttribute('cx',p[0]*1000);marker.setAttribute('cy',p[1]*1000);marker.setAttribute('r','27');marker.dataset.corner=i;svg.append(marker);
-      const number=document.createElementNS('http://www.w3.org/2000/svg','text');number.setAttribute('x',p[0]*1000);number.setAttribute('y',p[1]*1000+12);number.textContent=i+1;svg.append(number);
+      const number=document.createElementNS('http://www.w3.org/2000/svg','text');number.setAttribute('x',p[0]*1000);number.setAttribute('y',p[1]*1000+12);number.textContent=CORNER_LABELS[i];svg.append(number);
       for(let axis=0;axis<2;axis++)panel.querySelector('[data-corner-input="'+i+'-'+axis+'"]').value=String(Math.round(p[axis]*1000));
     });
   }
