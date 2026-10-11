@@ -55,7 +55,7 @@ test('every difficulty preset sends its own Stockfish skill before the search',a
       transport.commands.length=0;
       engine.request({id:index,fen:'position',computer:true,multiPV:2,level:Number(difficulty.level),time:100});
       const skill='setoption name Skill Level value '+difficulty.level;
-      assert.ok(transport.commands.includes(skill),difficulty.range);
+      assert.ok(transport.commands.includes(skill),difficulty.title);
       assert.ok(transport.commands.indexOf(skill)<transport.commands.indexOf('go movetime 100'));
       engine.receive('bestmove e2e4');
     }

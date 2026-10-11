@@ -12,7 +12,7 @@ ENGINE VS. ENGINE MATCHES
 Let the engines battle it out. Choose a different engine for each side—or match an engine against itself—set the time per move, and watch the game unfold. Pause, resume, or stop a match, then save or export the game as PGN for later review. Engine matches work offline.
 
 PLAY AGAINST THE COMPUTER
-Choose your engine and play as White or Black. Stockfish offers 19 difficulty presets, from beginner settings to full strength. The other engine families play at full strength. Use fixed thinking time or game clocks with increments, or control both sides to explore your own ideas.
+Choose your engine and play as White or Black. Stockfish offers 19 difficulty levels, from its easiest setting to full strength. The other engine families play at full strength. Use fixed thinking time or game clocks with increments, or control both sides to explore your own ideas.
 
 ANALYZE YOUR POSITIONS
 Follow engine evaluations, suggested moves, search depth, and position counts. Compare multiple analysis lines with supported engines. Pawnocchio provides one analysis line. Win/draw/loss percentages appear when supported by the selected engine or opening data.
@@ -28,7 +28,7 @@ Choose textured boards, including Honey Wood, and a variety of chess piece desig
 
 Chess engines, computer play, analysis, engine matches, and the opening book work without an internet connection. Public-game imports require internet access.
 
-Difficulty ratings are approximate presets. Analysis and engine matches use full engine strength. Engine versions are bundled with the app; future versions require an app update.
+Difficulty levels do not represent Elo ratings. Analysis and engine matches use full engine strength. Engine versions are bundled with the app; future versions require an app update.
 
 Independently developed by Tughan Y. Karsli. Not an official app of the Stockfish project or other engine authors, Chess.com, or Lichess.
 
