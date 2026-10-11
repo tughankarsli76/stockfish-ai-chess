@@ -17,7 +17,11 @@ const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-label
     <div class="dialog-actions"><button id="scanAnother" type="button">Change Photo</button><button id="scanRead" type="button" class="primary">Read Board</button></div></div>
   <div id="scanReview" hidden><p id="scanConfidence"></p><details><summary>View original photo</summary><img id="scanReference" class="scan-reference" alt="Original chessboard photo"></details>
     <p>Check every piece and the board orientation. Tap a piece below, then a square to correct it.</p>
-    <div id="scanBoard" class="board scan-board" role="group" aria-label="Review detected position"></div>
+    <div class="scan-board-frame">
+      <div class="scan-board-ranks" aria-hidden="true">${[8,7,6,5,4,3,2,1].map(rank=>`<span>${rank}</span>`).join('')}</div>
+      <div id="scanBoard" class="board scan-board" role="group" aria-label="Review detected position"></div>
+      <div class="scan-board-files" aria-hidden="true">${[...'abcdefgh'].map(file=>`<span>${file}</span>`).join('')}</div>
+    </div>
     <div id="scanPalette" class="scan-palette" role="group" aria-label="Choose a piece or erase"></div>
     <div class="list"><label><span>Side to move</span><select id="scanTurn"><option value="">Choose side to move</option><option value="w">White</option><option value="b">Black</option></select></label></div>
     <details><summary>Position history</summary><p>A photo cannot show castling rights, en passant, or move counters. Set these if known. Defaults: no castling, no en passant, 0 half-moves, move 1.</p>
