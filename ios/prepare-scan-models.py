@@ -4,7 +4,7 @@ Run with the isolated environment created by prepare-scan-models.sh.
 Generated weights stay in .cloud-cache, never in Git.
 """
 from pathlib import Path
-import hashlib, json, pickle, sys, types, urllib.request, zipfile, tarfile, subprocess
+import hashlib, json, pickle, sys, types, zipfile, tarfile, subprocess
 import numpy as np
 import torch
 from torch import nn
@@ -20,10 +20,20 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 def download(name, url, digest):
     path = CACHE / name
-    if not path.exists() or hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-        urllib.request.urlretrieve(url, path)
-    if hashlib.sha256(path.read_bytes()).hexdigest() != digest:
-        raise RuntimeError('Scan input checksum mismatch: ' + name)
+    if path.exists() and hashlib.sha256(path.read_bytes()).hexdigest() == digest:
+        return path
+    partial = path.with_name(path.name + '.part')
+    try:
+        # A cloud download can end early even after receiving HTTP 200. curl
+        # detects truncated transfers and retries them before checksum validation.
+        subprocess.run(['curl', '--fail', '--location', '--retry', '4',
+                        '--retry-all-errors', '--connect-timeout', '30',
+                        '--max-time', '300', '--output', str(partial), url], check=True)
+        if hashlib.sha256(partial.read_bytes()).hexdigest() != digest:
+            raise RuntimeError('Scan input checksum mismatch: ' + name)
+        partial.replace(path)
+    finally:
+        partial.unlink(missing_ok=True)
     return path
 
 class SavedClassifier(nn.Module):
