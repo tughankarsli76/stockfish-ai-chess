@@ -30,4 +30,9 @@ if ! command -v node >/dev/null 2>&1 || ! node -e 'process.exit(Number(process.v
     export PATH="$(brew --prefix node@24)/bin:$PATH"
 fi
 node --test --test-isolation=none tests/*.test.mjs
+if ! python3 -c 'import sys; sys.exit(0 if sys.version_info[:2] == (3, 12) else 1)'; then
+    brew install python@3.12
+    export CHESS_SCAN_PYTHON="$(brew --prefix python@3.12)/bin/python3.12"
+fi
+sh ios/prepare-scan-models.sh
 python3 ios/generate-project.py

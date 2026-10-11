@@ -29,7 +29,7 @@ for(const version of ['1.3','1.5','2.0.1'])test(`release pages show installed ve
  page.open('support');assert.ok(page.body.innerHTML.includes('Engine Match'));
  page.open('privacy');assert.ok(page.body.innerHTML.includes('Privacy Policy'));
  assert.equal(page.body.title.textContent,`Stockfish AI Chess · App version ${version}`);
- assert.ok(page.body.innerHTML.includes('Privacy policy last updated: September 22, 2026'));
+ assert.ok(page.body.innerHTML.includes('Privacy policy last updated: October 10, 2026'));
  assert.ok(!page.body.innerHTML.includes('Version 1.0'));
  page.open('credits');assert.equal(page.body.title.textContent,`Stockfish AI Chess ${version}`);
 });
@@ -39,5 +39,5 @@ test('browser preview without installed metadata does not claim an app version',
  assert.equal(page.body.title.textContent,'Stockfish AI Chess');
  assert.ok(!page.body.innerHTML.includes('Stockfish AI Chess 1.1'));
  page.open('privacy');assert.equal(page.body.title.textContent,'Stockfish AI Chess');
- assert.ok(page.body.innerHTML.includes('Privacy policy last updated: September 22, 2026'));
+ assert.ok(page.body.innerHTML.includes('Privacy policy last updated: October 10, 2026'));
 });

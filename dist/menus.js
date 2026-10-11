@@ -6,6 +6,7 @@ import {installReleaseInfo} from './release-info.js';
 import {LINE_COLORS} from './analysis.js';
 import {PIECE_SETS,pieceImage} from './pieces.js';
 import {DIFFICULTIES,difficultyForLevel} from './difficulty.js';
+import {installScanner} from './scan.js';
 import {openingForPosition,bookSuggestions,FIGURINES} from './features.js';
 import {DEFAULT_SETTINGS,ANALYSIS_TIMES,bookMoves,draftFromGame,positionFromDraft,safeAppLink,notation,timeLabel,whiteWdl} from './features.js';
 const $=id=>document.getElementById(id);
@@ -59,7 +60,7 @@ export function installMenus(api,html){
   const analysisTimeButtons=ANALYSIS_TIMES.map(seconds=>{const button=document.createElement('button');button.type='button';button.className='analysis-time-choice';button.dataset.analysisSeconds=seconds;button.setAttribute('role','radio');button.setAttribute('aria-checked','false');const label=document.createElement('span');label.className='analysis-time-name';const check=document.createElement('span');check.className='analysis-time-check';check.setAttribute('aria-hidden','true');check.textContent='✓';button.append(label,check);$('analysisTimeChoices').append(button);return button;});
   const difficultyButtons=DIFFICULTIES.map(item=>{const button=document.createElement('button');button.type='button';button.className='difficulty-choice';button.dataset.difficulty=item.level;button.setAttribute('role','radio');button.setAttribute('aria-checked','false');const level=document.createElement('span');level.className='difficulty-level';level.textContent=item.title;const label=document.createElement('span');label.className='difficulty-name';label.textContent=item.label;const check=document.createElement('span');check.className='difficulty-check';check.setAttribute('aria-hidden','true');check.textContent='✓';button.append(level,label,check);$('difficultyChoices').append(button);return button;});
   $('gameMenu').classList.add('action-sheet');
-  $('gameMenu').innerHTML='<div class="list"><button id="menuNew">New Game</button><button id="pauseEngineMatch" hidden>Pause Match</button><button id="stopEngineMatch" hidden>Stop Match</button><button id="saveButton">Save Game</button><button id="gamesButton">Load Game</button><button id="importButton">Import Game</button><button id="exportButton">Export Game</button><button id="setupButton">Setup Position</button></div><button class="sheet-cancel" data-close>Cancel</button>';
+  $('gameMenu').innerHTML='<div class="list"><button id="menuNew">New Game</button><button id="pauseEngineMatch" hidden>Pause Match</button><button id="stopEngineMatch" hidden>Stop Match</button><button id="saveButton">Save Game</button><button id="gamesButton">Load Game</button><button id="importButton">Import Game</button><button id="exportButton">Export Game</button><button id="setupButton">Setup Position</button><button id="scanButton">Scan and Analyze</button></div><button class="sheet-cancel" data-close>Cancel</button>';
   $('settingsDialog').classList.add('options-screen');$('settingsDialog').innerHTML=OPTIONS;
   const toolbar=document.createElement('nav');toolbar.id='mainToolbar';toolbar.className='main-toolbar';toolbar.setAttribute('aria-label','Chess toolbar');
   toolbar.innerHTML='<button id="toolbarGame">Game</button><button id="toolbarOptions">Options</button><button id="toolbarAnalysis">Analysis</button><button id="toolbarFlip">Flip</button><button id="toolbarMove">Move</button>';
@@ -82,6 +83,8 @@ export function installMenus(api,html){
   const click=(id,fn)=>{$(id).onclick=fn;};
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
   document.querySelectorAll('[data-options-back]').forEach(b=>b.onclick=()=>open('settingsDialog'));
+  const scanner=installScanner(api);
+  click('scanButton',()=>scanner.open());
   installTournament(api);
   const tablebases=installTablebases(api);
   click('tablebasesButton',()=>tablebases.open());

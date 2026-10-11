@@ -1,0 +1,20 @@
+{
+  "occupancy_classifier": {
+    "url": "https://github.com/georg-wolflein/chesscog/releases/download/0.2.7/transfer_learning_models.zip",
+    "sha256": "d8cc1843fa9a59679881b9cf7c9c6984a024bc561695f705be05f7d274c1898b",
+    "filename": "physical-trained.zip",
+    "extractTo": "physical-trained",
+    "folder": "physical-trained/occupancy_classifier"
+  },
+  "piece_classifier": {
+    "url": "https://github.com/georg-wolflein/chesscog/releases/download/0.2.7/transfer_learning_models.zip",
+    "sha256": "d8cc1843fa9a59679881b9cf7c9c6984a024bc561695f705be05f7d274c1898b",
+    "filename": "physical-trained.zip",
+    "extractTo": "physical-trained",
+    "folder": "physical-trained/piece_classifier"
+  },
+  "digital": {
+    "url": "https://registry.npmjs.org/@scoriiu/fenshot/-/fenshot-0.1.4.tgz",
+    "sha256": "e4b5b7cdf4bdf0d06714242f118fc450cc39e1ee41fda2f7159788b64e695903"
+  }
+}

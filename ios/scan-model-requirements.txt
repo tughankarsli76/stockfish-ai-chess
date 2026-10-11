@@ -1,0 +1,6 @@
+torch==2.14.1
+torchvision==0.29.1
+coremltools==9.0
+onnx==1.23.2
+numpy==2.5.4
+Pillow==12.3.0

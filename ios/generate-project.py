@@ -46,6 +46,7 @@ for p in sorted((root/obsidian).glob('*.cpp')):
 sources.append(ref(str(obsidian/'fathom/src/tbprobe.c'),'sourcecode.c.c'))
 sources.append(ref('StockfishChess/ObsidianBackend.cpp','sourcecode.cpp.cpp'))
 sources.append(ref('StockfishChess/BackgroundGame.mm','sourcecode.cpp.objcpp'))
+sources.append(ref('StockfishChess/ChessScanner.mm','sourcecode.cpp.objcpp'))
 assets=root/'StockfishChess/Assets.xcassets';assets.mkdir(exist_ok=True)
 for source in ['../dist/assets/branding/AppIcon.appiconset','../dist/assets/branding/launch/LaunchMark.imageset']:
  shutil.copytree(root/source,assets/Path(source).name,dirs_exist_ok=True)
@@ -78,7 +79,7 @@ for config in ['Debug','Release']:
  if 'Security' not in flags:flags+=['-framework','Security']
  if '-liconv' not in flags:flags+=['-liconv']
  if '$(BUILT_PRODUCTS_DIR)/libpawnocchio_ios.a' not in flags:flags+=['$(BUILT_PRODUCTS_DIR)/libpawnocchio_ios.a']
- for framework in ['JavaScriptCore','AVFAudio','BackgroundTasks']:
+ for framework in ['JavaScriptCore','AVFAudio','BackgroundTasks','AVFoundation','PhotosUI','CoreML','Vision']:
   if framework not in flags:flags+=['-framework',framework]
  cfg['OTHER_LDFLAGS']=flags
  cfg['MARKETING_VERSION']=marketing_version
@@ -112,6 +113,7 @@ def encode(v):
 (root/'StockfishChess.xcodeproj/xcshareddata/xcschemes/StockfishChess.xcscheme').write_text(f'''<?xml version="1.0" encoding="UTF-8"?>
 <Scheme LastUpgradeVersion="2700" version="1.3"><BuildAction parallelizeBuildables="YES" buildImplicitDependencies="YES"><BuildActionEntries><BuildActionEntry buildForTesting="YES" buildForRunning="YES" buildForProfiling="YES" buildForArchiving="YES" buildForAnalyzing="YES"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{target}" BuildableName="StockfishChess.app" BlueprintName="StockfishChess" ReferencedContainer="container:StockfishChess.xcodeproj"/></BuildActionEntry></BuildActionEntries></BuildAction><TestAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv="YES"><Testables><TestableReference skipped="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{testTarget}" BuildableName="StockfishChessTests.xctest" BlueprintName="StockfishChessTests" ReferencedContainer="container:StockfishChess.xcodeproj"/></TestableReference><TestableReference skipped="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{uiTarget}" BuildableName="StockfishChessUITests.xctest" BlueprintName="StockfishChessUITests" ReferencedContainer="container:StockfishChess.xcodeproj"/></TestableReference></Testables></TestAction><LaunchAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.IDEFoundation.Launcher.LLDB" launchStyle="0" useCustomWorkingDirectory="NO" ignoresPersistentStateOnLaunch="NO" debugDocumentVersioning="YES" debugServiceExtension="internal" allowLocationSimulation="YES"><BuildableProductRunnable runnableDebuggingMode="0"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{target}" BuildableName="StockfishChess.app" BlueprintName="StockfishChess" ReferencedContainer="container:StockfishChess.xcodeproj"/></BuildableProductRunnable></LaunchAction><ArchiveAction buildConfiguration="Release" revealArchiveInOrganizer="YES"/></Scheme>''')
 info={'ITSAppUsesNonExemptEncryption':False,'UIApplicationSceneManifest':{'UIApplicationSupportsMultipleScenes':False,'UISceneConfigurations':{'UIWindowSceneSessionRoleApplication':[{'UISceneConfigurationName':'Chess','UISceneDelegateClassName':'SceneDelegate'}]}},'CFBundleDisplayName':'Stockfish AI Chess','CFBundleExecutable':'$(EXECUTABLE_NAME)','CFBundleIdentifier':'$(PRODUCT_BUNDLE_IDENTIFIER)','CFBundleName':'$(PRODUCT_NAME)','CFBundlePackageType':'APPL','CFBundleShortVersionString':'$(MARKETING_VERSION)','CFBundleVersion':'$(CURRENT_PROJECT_VERSION)','LSRequiresIPhoneOS':True,'UILaunchStoryboardName':'LaunchScreen','UISupportedInterfaceOrientations':['UIInterfaceOrientationPortrait','UIInterfaceOrientationLandscapeLeft','UIInterfaceOrientationLandscapeRight'],'UISupportedInterfaceOrientations~ipad':['UIInterfaceOrientationPortrait','UIInterfaceOrientationPortraitUpsideDown','UIInterfaceOrientationLandscapeLeft','UIInterfaceOrientationLandscapeRight'],'UIRequiresFullScreen':False,'UIFileSharingEnabled':True,'LSSupportsOpeningDocumentsInPlace':True}
+info['NSCameraUsageDescription']='Take a chessboard photo to recognize its position and analyze it on your device.'
 info.update({'UIBackgroundModes':['processing'],'BGTaskSchedulerPermittedIdentifiers':['$(PRODUCT_BUNDLE_IDENTIFIER).engine-match.*']})
 (root/'StockfishChess/Info.plist').write_bytes(plistlib.dumps(info))
 print('Generated',root/'StockfishChess.xcodeproj')

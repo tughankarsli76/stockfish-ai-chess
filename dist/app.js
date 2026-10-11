@@ -420,7 +420,9 @@ menus=installMenus({
  hint:()=>{$('hint').onclick();},
  patch:patchSettings,
  moveNow:forceMove,
- loadPosition:fen=>{session.load(fen);resetGameClock();settings.opponent='local';selected=null;scores={};syncSettings();setTab('game');persist();},
+ loadPosition:(fen,view='game')=>{session.load(fen);resetGameClock();settings.opponent='local';selected=null;scores={};if(view==='analysis')settings.showAnalysis=true;syncSettings();setTab(view);persist();},
+ pauseForScan:()=>{if(matchActive())pauseEngineMatch();clearTimeout(bookTimer);engine.cancel();},
+ resumeAfterScan:()=>analyze(),
  resetEverything:keep=>{
    try{if(keep)localStorage.setItem('chess-preview-reset-backup',localStorage.getItem('chess-preview-v2')||localStorage.getItem('chess-preview-v1')||'');else localStorage.removeItem('chess-preview-reset-backup');}catch{toast('Could not create recovery copy. Export your game before resetting.');return;}
    settings={...DEFAULT_SETTINGS,links:{}};engineMatch=null;saved=[];scores={};session.reset();resetGameClock();selected=null;flipped=false;syncSettings();setTab('game');persist();

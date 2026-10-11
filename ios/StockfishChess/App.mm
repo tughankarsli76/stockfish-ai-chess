@@ -6,9 +6,11 @@
 #import "CPUCoreInfo.h"
 #import "BackgroundGame.h"
 #import "TablebaseDownload.h"
+#import "ChessScanner.h"
 
 @interface ChessViewController : UIViewController <WKScriptMessageHandlerWithReply, WKURLSchemeHandler, WKNavigationDelegate, WKUIDelegate, UIDocumentPickerDelegate>
 @property(nonatomic,strong) WKWebView *webView;
+@property(nonatomic,strong) ChessScanner *scanner;
 @property(nonatomic,strong) UIView *startupCover;
 @property(nonatomic) NSTimeInterval startupStartedAt;
 @property(atomic) BOOL moveSoundEnabled;
@@ -482,6 +484,12 @@ static NSUInteger ChessMaxHashMB(void) {
         share.popoverPresentationController.sourceView=self.view;share.popoverPresentationController.sourceRect=CGRectMake(self.view.bounds.size.width/2,self.view.bounds.size.height-30,1,1);
         share.completionWithItemsHandler=^(UIActivityType type,BOOL completed,NSArray *items,NSError *error){[NSFileManager.defaultManager removeItemAtURL:folder error:nil];};
         [self presentViewController:share animated:YES completion:nil];reply(@YES,nil);
+    }else if([action isEqual:@"pickScanPhoto"]){
+        if(!self.scanner)self.scanner=[ChessScanner new];
+        [self.scanner pick:body[@"source"] presenter:self reply:reply];
+    }else if([action isEqual:@"readScan"]){
+        if(!self.scanner)self.scanner=[ChessScanner new];
+        [self.scanner recognize:body reply:reply];
     }else if([action isEqual:@"pickGame"]){
         if(self.pickerReply){reply(nil,@"File picker already open");return;}self.pickerReply=reply;
         UIDocumentPickerViewController *picker=[[UIDocumentPickerViewController alloc] initForOpeningContentTypes:@[UTTypeData] asCopy:YES];picker.delegate=self;

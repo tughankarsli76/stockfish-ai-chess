@@ -1385,6 +1385,47 @@
     }
     NSLog(@"AUTOMATIC_TABLEBASES: legacy Off and 3/4/5 limits removed; saved game preserved across reloads");
 }
+- (void)testScanDigitalPhotoToAnalysis {
+    XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for scanner tests");
+    XCTSkipIf(![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"Web/scan-fixtures/digital.png"]], @"Prepare the documented upstream scanner fixtures first");
+    WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
+    XCTestExpectation *loaded=[self expectationWithDescription:@"Scanner board loaded"];
+    [self waitForBoard:web expectation:loaded attempts:200];[self waitForExpectations:@[loaded] timeout:25];
+    NSDictionary *result=[self javascript:@"const {nativeIntegration:a}=await import('./app.js');window.__scanTestBackup=localStorage.getItem('chess-preview-v2');a.stopEngineMatch();a.patch({opponent:'local',openingBook:false,showAnalysis:false,time:3,threads:1,hash:16});a.load('1. d4 d5');const before=a.state().fen;const blob=await (await fetch('./scan-fixtures/digital.png')).blob();const url=await new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(blob);});window.__scanOriginalPicker=chessNative.pickScanPhoto;chessNative.pickScanPhoto=async()=>({image:url.split(',')[1]});document.getElementById('scanButton').click();document.getElementById('scanLibrary').click();for(let i=0;i<200&&document.getElementById('scanCrop').hidden;i++)await new Promise(r=>setTimeout(r,50));document.getElementById('scanRead').click();for(let i=0;i<200&&document.getElementById('scanReview').hidden;i++)await new Promise(r=>setTimeout(r,50));if(document.getElementById('scanReview').hidden)throw Error(document.getElementById('scanError').textContent||'Scanner did not finish');document.getElementById('scanAnalyze').click();const turnRequired=a.state().fen===before&&document.getElementById('scanError').textContent.includes('Choose');return {turnRequired,review:true,pieces:document.querySelectorAll('#scanBoard img').length};" web:web];
+    NSLog(@"SCAN_DIGITAL_REVIEW: %@",result);
+    XCTAssertEqualObjects(result[@"turnRequired"],@YES);XCTAssertEqualObjects(result[@"review"],@YES);XCTAssertEqualObjects(result[@"pieces"],@32);
+    [self javascript:@"document.getElementById('scanDialog').scrollTop=0;return true;" web:web];
+    [self captureRelease:@"Scan-Digital-Review"];
+    result=[self javascript:@"const {nativeIntegration:a}=await import('./app.js');document.getElementById('scanTurn').value='w';document.getElementById('scanAnalyze').click();for(let i=0;i<100&&!a.state().lines.length;i++)await new Promise(r=>setTimeout(r,50));const saved=JSON.parse(localStorage.getItem('chess-preview-v2')).saved;return {fen:a.state().fen,analysis:a.state().tab==='analysis',search:a.state().lines.length>0,closed:!document.getElementById('scanDialog').open,saved:!!saved.find(g=>g.pgn.includes('d4'))};" web:web];
+    NSLog(@"SCAN_DIGITAL_ANALYSIS: %@",result);
+    XCTAssertEqualObjects(result[@"fen"],@"r1bqk1nr/pppp1ppp/2n5/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w - - 0 1");
+    for(NSString *key in @[@"analysis",@"search",@"closed",@"saved"])XCTAssertEqualObjects(result[key],@YES,@"%@",key);
+    [self captureRelease:@"Scan-Position-Analysis"];
+    [self javascript:@"chessNative.pickScanPhoto=window.__scanOriginalPicker;localStorage.setItem('chess-preview-v2',window.__scanTestBackup);return true;" web:web];[web reload];
+    XCTestExpectation *restored=[self expectationWithDescription:@"Scanner test state restored"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,500*NSEC_PER_MSEC),dispatch_get_main_queue(),^{[self waitForBoard:web expectation:restored attempts:200];});
+    [self waitForExpectations:@[restored] timeout:25];
+}
+- (void)testScanPhysicalPhotoRecognition {
+    XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for scanner tests");
+    XCTSkipIf(![NSFileManager.defaultManager fileExistsAtPath:[NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"Web/scan-fixtures/physical.jpg"]], @"Prepare the documented upstream scanner fixtures first");
+    WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
+    XCTestExpectation *loaded=[self expectationWithDescription:@"Physical scanner board loaded"];
+    [self waitForBoard:web expectation:loaded attempts:200];[self waitForExpectations:@[loaded] timeout:25];
+    XCTestExpectation *done=[self expectationWithDescription:@"Real photo recognized on iPhone"];
+    [web callAsyncJavaScript:@"const {nativeIntegration:a}=await import('./app.js');window.__scanTestBackup=localStorage.getItem('chess-preview-v2');a.stopEngineMatch();a.patch({opponent:'local',showAnalysis:false,threads:1,hash:16});const blob=await (await fetch('./scan-fixtures/physical.jpg')).blob();const url=await new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(blob);});window.__scanOriginalPicker=chessNative.pickScanPhoto;chessNative.pickScanPhoto=async()=>({image:url.split(',')[1],corners:[[319/1200,154/900],[885/1200,155/900],[1030/1200,729/900],[181/1200,727/900]]});document.getElementById('scanButton').click();document.getElementById('scanKind').value='physical';document.getElementById('scanLibrary').click();for(let i=0;i<200&&document.getElementById('scanCrop').hidden;i++)await new Promise(r=>setTimeout(r,50));document.getElementById('scanRead').click();for(let i=0;i<1500&&document.getElementById('scanReview').hidden&&!document.getElementById('scanError').textContent;i++)await new Promise(r=>setTimeout(r,50));if(document.getElementById('scanReview').hidden)throw Error(document.getElementById('scanError').textContent||'Physical recognition timed out');return {pieces:document.querySelectorAll('#scanBoard img').length,review:true};" arguments:@{} inFrame:nil inContentWorld:WKContentWorld.pageWorld completionHandler:^(id result,NSError *error){
+        XCTAssertNil(error,@"%@",error);NSLog(@"SCAN_PHYSICAL_REVIEW: %@",result);XCTAssertEqualObjects(result[@"pieces"],@32);XCTAssertEqualObjects(result[@"review"],@YES);[done fulfill];
+    }];[self waitForExpectations:@[done] timeout:90];
+    [self javascript:@"document.getElementById('scanDialog').scrollTop=0;return true;" web:web];
+    [self captureRelease:@"Scan-Physical-Review"];
+    NSDictionary *result=[self javascript:@"const {nativeIntegration:a}=await import('./app.js');document.getElementById('scanRotate').click();document.getElementById('scanTurn').value='b';document.getElementById('scanAnalyze').click();return {fen:a.state().fen,analysis:a.state().tab==='analysis',error:document.getElementById('scanError').textContent};" web:web];
+    NSLog(@"SCAN_PHYSICAL_ANALYSIS: %@",result);
+    XCTAssertEqualObjects(result[@"fen"],@"rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b - - 0 1");XCTAssertEqualObjects(result[@"analysis"],@YES);
+    [self javascript:@"chessNative.pickScanPhoto=window.__scanOriginalPicker;document.querySelectorAll('dialog[open]').forEach(d=>d.close());localStorage.setItem('chess-preview-v2',window.__scanTestBackup);return true;" web:web];[web reload];
+    XCTestExpectation *restored=[self expectationWithDescription:@"Scanner test state restored"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,500*NSEC_PER_MSEC),dispatch_get_main_queue(),^{[self waitForBoard:web expectation:restored attempts:200];});
+    [self waitForExpectations:@[restored] timeout:25];
+}
 - (void)testUpdatedResourceDefaults {
     XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for preference tests");
     UIViewController *host=UIApplication.sharedApplication.windows.firstObject.rootViewController;

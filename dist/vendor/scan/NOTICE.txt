@@ -1,0 +1,3 @@
+Scan and Analyze uses fenshot 0.1.4 by Coachess (MIT), including the board detection algorithm derived from tensorflow_chessbot by Elucidation (MIT).
+Physical-board classifiers and crop geometry: chesscog 0.2.7 physical adaptation by Georg Wölflein (MIT). Model inputs are pinned in ios/scan-model-inputs.json; conversion is in ios/prepare-scan-models.py.
+Images are processed on the device and are not uploaded.

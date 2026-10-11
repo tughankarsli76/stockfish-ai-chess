@@ -22,6 +22,10 @@ if revision:
  release_info.write_text(release_info.read_text().replace(
   'https://github.com/tughankarsli76/stockfish-ai-chess/tree/develop',
   'https://github.com/tughankarsli76/stockfish-ai-chess/tree/'+revision))
+scan_models=root/'.cloud-cache/scan/compiled'
+if not all((scan_models/(name+'.mlmodelc')).is_dir() for name in ['DigitalTiles','PhysicalOccupancy','PhysicalPieces']):
+ raise RuntimeError('Run sh ios/prepare-scan-models.sh before building the scanner.')
+shutil.copytree(scan_models,out/'ScanModels',dirs_exist_ok=True,ignore=shutil.ignore_patterns('inputs.sha256'))
 licenses=out/'Licenses'
 if licenses.exists():shutil.rmtree(licenses)
 licenses.mkdir()
@@ -48,12 +52,14 @@ for name in ['cinder-0.6.1','viridithas-20.0.0','halogen-16.0.0','clover-9.1','s
  shutil.copytree(root/'engine'/name,licenses/'NewEngineSources'/name,dirs_exist_ok=True,ignore=shutil.ignore_patterns(*ignored))
 shutil.copytree(root/'engine/simde-0.8.2/simde',licenses/'simde-0.8.2/simde',dirs_exist_ok=True)
 shutil.copy2(root/'engine/simde-0.8.2/COPYING',licenses/'simde-0.8.2/COPYING')
-for name in ['generate-project.py','bundle-web.py','build-reckless.sh','build-rust-engines.sh','build-pawnocchio.sh','bundle-background.py','prepare-cpp-engines.py','prepare-halogen-network.py','test-viridithas-neon.sh','verify-new-engine-inputs.py']:
+for name in ['prepare-scan-models.py','prepare-scan-models.sh','scan-model-inputs.json','scan-model-requirements.txt','generate-project.py','bundle-web.py','build-reckless.sh','build-rust-engines.sh','build-pawnocchio.sh','bundle-background.py','prepare-cpp-engines.py','prepare-halogen-network.py','test-viridithas-neon.sh','verify-new-engine-inputs.py']:
  shutil.copy2(root/'ios'/name,licenses/name)
 
 startup_baseline=out/'startup-book-baseline.js'
 if startup_baseline.exists():startup_baseline.unlink()
 if os.environ.get('CONFIGURATION')=='Debug':
+ if (root/'.cloud-cache/scan/test-fixtures').is_dir():
+  shutil.copytree(root/'.cloud-cache/scan/test-fixtures',out/'Web/scan-fixtures',dirs_exist_ok=True)
  shutil.copy2(root/'ios/StockfishChessTests/ios-integration-tests.js',out/'Web/ios-integration-tests.js')
  if os.environ.get('CHESS_STARTUP_BENCHMARK')=='1' and '.corebench.' in os.environ.get('PRODUCT_BUNDLE_IDENTIFIER',''):
   shutil.copy2(root/'ios/benchmarks/startup-baseline/elite-book-data.js',startup_baseline)
