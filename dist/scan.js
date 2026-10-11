@@ -1,7 +1,7 @@
 import {findChessboardCorners,snapCorners} from './vendor/scan/detect.js';
 import {extractTiles,rgbaToGray,boardToTiles} from './vendor/scan/tiles.js';
 import {probsToPlacement} from './vendor/scan/fen.js';
-import {scanDraft,rotateScan,checkedCorners,boardProjection,perspectiveBoard} from './scan-position.js';
+import {scanDraft,checkedCorners,boardProjection,perspectiveBoard} from './scan-position.js';
 import {positionFromDraft} from './features.js';
 import {pieceImage} from './pieces.js';
 
@@ -19,7 +19,6 @@ const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-label
     <p>Check every piece and the board orientation. Tap a piece below, then a square to correct it.</p>
     <div id="scanBoard" class="scan-board" role="group" aria-label="Review detected position"></div>
     <div id="scanPalette" class="scan-palette" role="group" aria-label="Choose a piece or erase"></div>
-    <button id="scanRotate" type="button">Rotate Position 180°</button>
     <div class="list"><label><span>Side to move</span><select id="scanTurn"><option value="">Choose side to move</option><option value="w">White</option><option value="b">Black</option></select></label></div>
     <details><summary>Position history</summary><p>A photo cannot show castling rights, en passant, or move counters. Set these if known. Defaults: no castling, no en passant, 0 half-moves, move 1.</p>
       <div class="scan-rights"><label><input type="checkbox" data-scan-castle="K"> White O-O</label><label><input type="checkbox" data-scan-castle="Q"> White O-O-O</label><label><input type="checkbox" data-scan-castle="k"> Black O-O</label><label><input type="checkbox" data-scan-castle="q"> Black O-O-O</label></div>
@@ -37,7 +36,12 @@ export function installScanner(api){
   let initialCandidates=[];
   let uncertainSquares=new Set();
   const error=text=>$('scanError').textContent=text||'';
-  function stage(name){for(const key of ['Choose','Crop','Review'])$('scan'+key).hidden=key!==name;error();}
+  function stage(name){
+    for(const key of ['Choose','Crop','Review'])$('scan'+key).hidden=key!==name;
+    // Each stage has different content heights; do not retain the crop scroll offset.
+    dialog.scrollTop=0;
+    error();
+  }
   function working(value,text=''){
     busy=value;dialog.setAttribute('aria-busy',String(value));$('scanStatus').textContent=text;
     for(const id of ['scanCamera','scanLibrary','scanAnother','scanRead','scanRetry','scanAnalyze'])$(id).disabled=value;
@@ -145,7 +149,6 @@ export function installScanner(api){
       button.onclick=()=>{palette=p;renderReview();};group.append(button);
     }
   }
-  $('scanRotate').onclick=()=>{if(!draft||busy)return;draft=rotateScan(draft);uncertainSquares=new Set([...uncertainSquares].map(s=>'hgfedcba'['abcdefgh'.indexOf(s[0])]+(9-Number(s[1]))));dialog.querySelectorAll('[data-scan-castle]').forEach(b=>b.checked=false);$('scanEp').value='-';renderReview();error();};
   $('scanRetry').onclick=()=>{stage('Crop');renderGrid();};
   $('scanAnalyze').onclick=()=>{
     if(!draft||busy)return;
