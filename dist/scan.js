@@ -17,8 +17,7 @@ const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-label
   <div id="scanCrop" hidden>
     <div id="scanPhotoFrame" class="scan-photo-frame"><img id="scanPhoto" alt="Selected chessboard photo"><svg id="scanGrid" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"></svg></div>
     <div class="dialog-actions"><button id="scanAnother" type="button">Change Photo</button><button id="scanRead" type="button" class="primary">Read Board</button></div></div>
-  <div id="scanReview" hidden><p id="scanConfidence"></p><details><summary>View original photo</summary><img id="scanReference" class="scan-reference" alt="Original chessboard photo"></details>
-    <p>Check every piece and the board orientation. Tap a piece below, then a square to correct it.</p>
+  <div id="scanReview" hidden>
     <div class="scan-board-frame">
       <div class="rank-labels scan-board-ranks" aria-hidden="true">${[8,7,6,5,4,3,2,1].map(rank=>`<span>${rank}</span>`).join('')}</div>
       <div id="scanBoard" class="board scan-board" role="group" aria-label="Review detected position"></div>
@@ -52,7 +51,7 @@ export function installScanner(api){
     busy=value;dialog.setAttribute('aria-busy',String(value));$('scanStatus').textContent=text;
     for(const id of ['scanCamera','scanLibrary','scanAnother','scanRead','scanRetry','scanAnalyze'])$(id).disabled=value;
   }
-  function clear(){generation++;image=null;gray=null;draft=null;encoded='';initialCandidates=[];uncertainSquares.clear();corners=null;for(const id of ['scanPhoto','scanReference'])$(id).removeAttribute('src');$('scanGrid').replaceChildren();$('scanBoard').replaceChildren();$('scanPalette').replaceChildren();working(false);}
+  function clear(){generation++;image=null;gray=null;draft=null;encoded='';initialCandidates=[];uncertainSquares.clear();corners=null;$('scanPhoto').removeAttribute('src');$('scanGrid').replaceChildren();$('scanBoard').replaceChildren();$('scanPalette').replaceChildren();working(false);}
   dialog.addEventListener('close',()=>{clear();if(!applied)api.resumeAfterScan?.();});
   const close=()=>dialog.close();$('scanDone').onclick=close;$('scanBack').onclick=close;
   function renderGrid(){
@@ -98,7 +97,7 @@ export function installScanner(api){
         if(detected){const snapped=snapCorners(gray,detected);initialCandidates=[detected,snapped];corners=[[detected.x0/gray.width,detected.y0/gray.height],[detected.x1/gray.width,detected.y0/gray.height],[detected.x1/gray.width,detected.y1/gray.height],[detected.x0/gray.width,detected.y1/gray.height]].map(p=>p.map(v=>Math.max(0,Math.min(1,v))));}
         else corners=[[.1,.1],[.9,.1],[.9,.9],[.1,.9]];
       }else corners=selected.corners||[[.1,.1],[.9,.1],[.9,.9],[.1,.9]];
-      $('scanPhoto').src=image.src;$('scanReference').src=image.src;stage('Crop');renderGrid();working(false);
+      $('scanPhoto').src=image.src;stage('Crop');renderGrid();working(false);
     }catch(e){if(token===generation){working(false);error(e.message||'This photo could not be opened.');}}
   }
   $('scanCamera').onclick=()=>pick('camera');$('scanLibrary').onclick=()=>pick('library');
@@ -131,7 +130,6 @@ export function installScanner(api){
   }
   $('scanRead').onclick=read;
   function renderReview(){
-    $('scanConfidence').textContent=uncertainSquares.size?uncertainSquares.size+' squares are marked in orange for careful review. Check every piece before analyzing.':'Board read. Check every piece before analyzing.';
     const board=$('scanBoard');board.replaceChildren();
     for(let rank=8;rank>=1;rank--)for(const file of 'abcdefgh'){
       const square=file+rank,p=draft.squares[square],button=document.createElement('button');button.type='button';button.dataset.scanSquare=square;button.className='square '+(('abcdefgh'.indexOf(file)+rank)%2?'dark':'light')+(uncertainSquares.has(square)?' uncertain':'');button.setAttribute('aria-label',square+' '+(p||'empty')+(uncertainSquares.has(square)?' — needs review':''));
