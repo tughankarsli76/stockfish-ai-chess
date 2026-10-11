@@ -7,7 +7,6 @@ import {pieceImage} from './pieces.js';
 
 // Geometry uses clockwise corner order; labels follow reading order.
 const CORNER_LABELS=[1,2,4,3];
-const CORNER_CONTROL_ORDER=[0,1,3,2];
 
 const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-labelledby="scanTitle">
   <div class="mode-heading"><button id="scanBack" type="button"><span class="back-chevron" aria-hidden="true"></span><span>Game</span></button><h2 id="scanTitle">Scan and Analyze</h2><button id="scanDone" type="button">Done</button></div>
@@ -17,7 +16,6 @@ const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-label
     <p class="scan-note">Photos are processed on your iPhone. They are not uploaded or saved by this app.</p></div>
   <div id="scanCrop" hidden>
     <div id="scanPhotoFrame" class="scan-photo-frame"><img id="scanPhoto" alt="Selected chessboard photo"><svg id="scanGrid" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"></svg></div>
-    <div id="scanCorners" class="scan-corners" aria-label="Board corners"></div>
     <div class="dialog-actions"><button id="scanAnother" type="button">Change Photo</button><button id="scanRead" type="button" class="primary">Read Board</button></div></div>
   <div id="scanReview" hidden><p id="scanConfidence"></p><details><summary>View original photo</summary><img id="scanReference" class="scan-reference" alt="Original chessboard photo"></details>
     <p>Check every piece and the board orientation. Tap a piece below, then a square to correct it.</p>
@@ -65,18 +63,9 @@ export function installScanner(api){
       for(let i=0;i<=8;i++){line(project(i/8,0),project(i/8,1));line(project(0,i/8),project(1,i/8));}
       error();
     }catch(e){error(e.message);}
-    const panel=$('scanCorners');
-    if(!panel.children.length){
-      for(const i of CORNER_CONTROL_ORDER){
-        const group=document.createElement('fieldset'),legend=document.createElement('legend');legend.textContent='Corner '+CORNER_LABELS[i];group.append(legend);
-        for(const [axis,name] of [[0,'Horizontal'],[1,'Vertical']]){const input=document.createElement('input');input.type='range';input.min='0';input.max='1000';input.dataset.cornerInput=i+'-'+axis;input.setAttribute('aria-label',name+' position of corner '+CORNER_LABELS[i]);input.oninput=()=>{corners[i][axis]=Number(input.value)/1000;initialCandidates=[];renderGrid();};group.append(input);}
-        panel.append(group);
-      }
-    }
     corners.forEach((p,i)=>{
       const marker=document.createElementNS('http://www.w3.org/2000/svg','circle');marker.setAttribute('cx',p[0]*1000);marker.setAttribute('cy',p[1]*1000);marker.setAttribute('r','27');marker.dataset.corner=i;svg.append(marker);
       const number=document.createElementNS('http://www.w3.org/2000/svg','text');number.setAttribute('x',p[0]*1000);number.setAttribute('y',p[1]*1000+12);number.textContent=CORNER_LABELS[i];svg.append(number);
-      for(let axis=0;axis<2;axis++)panel.querySelector('[data-corner-input="'+i+'-'+axis+'"]').value=String(Math.round(p[axis]*1000));
     });
   }
   let dragging=null;
