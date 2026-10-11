@@ -15,7 +15,7 @@ const MARKUP=`<dialog id="scanDialog" class="mode-screen scan-screen" aria-label
     <div class="list"><label><span>Image type</span><select id="scanKind"><option value="digital">Screenshot / Diagram</option><option value="physical">Physical Board</option></select></label>
     <button id="scanCamera" type="button">Take Photo</button><button id="scanLibrary" type="button">Choose Photo</button></div>
     <p class="scan-note">Photos are processed on your iPhone. They are not uploaded or saved by this app.</p></div>
-  <div id="scanCrop" hidden><p>Drag the numbered corners to the outer edges of the 64 squares. Match the grid to the board.</p>
+  <div id="scanCrop" hidden>
     <div id="scanPhotoFrame" class="scan-photo-frame"><img id="scanPhoto" alt="Selected chessboard photo"><svg id="scanGrid" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true"></svg></div>
     <div id="scanCorners" class="scan-corners" aria-label="Board corners"></div>
     <div class="dialog-actions"><button id="scanAnother" type="button">Change Photo</button><button id="scanRead" type="button" class="primary">Read Board</button></div></div>
