@@ -19,7 +19,7 @@ import {installImportGame} from './import-game.js';
 import {installExportGame} from './export-game.js';
 const $=id=>document.getElementById(id);
 const session=new GameSession();
-const coach=new ChessCoach();
+const coach=new ChessCoach(()=>renderCoach());
 let coachTimer=null;
 const boardMotion=new BoardMotion($('board'));
 const moveSound=new MoveSound();
@@ -71,12 +71,13 @@ function installCoachCard(){
   const card=document.createElement('section');card.id='coachCard';card.hidden=true;card.setAttribute('aria-label','Chess Coach');card.setAttribute('aria-live','polite');
   card.innerHTML='<div class="coach-heading"><strong id="coachTitle">Chess Coach</strong><button id="coachDismiss" type="button" aria-label="Dismiss coach advice">×</button></div><p id="coachExplanation"></p>';
   $('gamePanel').prepend(card);
-  $('coachDismiss').onclick=()=>{coach.feedback=null;renderCoach();};
+  $('coachDismiss').onclick=()=>coach.dismiss();
 }
 function renderCoach(){
   const card=$('coachCard');if(!card)return;
+  coach.expire();
   const feedback=coach.feedback;
-  if(feedback&&!session.moves.some(move=>move.before===feedback.before&&move.after===feedback.after))coach.feedback=null;
+  if(feedback&&!session.moves.some(move=>move.before===feedback.before&&move.after===feedback.after))coach.dismiss();
   card.hidden=!coachEnabled()||!coach.feedback;
   if(card.hidden)return;
   $('coachTitle').textContent='Chess Coach · '+feedback.severity+' — '+feedback.playedSan;
@@ -88,7 +89,7 @@ function continuousTurnSearch(position){
   const liveTurn=tab==='game'&&session.live&&!position.isGameOver();
   return liveTurn&&((settings.showAnalysis&&!computerTurn())||shouldThinkDuringTurn(settings,position,{tab,live:session.live}));
 }
-function analyze(){
+function analyze(preserveAnalysis=false){
   analysisUpdates.cancel();
   if(inactiveTab||nativeSuspended||benchmarkMode)return;
   if(matchActive()&&(engineMatch.paused||!matchView()||!session.live)){engine.cancel();renderAnalysis();return;}
@@ -99,7 +100,9 @@ function analyze(){
   clearTimeout(progressTimer);progressTimer=null;pendingProgress=null;lastProgressRender=0;
   searchProgress=null;analysisProgress=null;renderSearchCount();
   clearTimeout(bookTimer);
-  bestHint=null;analysis=null;analysisLines=[];analysisFen=position.fen();analysisComplete=false;
+  bestHint=null;
+  if(!preserveAnalysis||analysisFen!==position.fen()){analysis=null;analysisLines=[];}
+  analysisFen=position.fen();analysisComplete=false;
   const showLines=tab==='analysis'||(tab==='game'&&settings.showAnalysis);
   const thinkDuringTurn=continuousTurnSearch(position);
   brainSuspended=thinkDuringTurn&&(document.hidden||!!document.querySelector('dialog[open]'));
@@ -110,6 +113,8 @@ function analyze(){
   if(clockExpired()){renderStatus();renderAnalysis();return;}
   const coachJob=coach.job(id,position.fen(),coachEnabled());
   renderCoach();
+  // Restore book arrows immediately after the animation, before coach searches.
+  renderAnalysis();
   if(coachJob&&!position.isGameOver()){
     coachTimer=setTimeout(()=>{if(id!==requestId)return;coach.clear();renderCoach();engine.cancel();analyze();},5000);
     engine.request({...coachJob,threads:Number(settings.threads),hash:Number(settings.hash),wdl:false,tablebasePath:settings.tablebasePath});
@@ -188,7 +193,11 @@ function renderSearchCount(){
   }
 }
 function onInfo(job,info){
-  if(job.coach)return;
+  if(job.coach){
+    // The after-move search belongs to the visible position; publish its arrows.
+    if(job.coachStage==='after'&&validJob(job))analysisUpdates.push(job,info);
+    return;
+  }
   if(validJob(job))analysisUpdates.push(job,info);
 }
 function publishAnalysis(job,info){
@@ -205,7 +214,8 @@ function onResult(job,move,info){
   if(job.coach){
     if(job.id!==requestId||nativeSuspended||inactiveTab||!coachEnabled()||session.game.fen()!==job.coachAfter||clockExpired())return;
     clearTimeout(coachTimer);coachTimer=null;
-    coach.accept(job,info);renderCoach();analyze();return;
+    if(job.coachStage==='after'&&info&&validJob(job)){analysisUpdates.flush();publishAnalysis(job,info);}
+    coach.accept(job,info);renderCoach();analyze(job.coachStage==='after'&&!!info);return;
   }
   if(!validJob(job))return;
   analysisUpdates.flush();
@@ -246,6 +256,7 @@ function makeMove(move){
     if(!branching&&clockExpired())throw Error(clockStatus());
     if(branching&&tab==='game'&&settings.opponent==='computer'&&position.turn()!==settings.side)throw Error('Choose a position where it is your turn to continue.');
     const coaching=coachEnabled()&&!branching&&position.turn()===settings.side;
+    const coachBefore=coaching&&analysisFen===position.fen()?analysis:null;
     const beforeMotion=boardMotion.capture();
     const color=position.turn(),result=session.move(move,{fromReview:branching});
     if(branching){
@@ -256,7 +267,7 @@ function makeMove(move){
     if(settings.fixedTime===false&&(tab==='game'||matchActive()&&matchView())){
       gameClock.finishMove(color);clockHistory.length=session.cursor;clockHistory[session.cursor]=gameClock.snapshot();
     }
-    if(coaching)coach.record(result);
+    if(coaching)coach.record(result,coachBefore);
     selected=null;changed({move:result,before:beforeMotion});
     if(branching)toast('Continuing from here.');
     return result;

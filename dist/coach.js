@@ -45,9 +45,14 @@ export function coachFeedback(move,beforeInfo,afterInfo){
 
 // The app shares its single native engine. Coach checks precede the normal reply.
 export class ChessCoach {
-  constructor(){this.pending=null;this.feedback=null;}
-  record(move){this.feedback=null;this.pending={move,stage:'before',beforeInfo:null};}
-  clear(){this.pending=null;this.feedback=null;}
+  constructor(onChange=()=>{}){this.pending=null;this.feedback=null;this.dismissTimer=null;this.expiresAt=0;this.onChange=onChange;}
+  dismiss(){clearTimeout(this.dismissTimer);this.dismissTimer=null;this.expiresAt=0;this.feedback=null;this.onChange();}
+  expire(){if(this.feedback&&Date.now()>=this.expiresAt)this.dismiss();}
+  record(move,beforeInfo=null){
+    this.dismiss();
+    this.pending={move,stage:usable(beforeInfo)?'after':'before',beforeInfo:usable(beforeInfo)?beforeInfo:null};
+  }
+  clear(){this.pending=null;this.dismiss();}
   job(id,fen,enabled){
     const pending=this.pending;
     if(!enabled||pending&&pending.move.after!==fen){this.clear();return null;}
@@ -59,7 +64,16 @@ export class ChessCoach {
     if(!pending||job.coachAfter!==pending.move.after||job.coachStage!==pending.stage)return false;
     if(!usable(info)){this.pending=null;return true;}
     if(pending.stage==='before'){pending.beforeInfo=info;pending.stage='after';}
-    else{this.feedback=coachFeedback(pending.move,pending.beforeInfo,info);this.pending=null;}
+    else{
+      const feedback=coachFeedback(pending.move,pending.beforeInfo,info);
+      this.pending=null;this.dismiss();this.feedback=feedback;
+      if(feedback){
+        this.expiresAt=Date.now()+20000;
+        this.dismissTimer=setTimeout(()=>{if(this.feedback===feedback)this.dismiss();},20000);
+        this.dismissTimer?.unref?.();
+        this.onChange();
+      }
+    }
     return true;
   }
 }

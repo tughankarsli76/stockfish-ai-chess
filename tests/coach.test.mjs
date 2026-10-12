@@ -56,3 +56,26 @@ test('missing engine evidence ends coaching without inventing an explanation',()
  const coach=new ChessCoach(),played=move(white,'a2a3');coach.record(played);
  coach.accept(coach.job(1,played.after,true),null);assert.equal(coach.pending,null);assert.equal(coach.feedback,null);
 });
+
+test('coach advice expires after 20 seconds without resetting on reads',t=>{
+ t.mock.timers.enable({apis:['setTimeout','Date']});let changes=0;
+ const coach=new ChessCoach(()=>changes++),played=move(white,'a2a3');coach.record(played);
+ coach.accept(coach.job(1,played.after,true),info(0,['f3d4']));
+ coach.accept(coach.job(2,played.after,true),info(350,['c6f3']));
+ assert.ok(coach.feedback);t.mock.timers.tick(19999);
+ assert.ok(coach.feedback);coach.expire();assert.ok(coach.feedback);
+ t.mock.timers.tick(1);assert.equal(coach.feedback,null);assert.ok(changes>=3);
+});
+test('new advice receives its own timer and dismiss cancels expiry',t=>{
+ t.mock.timers.enable({apis:['setTimeout','Date']});
+ const coach=new ChessCoach(),played=move(white,'a2a3');
+ const warn=()=>{coach.record(played,info(0,['f3d4']));coach.accept(coach.job(1,played.after,true),info(350,['c6f3']));};
+ warn();t.mock.timers.tick(15000);warn();t.mock.timers.tick(5000);assert.ok(coach.feedback);
+ t.mock.timers.tick(14999);assert.ok(coach.feedback);t.mock.timers.tick(1);assert.equal(coach.feedback,null);
+ warn();coach.dismiss();assert.equal(coach.feedback,null);t.mock.timers.tick(20000);assert.equal(coach.feedback,null);
+});
+test('valid cached before-move analysis skips the extra search; shallow analysis does not',()=>{
+ const coach=new ChessCoach(),played=move(white,'a2a3');
+ coach.record(played,info(0,['f3d4']));assert.equal(coach.job(1,played.after,true).coachStage,'after');
+ coach.record(played,info(0,['f3d4'],'cp',3));assert.equal(coach.job(2,played.after,true).coachStage,'before');
+});
