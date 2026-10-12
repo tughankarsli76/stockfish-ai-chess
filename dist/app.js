@@ -320,7 +320,7 @@ function syncScreenAwake(){
   screenAwakeState=enabled;
   chessNative.setScreenAwake(enabled).catch(()=>{screenAwakeState=null;});
 }
-function renderStatus(){gameReview?.update();syncClock();syncScreenAwake();renderSearchCount();const position=session.position(),positionStatus=tab==='analysis'&&!position.isGameOver()?'':gameStatus(position);$('status').textContent=(tab==='game'||tab==='analysis')&&position.isCheckmate()?'':session.live&&clockExpired()?clockStatus():matchActive()&&engineMatch.paused&&!position.isGameOver()?'Match paused':!session.live&&tab!=='analysis'?'Reviewing position'+(positionStatus?' · '+positionStatus:''):computerTurn()?(engineFailed?'Engine unavailable · choose Both Sides':''):tab==='game'&&!position.isGameOver()?'':positionStatus;const headers=session.game.getHeaders();$('whiteName').textContent=headers.White&&headers.White!=='?'?headers.White:(settings.opponent==='local'?(settings.yourName||'Player 1'):settings.side==='w'?(settings.yourName||'You'):engineName());$('blackName').textContent=headers.Black&&headers.Black!=='?'?headers.Black:(settings.opponent==='local'?(settings.yourName||'Player 2'):settings.side==='b'?(settings.yourName||'You'):engineName());$('whiteIndicator').classList.toggle('turn',position.turn()==='w');$('blackIndicator').classList.toggle('turn',position.turn()==='b');$('hint').disabled=!session.live||computerTurn()||position.isGameOver()||engineFailed;if(!engineReady)$('engineBadge').textContent=engineFailed?'Engine unavailable':'';menus?.sync();}
+function renderStatus(){gameReview?.update();syncClock();syncScreenAwake();renderSearchCount();const position=session.position(),positionStatus=tab==='analysis'&&!position.isGameOver()?'':gameStatus(position);$('status').textContent=(tab==='game'||tab==='analysis')&&(position.isCheckmate()||session.live&&clockExpired())?'':session.live&&clockExpired()?clockStatus():matchActive()&&engineMatch.paused&&!position.isGameOver()?'Match paused':!session.live&&tab!=='analysis'?'Reviewing position'+(positionStatus?' · '+positionStatus:''):computerTurn()?(engineFailed?'Engine unavailable · choose Both Sides':''):tab==='game'&&!position.isGameOver()?'':positionStatus;const headers=session.game.getHeaders();$('whiteName').textContent=headers.White&&headers.White!=='?'?headers.White:(settings.opponent==='local'?(settings.yourName||'Player 1'):settings.side==='w'?(settings.yourName||'You'):engineName());$('blackName').textContent=headers.Black&&headers.Black!=='?'?headers.Black:(settings.opponent==='local'?(settings.yourName||'Player 2'):settings.side==='b'?(settings.yourName||'You'):engineName());$('whiteIndicator').classList.toggle('turn',position.turn()==='w');$('blackIndicator').classList.toggle('turn',position.turn()==='b');$('hint').disabled=!session.live||computerTurn()||position.isGameOver()||engineFailed;if(!engineReady)$('engineBadge').textContent=engineFailed?'Engine unavailable':'';menus?.sync();}
 function renderGraph(){const moves=session.moves,positions=moves.length?[moves[0].before,...moves.map(m=>m.after)]:[session.game.fen()];const svg=$('graph');svg.innerHTML='<line x1="12" y1="65" x2="428" y2="65" stroke="#777"/><line x1="12" y1="8" x2="12" y2="123" stroke="#aaa"/>';let segment=[];const flush=()=>{if(segment.length){const path=document.createElementNS('http://www.w3.org/2000/svg','polyline');path.setAttribute('points',segment.join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#30383b');path.setAttribute('stroke-width','1.5');svg.append(path);if(settings.graphStyle==='filled'&&segment.length>1){const area=document.createElementNS('http://www.w3.org/2000/svg','polygon');area.setAttribute('points',segment[0].split(',')[0]+',65 '+segment.join(' ')+' '+segment.at(-1).split(',')[0]+',65');area.setAttribute('fill','#586da52b');svg.prepend(area);}segment=[];}};positions.forEach((fen,i)=>{if(typeof scores[fen]!=='number'){flush();return;}const x=12+(positions.length>1?i/(positions.length-1)*416:0),y=65-Math.max(-6,Math.min(6,scores[fen]*(settings.graphStyle==='black'?-1:1)))/6*55;segment.push(x+','+y);const point=document.createElementNS('http://www.w3.org/2000/svg','circle');point.setAttribute('cx',x);point.setAttribute('cy',y);point.setAttribute('r',i===session.cursor?'4':'2');point.setAttribute('fill',i===session.cursor?'#3232ff':'#555');svg.append(point);});flush();document.querySelector('.graph-title>span').textContent=settings.graphStyle==='black'?'Black advantage':'White advantage';const score=scores[session.position().fen()],current=typeof score==='number'?score*(settings.graphStyle==='black'?-1:1):undefined;$('graphScore').textContent=typeof current==='number'?(current>=0?'+':'')+current.toFixed(2):'Not analyzed';$('graphHelp').textContent=(settings.graphStyle==='black'?'Black above the line · White below':'White above the line · Black below')+' · Gaps are unanalyzed positions';}
 function render(){renderCoach();renderBoard();renderHistory();renderStatus();renderGraph();renderAnalysis();}
 function changed(motion){
@@ -561,11 +561,11 @@ function renderAnalysisArrows(){
 }
 function renderAnalysis(){
   document.body.classList.toggle('match-analysis',tab==='analysis'&&matchActive());
-  const lines=currentAnalysisLines(),position=session.position();
-  $('engineBadge').hidden=tab==='analysis'&&matchActive()&&!position.isGameOver()&&!engineFailed;
+  const position=session.position(),timeout=session.live&&clockExpired(),lines=timeout?[]:currentAnalysisLines();
+  $('engineBadge').hidden=timeout||tab==='analysis'&&matchActive()&&!position.isGameOver()&&!engineFailed;
   if(tab==='analysis'&&analysisPaused)$('engineBadge').textContent='Analysis stopped';
   $('analysisLines').replaceChildren();
-  $('analysisMessage').classList.toggle('checkmate-result',position.isCheckmate());
+  $('analysisMessage').classList.toggle('checkmate-result',position.isCheckmate()||timeout);
   $('analysisMessage').hidden=lines.length>0;
   if(!lines.length)$('analysisMessage').textContent=session.live&&clockExpired()?clockStatus():position.isGameOver()
     ?gameStatus(position)
@@ -574,7 +574,7 @@ function renderAnalysis(){
   $('analysisMessage').hidden=lines.length>0||!$('analysisMessage').textContent;
   mateCelebration.render(position,session.live&&clockExpired()?timeWinner(gameClock.expired):null);
   renderAnalysisProgress();
-  $('analysisNote').textContent=position.isGameOver()?'No further moves.'
+  $('analysisNote').textContent=timeout?'':position.isGameOver()?'No further moves.'
     :position.moves().length===1?'Only one legal move.'
     :position.moves().length===2?'Only two legal moves.'
     :'';
@@ -657,8 +657,9 @@ function syncClock(){if(benchmarkMode){gameClock?.run(null);return;}if(nativeSus
   }
   if(clockExpired()&&!clockFlagHandled){
     clockFlagHandled=true;++requestId;clearTimeout(bookTimer);engine.cancel();searchProgress=null;
-    $('status').textContent=clockStatus();$('positionCount').hidden=true;
-    if(session.live&&(tab==='game'||matchActive()&&matchView())){mateCelebration.render(session.position(),timeWinner(gameClock.expired));winCelebration.play();mateCelebration.play(tab);}
+    $('status').textContent=session.live&&matchView()?'':clockStatus();$('positionCount').hidden=true;
+    renderAnalysis();
+    if(session.live&&(tab==='game'||matchActive()&&matchView())){winCelebration.play();mateCelebration.play(tab);}
     $('engineBadge').textContent=clockStatus();syncScreenAwake();persist();gameReview?.update();
   }
 }
