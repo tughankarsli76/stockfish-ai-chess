@@ -26,6 +26,18 @@ A phone-sized browser smoke check using a mock native UCI transport verified the
 
 ## End-of-game review
 
-With coaching enabled in Play Computer, a completed live game opens Game Review after the final move animation. Checkmate, draws, and clock expiration are included. White and Black have separate counts for every move-quality category, total moves, rated moves, and moves not yet rated. Counts use the same stored classifications as Move List; they do not fabricate an accuracy percentage or Elo rating.
+With coaching enabled in Play Computer, a completed live game opens Game Review after the final move animation. Checkmate, draws, and clock expiration are included. White and Black have separate counts for every move-quality category, total moves, rated moves, and moves not yet rated. Counts use the same stored classifications as Move List; they do not fabricate an Elo rating. Accuracy and the separate app performance index are described below.
 
 The review opens once per completed game, can be dismissed with Done, and can be reopened through Move → Game Review. Disabling coaching hides that entry. Reviewing an earlier position, starting another game, and engine tournaments do not automatically open a summary. Existing coach message expiry remains separate from the summary.
+
+## Accuracy and estimated game performance
+
+Opening Game Review completes missing position analyses using the existing engine at full strength. No additional engine session, downloads, or external service is used. Analysis runs only after the game ends, can be paused by closing the review, and resumes from retained evidence when reopened. Current-game per-move metrics are saved on the device; a completed saved review does not rerun searches on every launch. A retry is offered when adequate evidence could not be obtained. The PGN and board are never changed by review searches.
+
+Accuracy uses exact evaluations at depth 10 or greater with legal principal variations. Terminal mate and draw scores come from the actual game result. An engine-provided WDL distribution is converted to expected score as `(wins + draws / 2) / 10`; without WDL, the portable estimate is `100 / (1 + exp(-cp / 250))`. These are estimated winning chances/expected scores rather than calibrated probabilities.
+
+For each actual move, compare the player's chance before the move with `100 - opponentChanceAfter`. Positive losses are penalized smoothly: `moveAccuracy = 100 * exp(-chanceLoss / 20)`, clamped to 0–100. A move matching the engine's best recommendation receives 100, so cross-search evaluation noise does not penalize the recommended move. Each player's Accuracy is the arithmetic mean of their move scores, including book and forced moves. The whole side's score stays unavailable until every move has sufficient evidence. A side with no moves is not assigned a score. This is the app's documented model, not Chess.com's proprietary formula.
+
+Estimated Game Rating is explicitly an **uncalibrated 0–3000 app performance index**, not Elo, FIDE rating, or a validated estimate of playing strength. The user approved this distinction. The index is `Accuracy * 30`, rounded to the nearest 50 and clamped to 0–3000. It is withheld whenever Accuracy is unavailable. Very short or forced games may score highly; interpreting that as a player's actual rating is inappropriate. The review labels it “App score · not Elo”.
+
+Tests cover chance-loss sensitivity, saturation in dominant positions, WDL preference, player colors, exact/deep/legal evidence, complete-versus-partial scores, persistence, terminal positions, single-PV forced moves, retries, and cancellation. Browser validation uses mock native UCI results; real-engine/device review quality must be checked in TestFlight.

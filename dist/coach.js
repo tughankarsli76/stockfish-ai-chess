@@ -65,7 +65,7 @@ export class ChessCoach {
     const pending=this.pending;
     if(!enabled||pending&&pending.move.after!==fen){this.clear();return null;}
     if(!pending)return null;
-    return {id,coach:true,fen:pending.stage==='before'?pending.move.before:pending.move.after,coachAfter:pending.move.after,coachStage:pending.stage,computer:false,level:20,multiPV:pending.stage==='before'?2:1,time:1000};
+    return {id,coach:true,fen:pending.stage==='before'?pending.move.before:pending.move.after,coachAfter:pending.move.after,coachStage:pending.stage,computer:false,level:20,multiPV:pending.stage==='before'?Math.min(2,new Chess(pending.move.before).moves().length):1,time:1000};
   }
   accept(job,info){
     const pending=this.pending;

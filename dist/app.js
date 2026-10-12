@@ -7,6 +7,7 @@ import {Chess} from './vendor/chess.js';
 import {GameClock,clockLabel,gameMinutes,moveIncrement} from './clock.js';
 import {GameSession,gameStatus} from './model.js';
 import {GameOwner} from './game-owner.js';
+import {ReviewAnalysis} from './accuracy.js';
 import {installGameReview} from './game-review.js';
 import {MoveRatings,appendMoveRating} from './move-ratings.js';
 import {ChessCoach} from './coach.js';
@@ -38,7 +39,8 @@ function selectedEngine(){return matchActive()&&matchView()?engineMatch[session.
 function engineName(id=settings.engine){return (globalThis.chessNative?.engines||[]).find(item=>item.id===id)?.name||({'reckless090':'Reckless 0.9.0','plenty800':'PlentyChess 8.0.0','pawn201':'Pawnocchio 2.0.1','obsidian160':'Obsidian 16.0'}[id]||'Stockfish 19');}
 function normalizeEngine(){if(!(globalThis.chessNative?.engines||[{id:'stockfish19'}]).some(item=>item.id===settings.engine))settings.engine='stockfish19';}
 let nativeSuspended=false,benchmarkMode=false,nativeBackgroundClock=null,nativeNextClock=null,screenAwakeState=null;
-let gameReview=null;
+let gameReview=null,reviewTimer=null;
+const reviewAnalysis=new ReviewAnalysis(moveRatings,()=>{gameReview?.refresh();});
 let menus=null,bookTimer,searchProgress=null,analysisProgress=null,analysisPaused=false,brainSuspended=false;
 let gameOwner=null,inactiveTab=false;
 let progressTimer=null,pendingProgress=null,lastProgressRender=0;
@@ -86,6 +88,29 @@ function renderCoach(){
   if(card.hidden)return;
   $('coachTitle').textContent='Chess Coach · '+feedback.severity+' — '+feedback.playedSan;
   $('coachExplanation').textContent=feedback.reason;
+}
+function reviewKey(){return session.game.pgn()+'|'+connectedEngine+'|'+(clockExpired()?gameClock.expired:'');}
+function reviewAllowed(){return coachEnabled()&&!nativeSuspended&&(session.game.isGameOver()||clockExpired())&&$('gameReviewDialog')?.open;}
+function cancelReviewAnalysis(){
+  clearTimeout(reviewTimer);reviewTimer=null;reviewAnalysis.cancel();
+  if(engine.pending?.review)engine.pending=null;
+  if(engine.active?.review&&!engine.active.cancelled){engine.active.cancelled=true;engine.send('stop');}
+}
+function startReviewAnalysis(){
+  if(!reviewAllowed())return;
+  cancelReviewAnalysis();ensureSelectedEngine();reviewAnalysis.start(session,reviewKey());nextReviewSearch();
+}
+function nextReviewSearch(){
+  if(!reviewAllowed()||reviewAnalysis.key!==reviewKey()){cancelReviewAnalysis();return;}
+  const maxPV=(globalThis.chessNative?.engines||[]).find(item=>item.id===connectedEngine)?.maxPV||2;
+  const job=reviewAnalysis.job(++requestId,maxPV);
+  if(!job){gameReview?.refresh();persist();return;}
+  reviewTimer=setTimeout(()=>{
+    reviewTimer=null;
+    if(!reviewAllowed()||engineFailed){cancelReviewAnalysis();gameReview?.refresh();return;}
+    if(reviewAnalysis.accept(job,null))nextReviewSearch();
+  },5000);
+  engine.request({...job,threads:Number(settings.threads),hash:Number(settings.hash),tablebasePath:settings.tablebasePath});
 }
 function computerTurn(){return (tab==='game'||matchActive()&&matchView())&&session.live&&!session.game.isGameOver()&&!clockExpired()&&(matchActive()?!engineMatch.paused:settings.opponent==='computer'&&session.game.turn()!==settings.side);}
 function validJob(job){return !benchmarkMode&&!nativeSuspended&&!inactiveTab&&job.id===requestId&&job.fen===session.position().fen()&&!clockExpired();}
@@ -142,6 +167,7 @@ function analyze(preserveAnalysis=false){
   renderStatus();
 }
 function onSearchProgress(job){
+  if(job.review)return;
   if(job.coach)return;
   if(!validJob(job))return;
   searchProgress={id:job.id,nodes:job.nodes,depth:job.searchDepth};
@@ -197,6 +223,7 @@ function renderSearchCount(){
   }
 }
 function onInfo(job,info){
+  if(job.review)return;
   if(job.coach){
     // The after-move search belongs to the visible position; publish its arrows.
     if(job.coachStage==='after'&&validJob(job))analysisUpdates.push(job,info);
@@ -216,6 +243,12 @@ function publishAnalysis(job,info){
   renderAnalysis();
 }
 function onResult(job,move,info){
+  if(job.review){
+    if(!reviewAllowed()||reviewAnalysis.key!==reviewKey())return;
+    clearTimeout(reviewTimer);reviewTimer=null;
+    if(reviewAnalysis.accept(job,info?{...info,alternatives:job.lines.filter(line=>line.multipv>1)}:null)){gameReview?.refresh();persist();nextReviewSearch();}
+    return;
+  }
   if(job.coach){
     if(job.id!==requestId||nativeSuspended||inactiveTab||!coachEnabled()||session.game.fen()!==job.coachAfter||clockExpired())return;
     clearTimeout(coachTimer);coachTimer=null;
@@ -487,7 +520,7 @@ menus=installMenus({
  recoverReset:()=>{try{const data=JSON.parse(localStorage.getItem('chess-preview-reset-backup'));if(!data)throw Error();session.load(data.pgn);settings={...DEFAULT_SETTINGS,...data.settings};engineMatch=data.engineMatch?{...data.engineMatch,paused:true}:null;resetGameClock(data.clock);saved=data.saved||[];scores=data.scores||{};flipped=!!data.flipped;syncSettings();setTab('game');persist();toast('Previous games and settings restored.');}catch{toast('No valid recovery copy is available.');}}
 },MENU_MARKUP);
 installCoachCard();
-gameReview=installGameReview({state:()=>({settings,session,tab,suspended:nativeSuspended,inactive:inactiveTab,clockExpired:clockExpired()?gameClock.expired:null,result:clockExpired()?clockStatus():gameStatus(session.game),white:$('whiteName').textContent,black:$('blackName').textContent}),ratingFor:move=>moveRatings.get(move),open:showDialog});
+gameReview=installGameReview({state:()=>({settings,session,tab,suspended:nativeSuspended,inactive:inactiveTab,clockExpired:clockExpired()?gameClock.expired:null,result:clockExpired()?clockStatus():gameStatus(session.game),white:$('whiteName').textContent,black:$('blackName').textContent,reviewProgress:reviewAnalysis}),ratingFor:move=>moveRatings.get(move),accuracyFor:move=>moveRatings.accuracy(move),open:showDialog,startAnalysis:startReviewAnalysis,cancelAnalysis:cancelReviewAnalysis});
 const saveScreen=installSaveGame({open:showDialog,snapshot:()=>({pgn:session.game.pgn(),white:playerHeader('White'),black:playerHeader('Black'),clock:clockSave()}),save:entry=>{
  saved.unshift({...entry,id:Date.now().toString(),date:new Date().toLocaleString()});
  if(!persist()){saved.shift();return false;}

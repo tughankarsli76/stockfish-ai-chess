@@ -1,3 +1,4 @@
+import {moveAccuracy} from './accuracy.js';
 import {Chess} from './vendor/chess.js';
 import {bookMoves} from './features.js';
 
@@ -17,7 +18,7 @@ export const MOVE_RATINGS={
 };
 const VALUES={p:1,n:3,b:3,r:5,q:9,k:0};
 const key=move=>move.before+'|'+move.lan+'|'+move.after;
-const usable=info=>info&&info.depth>=8&&['cp','mate'].includes(info.type)&&Number.isFinite(info.score)&&Array.isArray(info.pv)&&info.pv.length;
+const usable=info=>info&&info.depth>=8&&['cp','mate'].includes(info.type)&&Number.isFinite(info.score)&&(info.terminal===true||Array.isArray(info.pv)&&info.pv.length);
 const value=info=>info.type==='mate'?(info.score>0?100000:-100000):info.score;
 function play(game,uci){try{return typeof uci==='string'&&/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(uci)?game.move({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci[4]}):null;}catch{return null;}}
 function result(kind,reason){return {kind,reason,...MOVE_RATINGS[kind]};}
@@ -32,7 +33,7 @@ export function basicMoveRating(move){
 export function classifyMove(move,beforeInfo,afterInfo){
  if(!usable(beforeInfo)||!usable(afterInfo))return null;
  const before=new Chess(move.before),after=new Chess(move.after),best=play(before,beforeInfo.pv[0]);
- if(!best||!play(new Chess(move.after),afterInfo.pv[0]))return null;
+ if(!best||!afterInfo.terminal&&!play(new Chess(move.after),afterInfo.pv[0]))return null;
  const prior=value(beforeInfo),next=-value(afterInfo),loss=Math.max(0,prior-next);
  // A large evaluation swing after the recommended move is inconsistent evidence.
  if(best.lan===move.lan&&loss>=50)return null;
@@ -64,11 +65,23 @@ export function classifyMove(move,beforeInfo,afterInfo){
 }
 
 export class MoveRatings {
- constructor(){this.evaluations=new Map();this.ratings=new Map();this.basics=new Map();this.computed=new Map();}
- clear(){this.evaluations.clear();this.ratings.clear();this.basics.clear();this.computed.clear();}
+ constructor(){this.evaluations=new Map();this.ratings=new Map();this.basics=new Map();this.computed=new Map();this.accuracies=new Map();this.accuracyInputs=new Map();}
+ clear(){this.evaluations.clear();this.ratings.clear();this.basics.clear();this.computed.clear();this.accuracies.clear();this.accuracyInputs.clear();}
+ accuracy(move){
+  const before=this.evaluations.get(move.before),after=this.evaluations.get(move.after),id=key(move),cached=this.accuracyInputs.get(id);
+  if(cached&&cached.before===before&&cached.after===after)return this.accuracies.get(id)||null;
+  const metric=moveAccuracy(move,before,after);this.accuracyInputs.set(id,{before,after});
+  if(metric)this.accuracies.set(key(move),metric);
+  return metric||this.accuracies.get(key(move))||null;
+ }
+ recordTerminal(game){
+  if(!game.isGameOver())return;
+  this.record(game.fen(),{depth:99,type:game.isCheckmate()?'mate':'cp',score:0,pv:[],terminal:true});
+ }
  evaluation(fen){return this.evaluations.get(fen)||null;}
  record(fen,info){
   if(!usable(info))return;
+  if(!info.terminal&&!play(new Chess(fen),info.pv[0]))return;
   const previous=this.evaluations.get(fen);
   if(previous&&previous.depth>info.depth)return;
   const alternatives=info.alternatives?.length?info.alternatives:previous?.depth===info.depth&&previous.pv[0]===info.pv[0]?previous.alternatives:[];
@@ -89,11 +102,14 @@ export class MoveRatings {
   else if(usable(this.evaluations.get(move.before))&&usable(this.evaluations.get(move.after)))this.ratings.delete(id);
   return rating||this.ratings.get(id)||null;
  }
- serialize(moves){return Object.fromEntries(moves.map(move=>[key(move),this.ratings.get(key(move))]).filter(([,rating])=>rating).map(([id,rating])=>[id,{kind:rating.kind,reason:rating.reason}]));}
+ serialize(moves){return Object.fromEntries(moves.map(move=>{const id=key(move),rating=this.ratings.get(id),accuracy=this.accuracies.get(id);return [id,{kind:rating?.kind||null,reason:rating?.reason||'',accuracy}];}).filter(([,data])=>data.kind||data.accuracy));}
  restore(data){
   if(!data||typeof data!=='object'||Array.isArray(data))return;
   for(const [id,rating] of Object.entries(data).slice(0,1000)){
-   if(id.length<=400&&rating&&Object.hasOwn(MOVE_RATINGS,rating.kind)&&typeof rating.reason==='string'&&rating.reason.length<=300)this.ratings.set(id,result(rating.kind,rating.reason));
+   if(id.length>400||!rating)continue;
+   const metric=rating.accuracy;
+   if(metric&&Number.isFinite(metric.score)&&metric.score>=0&&metric.score<=100&&Number.isFinite(metric.loss)&&metric.loss>=0&&metric.loss<=100&&metric.beforeDepth>=10&&metric.afterDepth>=10)this.accuracies.set(id,{...metric});
+   if(Object.hasOwn(MOVE_RATINGS,rating.kind)&&typeof rating.reason==='string'&&rating.reason.length<=300)this.ratings.set(id,result(rating.kind,rating.reason));
   }
  }
 }

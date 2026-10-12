@@ -723,3 +723,9 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 .game-review-note{font-size:12px!important;color:#666;margin-bottom:0}
 
 #gameReviewButton[hidden]{display:none}
+
+#gameReviewRetry[hidden]{display:none}
+#gameReviewProgress{font-size:13px;line-height:1.4;color:#666;min-height:0;margin:0 0 10px}
+.game-review-table tr[data-category="Accuracy"] td{font-size:22px;font-weight:700}
+
+.game-review-table .game-review-rating-note{max-width:none;font-size:10px;margin:3px 0 0;text-align:left}
