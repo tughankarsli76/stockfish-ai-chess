@@ -22,6 +22,13 @@ const value=info=>info.type==='mate'?(info.score>0?100000:-100000):info.score;
 function play(game,uci){try{return typeof uci==='string'&&/^[a-h][1-8][a-h][1-8][qrbn]?$/.test(uci)?game.move({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci[4]}):null;}catch{return null;}}
 function result(kind,reason){return {kind,reason,...MOVE_RATINGS[kind]};}
 
+export function basicMoveRating(move){
+ const game=new Chess(move.before),legal=game.moves({verbose:true});
+ if(legal.length===1&&legal[0].lan===move.lan)return result('forced','The only legal move in this position.');
+ if(bookMoves(game).some(item=>item.uci===move.lan))return result('book','A move in the built-in opening book.');
+ return null;
+}
+
 export function classifyMove(move,beforeInfo,afterInfo){
  if(!usable(beforeInfo)||!usable(afterInfo))return null;
  const before=new Chess(move.before),after=new Chess(move.after),best=play(before,beforeInfo.pv[0]);
@@ -59,6 +66,7 @@ export function classifyMove(move,beforeInfo,afterInfo){
 export class MoveRatings {
  constructor(){this.evaluations=new Map();this.ratings=new Map();this.basics=new Map();this.computed=new Map();}
  clear(){this.evaluations.clear();this.ratings.clear();this.basics.clear();this.computed.clear();}
+ evaluation(fen){return this.evaluations.get(fen)||null;}
  record(fen,info){
   if(!usable(info))return;
   const previous=this.evaluations.get(fen);
@@ -70,10 +78,7 @@ export class MoveRatings {
  get(move){
   const id=key(move);
   if(!this.basics.has(id)){
-   const game=new Chess(move.before),legal=game.moves({verbose:true});
-   const forced=legal.length===1&&legal[0].lan===move.lan;
-   const book=!forced&&bookMoves(game).some(item=>item.uci===move.lan);
-   this.basics.set(id,forced?result('forced','The only legal move in this position.'):book?result('book','A move in the built-in opening book.'):null);
+   this.basics.set(id,basicMoveRating(move));
   }
   const basic=this.basics.get(id),before=this.evaluations.get(move.before),after=this.evaluations.get(move.after);
   const cached=this.computed.get(id);

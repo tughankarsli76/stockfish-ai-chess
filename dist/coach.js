@@ -1,3 +1,4 @@
+import {classifyMove,basicMoveRating} from './move-ratings.js';
 import {Chess} from './vendor/chess.js';
 
 const PIECES={p:'pawn',n:'knight',b:'bishop',r:'rook',q:'queen',k:'king'};
@@ -16,15 +17,22 @@ export function coachFeedback(move,beforeInfo,afterInfo){
   if(!usable(beforeInfo)||!usable(afterInfo))return null;
   const before=new Chess(move.before),after=new Chess(move.after),player=move.color;
   const best=play(before,beforeInfo.pv[0]);
-  if(!best||best.lan===move.lan)return null;
-  const beforeScore=score(beforeInfo,player,player),afterScore=score(afterInfo,opposite(player),player);
-  const lost=beforeScore-afterScore;
-  if(lost<100||beforeScore<=-100000&&afterScore<=-100000)return null;
-  const severity=lost>=200?'Blunder':'Mistake';
+  if(!best||basicMoveRating(move))return null;
+  const rating=classifyMove(move,beforeInfo,afterInfo);
+  const notifications=['brilliant','blunder','inaccuracy','mistake','excellent','great'];
+  if(!rating||!notifications.includes(rating.kind)&&!['miss','missedWin'].includes(rating.kind))return null;
+  const beforeScore=score(beforeInfo,player,player);
+  const severity=['miss','missedWin'].includes(rating.kind)?'Blunder':rating.label;
   let reason='';
   const line=new Chess(move.after),reply=play(line,afterInfo.pv[0]);
   if(!reply)return null;
-  if(afterInfo.type==='mate'&&afterInfo.score>0&&afterInfo.score<=5&&beforeScore>-100000){
+  if(rating.kind==='brilliant'){
+    reason=`Brilliant move! ${move.san} offers a ${PIECES[move.piece]} sacrifice while maintaining your position. You found the strongest continuation.`;
+  }else if(rating.kind==='great'){
+    reason=`Great move! ${move.san} is the engine's best choice and is clearly stronger than the other analyzed option. You found the critical move.`;
+  }else if(rating.kind==='excellent'){
+    reason=`Excellent move! ${move.san} keeps your position very close to the engine's best evaluation. Keep looking for your opponent's threats.`;
+  }else if(afterInfo.type==='mate'&&afterInfo.score>0&&afterInfo.score<=5&&beforeScore>-100000){
     reason=`That move allows ${colorName(opposite(player))} to force checkmate. The engine's line starts with ${reply.san}. Look for a move that protects your king.`;
   }else if(beforeInfo.type==='mate'&&beforeInfo.score>0&&beforeInfo.score<=5&&afterInfo.type!=='mate'){
     reason=`You missed a forced checkmate. ${best.san} starts the winning line. Look for checks that limit the king's escape squares.`;
@@ -57,7 +65,7 @@ export class ChessCoach {
     const pending=this.pending;
     if(!enabled||pending&&pending.move.after!==fen){this.clear();return null;}
     if(!pending)return null;
-    return {id,coach:true,fen:pending.stage==='before'?pending.move.before:pending.move.after,coachAfter:pending.move.after,coachStage:pending.stage,computer:false,level:20,multiPV:1,time:1000};
+    return {id,coach:true,fen:pending.stage==='before'?pending.move.before:pending.move.after,coachAfter:pending.move.after,coachStage:pending.stage,computer:false,level:20,multiPV:pending.stage==='before'?2:1,time:1000};
   }
   accept(job,info){
     const pending=this.pending;

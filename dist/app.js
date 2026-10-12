@@ -119,7 +119,7 @@ function analyze(preserveAnalysis=false){
   renderAnalysis();
   if(coachJob&&!position.isGameOver()){
     coachTimer=setTimeout(()=>{if(id!==requestId)return;coach.clear();renderCoach();engine.cancel();analyze();},5000);
-    engine.request({...coachJob,threads:Number(settings.threads),hash:Number(settings.hash),wdl:false,tablebasePath:settings.tablebasePath});
+    engine.request({...coachJob,multiPV:Math.min(coachJob.multiPV,(globalThis.chessNative?.engines||[]).find(item=>item.id===connectedEngine)?.maxPV||3),threads:Number(settings.threads),hash:Number(settings.hash),wdl:false,tablebasePath:settings.tablebasePath});
     renderStatus();return;
   }
   if(position.isGameOver()){
@@ -218,8 +218,8 @@ function onResult(job,move,info){
     if(job.id!==requestId||nativeSuspended||inactiveTab||!coachEnabled()||session.game.fen()!==job.coachAfter||clockExpired())return;
     clearTimeout(coachTimer);coachTimer=null;
     if(job.coachStage==='after'&&info&&validJob(job)){analysisUpdates.flush();publishAnalysis(job,info);}
-    if(info){moveRatings.record(job.fen,info);renderHistory();menus?.refreshMoveList();}
-    coach.accept(job,info);renderCoach();analyze(job.coachStage==='after'&&!!info);return;
+    if(info){moveRatings.record(job.fen,{...info,alternatives:job.lines.filter(line=>line.multipv>1)});renderHistory();menus?.refreshMoveList();}
+    coach.accept(job,info?{...info,alternatives:job.lines.filter(line=>line.multipv>1)}:info);renderCoach();analyze(job.coachStage==='after'&&!!info);return;
   }
   if(!validJob(job))return;
   analysisUpdates.flush();
@@ -260,7 +260,7 @@ function makeMove(move){
     if(!branching&&clockExpired())throw Error(clockStatus());
     if(branching&&tab==='game'&&settings.opponent==='computer'&&position.turn()!==settings.side)throw Error('Choose a position where it is your turn to continue.');
     const coaching=coachEnabled()&&!branching&&position.turn()===settings.side;
-    const coachBefore=coaching&&analysisFen===position.fen()?analysis:null;
+    const coachBefore=coaching?(moveRatings.evaluation(position.fen())||(analysisFen===position.fen()?analysis:null)):null;
     const beforeMotion=boardMotion.capture();
     const color=position.turn(),result=session.move(move,{fromReview:branching});
     if(branching){

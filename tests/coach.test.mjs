@@ -28,7 +28,7 @@ test('a defended knight does not receive an unsupported undefended claim',()=>{
 });
 test('good moves, shallow results, invalid PVs and moves matching the best move produce no warning',()=>{
  const played=move(white,'a2a3');
- assert.equal(coachFeedback(played,info(0,['f3d4']),info(50,['c6f3'])),null);
+ assert.equal(coachFeedback(played,info(0,['f3d4']),info(25,['c6f3'])),null);
  assert.equal(coachFeedback(played,info(0,['f3d4'],'cp',4),info(300,['c6f3'])),null);
  assert.equal(coachFeedback(played,info(0,['a2a3']),info(300,['c6f3'])),null);
  assert.equal(coachFeedback(played,info(0,['f3d4']),info(300,['a8a1'])),null);
@@ -78,4 +78,30 @@ test('valid cached before-move analysis skips the extra search; shallow analysis
  const coach=new ChessCoach(),played=move(white,'a2a3');
  coach.record(played,info(0,['f3d4']));assert.equal(coach.job(1,played.after,true).coachStage,'after');
  coach.record(played,info(0,['f3d4'],'cp',3));assert.equal(coach.job(2,played.after,true).coachStage,'before');
+});
+
+test('coach notifies all six requested move categories with appropriate explanations',()=>{
+ const played=move(white,'a2a3'),before=info(0,['f3d4']);
+ for(const [loss,severity] of [[300,'Blunder'],[150,'Mistake'],[75,'Inaccuracy'],[10,'Excellent']]){
+  const feedback=coachFeedback(played,before,info(loss,['c6f3']));assert.equal(feedback.severity,severity);assert.ok(feedback.reason.length>20);
+  if(severity==='Excellent'){assert.match(feedback.reason,/Excellent move/);assert.doesNotMatch(feedback.reason,/undefended/);}
+ }
+ const strong=move(white,'f3d4'),best={...before,alternatives:[{...info(-200,['a2a3']),multipv:2}]};
+ assert.equal(coachFeedback(strong,best,info(0,['c6e4'])).severity,'Great');
+ const offered=move('6k1/8/8/8/7b/5N2/P7/6K1 w - - 0 1','f3g5');
+ const unique={...info(0,['f3g5']),alternatives:[{...info(-200,['a2a3']),multipv:2}]};
+ const brilliant=coachFeedback(offered,unique,info(0,['h4g5']));assert.equal(brilliant.severity,'Brilliant');assert.match(brilliant.reason,/knight sacrifice/);
+});
+test('ordinary Good, Best, book and forced moves do not produce extra coach popups',()=>{
+ assert.equal(coachFeedback(move(white,'a2a3'),info(0,['f3d4']),info(40,['c6f3'])),null);
+ assert.equal(coachFeedback(move(white,'f3d4'),info(0,['f3d4']),info(0,['c6e4'])),null);
+ const game=new Chess(),book=game.move('e4');
+ assert.equal(coachFeedback(book,info(0,['g1f3']),info(75,['e7e5'])),null);
+ const forced=move('8/8/8/8/8/6k1/7r/7K w - - 0 1','h1g1');
+ assert.equal(coachFeedback(forced,info(0,['h1g1']),info(0,['h2g2'])),null);
+});
+test('before-move coach search requests alternatives, while the after search uses one line',()=>{
+ const coach=new ChessCoach(),played=move(white,'a2a3');coach.record(played);
+ const job=coach.job(1,played.after,true);assert.equal(job.multiPV,2);
+ coach.accept(job,info(0,['f3d4']));assert.equal(coach.job(2,played.after,true).multiPV,1);
 });
