@@ -50,7 +50,7 @@ export function installGameReview(api){
   row('Rated moves',stats.w.rated,stats.b.rated);
   for(const kind of ['brilliant','great','best','excellent','good','book','forced','inaccuracy','mistake','miss','missedWin','blunder'])row('',stats.w.counts[kind],stats.b.counts[kind],kind);
   row('Not yet rated',stats.w.unrated,stats.b.unrated);
-  row('Estimated Game Rating',estimatedGameRating(accuracy.w.accuracy)??'—',estimatedGameRating(accuracy.b.accuracy)??'—');
+  row('Game Rating',estimatedGameRating(accuracy.w.accuracy)??'—',estimatedGameRating(accuracy.b.accuracy)??'—');
  }
  function open(){
   const state=api.state();if(!canShowGameReview(state))return;
