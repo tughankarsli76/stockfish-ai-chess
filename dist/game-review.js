@@ -19,7 +19,7 @@ export function canShowGameReview(state){
 
 export function installGameReview(api){
  const dialog=document.createElement('dialog');dialog.id='gameReviewDialog';dialog.className='game-review-dialog';dialog.setAttribute('aria-labelledby','gameReviewTitle');
- dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Move Quality</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table><p class="game-review-note">Accuracy measures how much estimated winning chance your moves preserve (0–100), not the percentage of correct moves. Game Rating is an uncalibrated 0–3000 app performance score, not an Elo rating. Scores appear only when all moves for that player have enough analysis.</p>';
+ dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Move Quality</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table><p class="game-review-note">Accuracy measures how much estimated winning chance your moves preserve (0–100), not the percentage of correct moves. Game Rating estimates your performance in this game on a 0–3000 scale. Scores appear only when all moves for that player have enough analysis.</p>';
  document.body.append(dialog);
  document.getElementById('gameReviewDone').onclick=()=>dialog.close();
  dialog.addEventListener('close',()=>api.cancelAnalysis?.());
@@ -41,7 +41,6 @@ export function installGameReview(api){
   const row=(label,w,b,kind=null)=>{
    const tr=document.createElement('tr'),heading=document.createElement('th');heading.scope='row';
    if(kind)appendMoveRating(heading,{...MOVE_RATINGS[kind],kind,reason:MOVE_RATINGS[kind].label},true);else heading.textContent=label;
-   if(label==='Estimated Game Rating'){const note=document.createElement('small');note.className='game-review-rating-note';note.textContent='App score · not Elo';heading.append(note);}
    tr.dataset.category=kind||label;tr.append(heading);
    for(const [color,count] of [['w',w],['b',b]]){const cell=document.createElement('td');cell.dataset.side=color;cell.textContent=count;tr.append(cell);}
    body.append(tr);
