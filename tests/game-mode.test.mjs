@@ -118,6 +118,7 @@ test('Move fallback uses the selected computer difficulty and stops an existing 
 
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {MoveRatings} from '../dist/move-ratings.js';
 import {GameOwner} from '../dist/game-owner.js';
 import {GameSession} from '../dist/model.js';
 const memory=()=>{const data=new Map();return {getItem:key=>data.get(key)??null,setItem:(key,value)=>data.set(key,value)};};
@@ -137,7 +138,7 @@ test('app persistence uses the ownership guard, including stale unload and autos
  const source=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
  const storage=memory(),owner=new GameOwner(storage,'a');owner.claim();
  const game=new GameSession();game.move('d4');
- const context=vm.createContext({gameOwner:owner,session:game,settings:{level:20},engineName:()=>"Stockfish 19",engineMatch:null,matchActive:()=>false,tab:'game',saved:[],scores:{},flipped:false,clockSave:()=>({elapsed:12}),localStorage:storage,toast:()=>{}});
+ const context=vm.createContext({moveRatings:new MoveRatings(),gameOwner:owner,session:game,settings:{level:20},engineName:()=>"Stockfish 19",engineMatch:null,matchActive:()=>false,tab:'game',saved:[],scores:{},flipped:false,clockSave:()=>({elapsed:12}),localStorage:storage,toast:()=>{}});
  vm.runInContext(source.slice(source.indexOf('function persist(){'),source.indexOf('function syncSettings(){')),context);
  assert.equal(context.persist(),true);const previous=storage.getItem('chess-preview-v2');
  new GameOwner(storage,'b').claim();assert.equal(context.persist(),false);assert.equal(storage.getItem('chess-preview-v2'),previous);

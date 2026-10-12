@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {MoveRatings} from '../dist/move-ratings.js';
 import {ChessCoach} from '../dist/coach.js';
 import {GameSession} from '../dist/model.js';
 import {Chess} from '../dist/vendor/chess.js';
@@ -106,7 +107,7 @@ function loaderHarness({storageFails=false,tournament=false}={}){
   const writes=[],events=[],messages=[],closedDialogs=[];
   const dialogs=[{close(){closedDialogs.push('options');}},{close(){closedDialogs.push('historical');}}];
   const settings={opponent:tournament?'match':'computer',showAnalysis:false,side:'w',engine:'stockfish19',theme:'walnut',fixedTime:false};
-  const context=vm.createContext({coach:new ChessCoach(),
+  const context=vm.createContext({coach:new ChessCoach(),moveRatings:new MoveRatings(),
     GameSession,session,settings,saved:[existing],scores:{old:0.2},flipped:true,
     engineMatch:tournament?{white:'stockfish19',black:'reckless090',paused:true,tournamentId:'active-tournament',round:2}:null,
     gameOwner:null,engineName:()=> 'Stockfish 19',clockExpired:()=>false,

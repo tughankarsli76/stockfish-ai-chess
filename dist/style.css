@@ -702,3 +702,11 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 .coach-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:15px}
 .coach-heading button{color:#555;font-size:22px;min-width:44px;padding:0}
 #coachExplanation{margin:6px 0 0;font-size:15px;line-height:1.45}
+
+.move-rating{display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:21px;padding:0 3px;border-radius:50%;background:var(--rating-color);color:#fff;font:700 12px/1 Arial,sans-serif;vertical-align:middle;flex-shrink:0}
+.move-rating-label{font-size:11px;color:#62626b;margin-left:5px;white-space:nowrap}
+#fullMoveList button{display:flex;align-items:center;flex-wrap:wrap;gap:3px;min-width:0}
+.move-rating-legend{margin-top:18px;color:#62626b;font-size:13px}
+.move-rating-legend>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 6px;margin-top:12px}
+.move-rating-legend>div>span{display:flex;align-items:center}
+@media(max-width:380px){.move-rating-legend>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
