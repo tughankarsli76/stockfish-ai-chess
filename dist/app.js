@@ -7,6 +7,7 @@ import {Chess} from './vendor/chess.js';
 import {GameClock,clockLabel,gameMinutes,moveIncrement} from './clock.js';
 import {GameSession,gameStatus} from './model.js';
 import {GameOwner} from './game-owner.js';
+import {ChessCoach} from './coach.js';
 import {StockfishEngine} from './engine.js';
 import {NativeEngineTransport} from './native-engine.js';
 import {LINE_COLORS,requestedLines,describeLine,arrowMarkup,AnalysisUpdates} from './analysis.js';
@@ -18,6 +19,8 @@ import {installImportGame} from './import-game.js';
 import {installExportGame} from './export-game.js';
 const $=id=>document.getElementById(id);
 const session=new GameSession();
+const coach=new ChessCoach();
+let coachTimer=null;
 const boardMotion=new BoardMotion($('board'));
 const moveSound=new MoveSound();
 const moveHaptics=new MoveHaptics();
@@ -63,6 +66,22 @@ function ensureSelectedEngine(){
 }
 function syncSettings(){delete settings.tablebasePieces;moveSound.setEnabled(settings.moveSound);moveHaptics.setEnabled(settings.moveHaptics);if(['walnut1','rosewood1'].includes(settings.theme))settings.theme=DEFAULT_SETTINGS.theme;normalizeEngine();ensureSelectedEngine();settings.time=normalizeAnalysisTime(settings.time);for(const id of ['theme'])$(id).value=settings[id];for(const id of ['coordinates','legalHints','lastMove'])$(id).checked=settings[id];document.body.dataset.theme=settings.theme;menus?.sync();}
 const engine=new StockfishEngine(onInfo,onResult,status=>{engineReady=status==='ready';engineFailed=status==='unavailable';if(engineFailed)toast('Stockfish disconnected. Click Analysis to reconnect.');renderStatus();renderAnalysis();},()=>new NativeEngineTransport(connectedEngine),onSearchProgress);
+function coachEnabled(){return settings.chessCoach===true&&settings.opponent==='computer'&&tab==='game'&&session.live&&!benchmarkMode&&!inactiveTab;}
+function installCoachCard(){
+  const card=document.createElement('section');card.id='coachCard';card.hidden=true;card.setAttribute('aria-label','Chess Coach');card.setAttribute('aria-live','polite');
+  card.innerHTML='<div class="coach-heading"><strong id="coachTitle">Chess Coach</strong><button id="coachDismiss" type="button" aria-label="Dismiss coach advice">×</button></div><p id="coachExplanation"></p>';
+  $('gamePanel').prepend(card);
+  $('coachDismiss').onclick=()=>{coach.feedback=null;renderCoach();};
+}
+function renderCoach(){
+  const card=$('coachCard');if(!card)return;
+  const feedback=coach.feedback;
+  if(feedback&&!session.moves.some(move=>move.before===feedback.before&&move.after===feedback.after))coach.feedback=null;
+  card.hidden=!coachEnabled()||!coach.feedback;
+  if(card.hidden)return;
+  $('coachTitle').textContent='Chess Coach · '+feedback.severity+' — '+feedback.playedSan;
+  $('coachExplanation').textContent=feedback.reason;
+}
 function computerTurn(){return (tab==='game'||matchActive()&&matchView())&&session.live&&!session.game.isGameOver()&&!clockExpired()&&(matchActive()?!engineMatch.paused:settings.opponent==='computer'&&session.game.turn()!==settings.side);}
 function validJob(job){return !benchmarkMode&&!nativeSuspended&&!inactiveTab&&job.id===requestId&&job.fen===session.position().fen()&&!clockExpired();}
 function continuousTurnSearch(position){
@@ -76,6 +95,7 @@ function analyze(){
   ensureSelectedEngine();
   if(tab==='analysis'&&analysisPaused){engine.cancel();renderAnalysis();return;}
   const position=session.position(),id=++requestId;
+  clearTimeout(coachTimer);coachTimer=null;
   clearTimeout(progressTimer);progressTimer=null;pendingProgress=null;lastProgressRender=0;
   searchProgress=null;analysisProgress=null;renderSearchCount();
   clearTimeout(bookTimer);
@@ -88,7 +108,15 @@ function analyze(){
   engine.cancel();
   syncClock();
   if(clockExpired()){renderStatus();renderAnalysis();return;}
+  const coachJob=coach.job(id,position.fen(),coachEnabled());
+  renderCoach();
+  if(coachJob&&!position.isGameOver()){
+    coachTimer=setTimeout(()=>{if(id!==requestId)return;coach.clear();renderCoach();engine.cancel();analyze();},5000);
+    engine.request({...coachJob,threads:Number(settings.threads),hash:Number(settings.hash),wdl:false,tablebasePath:settings.tablebasePath});
+    renderStatus();return;
+  }
   if(position.isGameOver()){
+    coach.pending=null;
     analysisComplete=true;
     scores[position.fen()]=position.isCheckmate()?(position.turn()==='w'?-100:100):0;
     $('engineBadge').textContent='Game over';
@@ -105,6 +133,7 @@ function analyze(){
   renderStatus();
 }
 function onSearchProgress(job){
+  if(job.coach)return;
   if(!validJob(job))return;
   searchProgress={id:job.id,nodes:job.nodes,depth:job.searchDepth};
   pendingProgress={id:job.id,fen:job.fen,nodes:job.nodes,searchDepth:job.searchDepth,tbHits:job.tbHits,nps:job.nps};
@@ -159,6 +188,7 @@ function renderSearchCount(){
   }
 }
 function onInfo(job,info){
+  if(job.coach)return;
   if(validJob(job))analysisUpdates.push(job,info);
 }
 function publishAnalysis(job,info){
@@ -172,6 +202,11 @@ function publishAnalysis(job,info){
   renderAnalysis();
 }
 function onResult(job,move,info){
+  if(job.coach){
+    if(job.id!==requestId||nativeSuspended||inactiveTab||!coachEnabled()||session.game.fen()!==job.coachAfter||clockExpired())return;
+    clearTimeout(coachTimer);coachTimer=null;
+    coach.accept(job,info);renderCoach();analyze();return;
+  }
   if(!validJob(job))return;
   analysisUpdates.flush();
   publishSearchProgress();
@@ -210,6 +245,7 @@ function makeMove(move){
     const branching=!session.live,oldCursor=session.cursor,position=session.position();
     if(!branching&&clockExpired())throw Error(clockStatus());
     if(branching&&tab==='game'&&settings.opponent==='computer'&&position.turn()!==settings.side)throw Error('Choose a position where it is your turn to continue.');
+    const coaching=coachEnabled()&&!branching&&position.turn()===settings.side;
     const beforeMotion=boardMotion.capture();
     const color=position.turn(),result=session.move(move,{fromReview:branching});
     if(branching){
@@ -220,6 +256,7 @@ function makeMove(move){
     if(settings.fixedTime===false&&(tab==='game'||matchActive()&&matchView())){
       gameClock.finishMove(color);clockHistory.length=session.cursor;clockHistory[session.cursor]=gameClock.snapshot();
     }
+    if(coaching)coach.record(result);
     selected=null;changed({move:result,before:beforeMotion});
     if(branching)toast('Continuing from here.');
     return result;
@@ -235,7 +272,7 @@ function syncScreenAwake(){
 }
 function renderStatus(){syncClock();syncScreenAwake();renderSearchCount();const position=session.position(),positionStatus=tab==='analysis'&&!position.isGameOver()?'':gameStatus(position);$('status').textContent=(tab==='game'||tab==='analysis')&&position.isCheckmate()?'':session.live&&clockExpired()?clockStatus():matchActive()&&engineMatch.paused&&!position.isGameOver()?'Match paused':!session.live&&tab!=='analysis'?'Reviewing position'+(positionStatus?' · '+positionStatus:''):computerTurn()?(engineFailed?'Engine unavailable · choose Both Sides':''):tab==='game'&&!position.isGameOver()?'':positionStatus;const headers=session.game.getHeaders();$('whiteName').textContent=headers.White&&headers.White!=='?'?headers.White:(settings.opponent==='local'?(settings.yourName||'Player 1'):settings.side==='w'?(settings.yourName||'You'):engineName());$('blackName').textContent=headers.Black&&headers.Black!=='?'?headers.Black:(settings.opponent==='local'?(settings.yourName||'Player 2'):settings.side==='b'?(settings.yourName||'You'):engineName());$('whiteIndicator').classList.toggle('turn',position.turn()==='w');$('blackIndicator').classList.toggle('turn',position.turn()==='b');$('hint').disabled=!session.live||computerTurn()||position.isGameOver()||engineFailed;if(!engineReady)$('engineBadge').textContent=engineFailed?'Engine unavailable':'';menus?.sync();}
 function renderGraph(){const moves=session.moves,positions=moves.length?[moves[0].before,...moves.map(m=>m.after)]:[session.game.fen()];const svg=$('graph');svg.innerHTML='<line x1="12" y1="65" x2="428" y2="65" stroke="#777"/><line x1="12" y1="8" x2="12" y2="123" stroke="#aaa"/>';let segment=[];const flush=()=>{if(segment.length){const path=document.createElementNS('http://www.w3.org/2000/svg','polyline');path.setAttribute('points',segment.join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#30383b');path.setAttribute('stroke-width','1.5');svg.append(path);if(settings.graphStyle==='filled'&&segment.length>1){const area=document.createElementNS('http://www.w3.org/2000/svg','polygon');area.setAttribute('points',segment[0].split(',')[0]+',65 '+segment.join(' ')+' '+segment.at(-1).split(',')[0]+',65');area.setAttribute('fill','#586da52b');svg.prepend(area);}segment=[];}};positions.forEach((fen,i)=>{if(typeof scores[fen]!=='number'){flush();return;}const x=12+(positions.length>1?i/(positions.length-1)*416:0),y=65-Math.max(-6,Math.min(6,scores[fen]*(settings.graphStyle==='black'?-1:1)))/6*55;segment.push(x+','+y);const point=document.createElementNS('http://www.w3.org/2000/svg','circle');point.setAttribute('cx',x);point.setAttribute('cy',y);point.setAttribute('r',i===session.cursor?'4':'2');point.setAttribute('fill',i===session.cursor?'#3232ff':'#555');svg.append(point);});flush();document.querySelector('.graph-title>span').textContent=settings.graphStyle==='black'?'Black advantage':'White advantage';const score=scores[session.position().fen()],current=typeof score==='number'?score*(settings.graphStyle==='black'?-1:1):undefined;$('graphScore').textContent=typeof current==='number'?(current>=0?'+':'')+current.toFixed(2):'Not analyzed';$('graphHelp').textContent=(settings.graphStyle==='black'?'Black above the line · White below':'White above the line · Black below')+' · Gaps are unanalyzed positions';}
-function render(){renderBoard();renderHistory();renderStatus();renderGraph();renderAnalysis();}
+function render(){renderCoach();renderBoard();renderHistory();renderStatus();renderGraph();renderAnalysis();}
 function changed(motion){
   if(!motion){winCelebration.stop();mateCelebration.stop();}
   render();persist();
@@ -247,8 +284,9 @@ function changed(motion){
   animation.then(()=>{if(id===requestId&&fen===session.position().fen())analyze();});
   renderAnalysisArrows();syncClock();
 }
-function navigate(index){winCelebration.stop();mateCelebration.stop();if(matchActive())pauseEngineMatch();gameClock.tick();const previousCursor=session.cursor;session.navigate(index);selected=null;render();persist();if(tab==='analysis'&&session.cursor!==previousCursor&&session.cursor>0&&!nativeSuspended&&!inactiveTab)moveSound.play(!!session.moves[session.cursor-1]?.captured);analyze();}
+function navigate(index){coach.clear();winCelebration.stop();mateCelebration.stop();if(matchActive())pauseEngineMatch();gameClock.tick();const previousCursor=session.cursor;session.navigate(index);selected=null;render();persist();if(tab==='analysis'&&session.cursor!==previousCursor&&session.cursor>0&&!nativeSuspended&&!inactiveTab)moveSound.play(!!session.moves[session.cursor-1]?.captured);analyze();}
 function takeBack(){
+  coach.clear();
   if(!session.cursor)return;
   if(tab!=='game'||settings.opponent!=='computer'){navigate(session.cursor-1);return;}
   ++requestId;engine.cancel();clearTimeout(bookTimer);boardMotion.cancel();
@@ -375,7 +413,8 @@ window.addEventListener('chess-native-lifecycle',event=>{
   if(lifecycle.type==='screen-lock'||lifecycle.type==='match-inactive'||lifecycle.type==='background'&&matchActive()){screenAwakeState=null;nativeSuspended=true;++requestId;clearTimeout(bookTimer);clearTimeout(progressTimer);progressTimer=null;analysisUpdates.cancel();gameClock.run(null);advanceMoveClock(moveClock,session.game.fen(),session.game.turn(),false);if(matchActive())engineMatch.paused=true;engine.suspend();engineReady=false;if(lifecycle.type==='background')persist();return;}
   if(lifecycle.type==='background'){
     screenAwakeState=null;
-    const keepSearch=!matchActive()&&engine.active&&!engine.active.cancelled;
+    const keepSearch=!matchActive()&&engine.active&&!engine.active.cancelled&&!engine.active.coach;
+    if(engine.active?.coach){coach.clear();clearTimeout(coachTimer);coachTimer=null;}
     captureNativeClock(keepSearch);
     const continueGame=!keepSearch&&(backgroundGameEligible()||(!benchmarkMode&&tab==='game'&&session.live&&!session.game.isGameOver()&&!clockExpired()&&!document.querySelector('dialog[open]')&&!matchActive()));
     winCelebration.stop();mateCelebration.stop();
@@ -429,6 +468,7 @@ menus=installMenus({
  },
  recoverReset:()=>{try{const data=JSON.parse(localStorage.getItem('chess-preview-reset-backup'));if(!data)throw Error();session.load(data.pgn);settings={...DEFAULT_SETTINGS,...data.settings};engineMatch=data.engineMatch?{...data.engineMatch,paused:true}:null;resetGameClock(data.clock);saved=data.saved||[];scores=data.scores||{};flipped=!!data.flipped;syncSettings();setTab('game');persist();toast('Previous games and settings restored.');}catch{toast('No valid recovery copy is available.');}}
 },MENU_MARKUP);
+installCoachCard();
 const saveScreen=installSaveGame({open:showDialog,snapshot:()=>({pgn:session.game.pgn(),white:playerHeader('White'),black:playerHeader('Black'),clock:clockSave()}),save:entry=>{
  saved.unshift({...entry,id:Date.now().toString(),date:new Date().toLocaleString()});
  if(!persist()){saved.shift();return false;}
@@ -503,13 +543,14 @@ function patchSettings(patch){
   if(globalThis.chessNative&&Object.hasOwn(patch,'hash'))patch={...patch,hash:Math.max(16,Math.min(globalThis.chessNative.maxHashMB||32,Math.floor(Number(patch.hash)||150)))};
   if(globalThis.chessNative&&Object.hasOwn(patch,'threads'))patch={...patch,threads:Math.max(1,Math.min(globalThis.chessNative.maxThreads||1,Math.floor(Number(patch.threads)||2)))};
   const resetTime=['fixedTime','gameMinutes','increment'].some(key=>key in patch&&patch[key]!==settings[key]);
+  if(['chessCoach','engine','opponent','side'].some(key=>key in patch))coach.clear();
   gameClock.tick();if('engine' in patch)scores={};Object.assign(settings,patch);
   settings.gameMinutes=gameMinutes(settings.gameMinutes);settings.increment=moveIncrement(settings.increment);
   if(resetTime)resetGameClock();
   if('side' in patch)flipped=settings.side==='b';
   selected=null;syncSettings();render();persist();
   if(!settings.showAnalysis&&tab==='analysis'){setTab('game');return;}
-  if(Object.keys(patch).some(key=>['engine','opponent','side','level','moveTime','fixedTime','gameMinutes','increment','showAnalysis','time','threads','hash','tablebasePath','wdl','openingBook','bookVariety','permanentBrain','analysisArrows'].includes(key)))analyze();
+  if(Object.keys(patch).some(key=>['chessCoach','engine','opponent','side','level','moveTime','fixedTime','gameMinutes','increment','showAnalysis','time','threads','hash','tablebasePath','wdl','openingBook','bookVariety','permanentBrain','analysisArrows'].includes(key)))analyze();
 }
 function forceMove(){
   if(boardMotion.running||matchActive()&&engineMatch.paused)return;

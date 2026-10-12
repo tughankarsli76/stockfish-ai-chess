@@ -2,13 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {ChessCoach} from '../dist/coach.js';
 
 function harness(){
  const source=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
  const start=source.indexOf("window.addEventListener('chess-native-lifecycle'");
  const end=source.indexOf("window.addEventListener('pagehide'",start);
  const calls=[];
- const c={matchActive:()=>false,captureNativeClock:()=>{},restoreNativeClock:()=>{},finishNativeClock:()=>{},publishSearchProgress:()=>{},renderStatus:()=>{},boardMotion:{running:false},benchmarkMode:false,backgroundGameEligible:()=>false,winCelebration:{stop:()=>{}},mateCelebration:{stop(){}},nativeSuspended:false,requestId:17,bookTimer:1,progressTimer:2,engineReady:true,analysisComplete:false,tab:'game',analysisPaused:false,settings:{time:10},continuousTurnSearch:()=>false,
+ const c={coach:new ChessCoach(),coachTimer:null,matchActive:()=>false,captureNativeClock:()=>{},restoreNativeClock:()=>{},finishNativeClock:()=>{},publishSearchProgress:()=>{},renderStatus:()=>{},boardMotion:{running:false},benchmarkMode:false,backgroundGameEligible:()=>false,winCelebration:{stop:()=>{}},mateCelebration:{stop(){}},nativeSuspended:false,requestId:17,bookTimer:1,progressTimer:2,engineReady:true,analysisComplete:false,tab:'game',analysisPaused:false,settings:{time:10},continuousTurnSearch:()=>false,
   analysisUpdates:{cancel:()=>calls.push('cancel-display'),flush:()=>calls.push('flush-display')},gameClock:{run:value=>calls.push(['clock',value])},
   moveClock:{},session:{position:()=>({}),game:{fen:()=> 'position',turn:()=> 'w'}},
   advanceMoveClock:()=>{},persist:()=>calls.push('persist'),clearTimeout:()=>{},
@@ -68,4 +69,15 @@ for(const type of ['background','match-inactive','screen-lock'])test(type+' paus
  assert.ok(calls.some(x=>Array.isArray(x)&&x[0]==='clock'&&x[1]===null));
  if(type==='background')assert.ok(calls.includes('persist'));
  c.event({detail:'foreground'});assert.equal(c.engineMatch.paused,true);
+});
+
+test('coach analysis does not replace the real computer turn during background handoff',()=>{
+ const {c,calls}=harness();
+ c.engine.active={id:17,coach:true};c.coach.pending={move:{after:'position'}};
+ c.session.live=true;c.session.game.isGameOver=()=>false;c.clockExpired=()=>false;c.document={querySelector:()=>null};
+ c.backgroundGameEligible=()=>true;c.localStorage={getItem:()=>JSON.stringify({settings:{}})};
+ c.chessNative={engines:[],backgroundGame:async data=>calls.push(['background-game',data])};c.globalThis={chessNative:c.chessNative};
+ c.event({detail:'background'});
+ assert.equal(c.coach.pending,null);assert.ok(calls.includes('stop-engine'));
+ assert.ok(calls.some(call=>Array.isArray(call)&&call[0]==='background-game'));
 });

@@ -4,7 +4,7 @@ import {OPENING_NAMES} from './opening-names.js';
 import {ELITE_BOOK,ELITE_BOOK_INFO} from './elite-book-data.js';
 export {ELITE_BOOK_INFO};
 
-export const DEFAULT_SETTINGS={engine:'stockfish19',opponent:'computer',side:'w',level:'20',theme:'maple3',coordinates:true,legalHints:false,lastMove:true,time:0,analysisArrows:true,useToolbar:true,shortcut:'new',pieceSet:'classic',moveSound:false,moveHaptics:false,graphStyle:'default',showAnalysis:true,figurine:true,openingBook:true,bookVariety:'medium',permanentBrain:false,wdl:true,threads:2,hash:150,tablebasePath:'',tablebaseCount:0,language:'system',yourName:'',fixedTime:true,moveTime:10,links:{}};
+export const DEFAULT_SETTINGS={engine:'stockfish19',opponent:'computer',chessCoach:false,side:'w',level:'20',theme:'maple3',coordinates:true,legalHints:false,lastMove:true,time:0,analysisArrows:true,useToolbar:true,shortcut:'new',pieceSet:'classic',moveSound:false,moveHaptics:false,graphStyle:'default',showAnalysis:true,figurine:true,openingBook:true,bookVariety:'medium',permanentBrain:false,wdl:true,threads:2,hash:150,tablebasePath:'',tablebaseCount:0,language:'system',yourName:'',fixedTime:true,moveTime:10,links:{}};
 export const ANALYSIS_TIMES=[5,10,20,30,60,90,0];
 Object.assign(DEFAULT_SETTINGS,{gameMinutes:3,increment:0});
 export function normalizeAnalysisTime(value){return ['number','string'].includes(typeof value)&&String(value).trim()!==''&&ANALYSIS_TIMES.includes(Number(value))?Number(value):0;}

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {ChessCoach} from '../dist/coach.js';
 import {GameSession,gameStatus} from '../dist/model.js';
 import {GameClock} from '../dist/clock.js';
 
@@ -34,7 +35,7 @@ function harness(pgn,{tab='game',opponent='computer',side='w'}={}){
  const moves=[],requests=[],cleared=[],clock=new GameClock(3,2,()=>now);
  const history=Array.from({length:session.length+1},(_,i)=>({remaining:{w:180000-i*1100,b:180000-i*700},expired:null}));
  clock.restore(history.at(-1));
- const context={session,GameClock,settings:{opponent,side,fixedTime:false,gameMinutes:3,increment:2},tab,
+ const context={session,coach:new ChessCoach(),GameClock,settings:{opponent,side,fixedTime:false,gameMinutes:3,increment:2},tab,
   engineMatch:opponent==='match'?{paused:false}:null,gameClock:clock,clockHistory:history,
   moveClock:{fen:session.game.fen(),elapsed:{w:1000,b:2000},running:null,since:0},
   selected:'e2',promotion:{from:'a7',to:'a8'},clockFlagHandled:true,requestId:40,bookTimer:123,
