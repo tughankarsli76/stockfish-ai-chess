@@ -26,7 +26,7 @@ A phone-sized browser smoke check using a mock native UCI transport verified the
 
 ## End-of-game review
 
-With coaching enabled in Play Computer, a completed live game opens Game Review after the final move animation and both confetti and checkmate celebrations finish. The review has no explanatory footer. Checkmate, draws, and clock expiration are included. White and Black have separate counts for every move-quality category, and total moves. Rated/unrated totals and Game Rating are not shown in the review. Counts use the same stored classifications as Move List; they do not fabricate an Elo rating. Accuracy and the separate app performance index are described below.
+With coaching enabled in Play Computer, a completed live game opens Game Review after the final move animation and the confetti finishes, without waiting for the king animation. The review has no explanatory footer. Checkmate, draws, and clock expiration are included. White and Black have separate counts for every move-quality category, and total moves. Rated/unrated totals and Game Rating are not shown in the review. Counts use the same stored classifications as Move List; they do not fabricate an Elo rating. Accuracy and the separate app performance index are described below.
 
 The review opens once per completed game, can be dismissed with Done, and can be reopened through Move → Game Review. Disabling coaching hides that entry. Reviewing an earlier position, starting another game, and engine tournaments do not automatically open a summary. Existing coach message expiry remains separate from the summary.
 
