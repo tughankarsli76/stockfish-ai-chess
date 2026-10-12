@@ -1,4 +1,4 @@
-import {gameAccuracy,estimatedGameRating} from './accuracy.js';
+import {gameAccuracy} from './accuracy.js';
 import {MOVE_RATINGS,appendMoveRating} from './move-ratings.js';
 
 export function gameReviewStats(moves,ratingFor){
@@ -47,10 +47,7 @@ export function installGameReview(api){
   };
   row('Accuracy',accuracy.w.accuracy===null?'—':accuracy.w.accuracy.toFixed(1),accuracy.b.accuracy===null?'—':accuracy.b.accuracy.toFixed(1));
   row('Total moves',stats.w.total,stats.b.total);
-  row('Rated moves',stats.w.rated,stats.b.rated);
   for(const kind of ['brilliant','great','best','excellent','good','book','forced','inaccuracy','mistake','miss','missedWin','blunder'])row('',stats.w.counts[kind],stats.b.counts[kind],kind);
-  row('Not yet rated',stats.w.unrated,stats.b.unrated);
-  row('Game Rating',estimatedGameRating(accuracy.w.accuracy)??'—',estimatedGameRating(accuracy.b.accuracy)??'—');
  }
  function open(){
   const state=api.state();if(!canShowGameReview(state))return;
