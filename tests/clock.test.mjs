@@ -34,3 +34,10 @@ test('one-minute tournament clock expires after 60 seconds with no increment',()
  clock.run('w');now=1000;clock.finishMove('w');assert.equal(clock.remaining.w,59000);
  clock.run('b');now=61000;assert.equal(clock.tick(),'b');assert.equal(clock.remaining.b,0);
 });
+
+test('time results name the winner rather than only the expired side',async()=>{
+ const {timeWinner,timeResult}=await import('../dist/clock.js');
+ assert.equal(timeWinner('w'),'b');assert.equal(timeResult('w'),'Black wins on time');
+ assert.equal(timeWinner('b'),'w');assert.equal(timeResult('b'),'White wins on time');
+ assert.equal(timeWinner(null),null);assert.equal(timeResult(null),'');
+});

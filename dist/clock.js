@@ -1,3 +1,5 @@
+export const timeWinner = expired => expired==='w'?'b':expired==='b'?'w':null;
+export const timeResult = expired => timeWinner(expired)?(timeWinner(expired)==='w'?'White':'Black')+' wins on time':'';
 export const gameMinutes = value => Math.round(Math.max(1,Math.min(180,Number(value)||3)));
 export const moveIncrement = value => Math.round(Math.max(0,Math.min(60,Number(value)||0)));
 export function clockLabel(ms){

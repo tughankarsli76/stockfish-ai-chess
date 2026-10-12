@@ -49,13 +49,13 @@ export class CheckmateCelebration {
   }
   get active(){return this.playing!==null;}
   stop(){clearTimeout(this.timer);this.timer=null;this.playing?.classList.remove('playing');this.playing=null;}
-  render(position){
-    const checkmate=position.isCheckmate(),key=checkmate?position.fen():null;
+  render(position,timeWinner=null){
+    const checkmate=position.isCheckmate()||!!timeWinner,key=checkmate?position.fen()+'|'+(timeWinner||'mate'):null;
     if(key!==this.position)this.stop();
     this.position=key;
     for(const container of this.containers){
       container.hidden=!checkmate;
-      container.dataset.winner=position.turn()==='w'?'black':'white';
+      container.dataset.winner=(timeWinner||(position.turn()==='w'?'b':'w'))==='w'?'white':'black';
     }
   }
   play(view){

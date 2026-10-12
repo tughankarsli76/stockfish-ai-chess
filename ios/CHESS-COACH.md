@@ -41,3 +41,7 @@ For each actual move, compare the player's expected score before the move with `
 Game Rating is a heuristic app performance index, not a calibrated estimate of playing strength. It uses `2400 * (Accuracy / 100)^3`, rounded to 50, rather than the original linear multiplier. It is withheld when Accuracy is unavailable. The ceiling of 2400 and nonlinear curve reduce inflated scores; they do not establish empirical rating calibration. Very short or forced games can still produce high scores. Game Rating is no longer displayed in Game Review.
 
 Tests cover chance-loss sensitivity, saturation in dominant positions, WDL preference, player colors, exact/deep/legal evidence, complete-versus-partial scores, persistence, terminal positions, single-PV forced moves, retries, and cancellation. Browser validation uses mock native UCI results; real-engine/device review quality must be checked in TestFlight.
+
+## Timeout celebrations
+
+When a live game clock expires, including engine matches, the result names the winner as White wins on time or Black wins on time. The same confetti and king animation used at checkmate play once, with the king colored for the clock winner. Review still waits only for confetti. Reduced-motion and background visibility behavior remain handled by the existing celebration classes.

@@ -4,7 +4,7 @@ import {MoveSound} from './move-sound.js';
 import {MoveHaptics} from './move-haptics.js';
 import {WinCelebration,CheckmateCelebration} from './celebration.js';
 import {Chess} from './vendor/chess.js';
-import {GameClock,clockLabel,gameMinutes,moveIncrement} from './clock.js';
+import {GameClock,clockLabel,gameMinutes,moveIncrement,timeWinner,timeResult} from './clock.js';
 import {GameSession,gameStatus} from './model.js';
 import {GameOwner} from './game-owner.js';
 import {ReviewAnalysis} from './accuracy.js';
@@ -567,12 +567,12 @@ function renderAnalysis(){
   $('analysisLines').replaceChildren();
   $('analysisMessage').classList.toggle('checkmate-result',position.isCheckmate());
   $('analysisMessage').hidden=lines.length>0;
-  if(!lines.length)$('analysisMessage').textContent=position.isGameOver()
+  if(!lines.length)$('analysisMessage').textContent=session.live&&clockExpired()?clockStatus():position.isGameOver()
     ?gameStatus(position)
     :tab==='analysis'&&analysisPaused?'Click Analysis to resume.':engineFailed?'Stockfish disconnected. Click Analysis to reconnect.'
     :'';
   $('analysisMessage').hidden=lines.length>0||!$('analysisMessage').textContent;
-  mateCelebration.render(position);
+  mateCelebration.render(position,session.live&&clockExpired()?timeWinner(gameClock.expired):null);
   renderAnalysisProgress();
   $('analysisNote').textContent=position.isGameOver()?'No further moves.'
     :position.moves().length===1?'Only one legal move.'
@@ -620,7 +620,7 @@ function forceMove(){
 }
 
 function clockExpired(){return settings.fixedTime===false&&!!gameClock?.expired;}
-function clockStatus(){return (gameClock.expired==='w'?'White':'Black')+' ran out of time';}
+function clockStatus(){return timeResult(gameClock.expired);}
 function clockSave(){if(moveClock)advanceMoveClock(moveClock,session.game.fen(),session.game.turn(),!!moveClock.running);return {fen:session.game.fen(),minutes:settings.gameMinutes,increment:settings.increment,current:gameClock.snapshot(),savedAt:Date.now(),runningSide:settings.fixedTime===false?gameClock.running:moveClock?.running,countUp:settings.fixedTime!==false,history:clockHistory,moveClock:moveClock?{fen:moveClock.fen,elapsed:{...moveClock.elapsed}}:null};}
 function resetGameClock(saved=null){
   gameClock=new GameClock(settings.gameMinutes,settings.increment);clockHistory=[];clockFlagHandled=false;
@@ -658,6 +658,7 @@ function syncClock(){if(benchmarkMode){gameClock?.run(null);return;}if(nativeSus
   if(clockExpired()&&!clockFlagHandled){
     clockFlagHandled=true;++requestId;clearTimeout(bookTimer);engine.cancel();searchProgress=null;
     $('status').textContent=clockStatus();$('positionCount').hidden=true;
+    if(session.live&&(tab==='game'||matchActive()&&matchView())){mateCelebration.render(session.position(),timeWinner(gameClock.expired));winCelebration.play();mateCelebration.play(tab);}
     $('engineBadge').textContent=clockStatus();syncScreenAwake();persist();gameReview?.update();
   }
 }
