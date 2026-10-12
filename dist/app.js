@@ -7,6 +7,7 @@ import {Chess} from './vendor/chess.js';
 import {GameClock,clockLabel,gameMinutes,moveIncrement} from './clock.js';
 import {GameSession,gameStatus} from './model.js';
 import {GameOwner} from './game-owner.js';
+import {installGameReview} from './game-review.js';
 import {MoveRatings,appendMoveRating} from './move-ratings.js';
 import {ChessCoach} from './coach.js';
 import {StockfishEngine} from './engine.js';
@@ -37,6 +38,7 @@ function selectedEngine(){return matchActive()&&matchView()?engineMatch[session.
 function engineName(id=settings.engine){return (globalThis.chessNative?.engines||[]).find(item=>item.id===id)?.name||({'reckless090':'Reckless 0.9.0','plenty800':'PlentyChess 8.0.0','pawn201':'Pawnocchio 2.0.1','obsidian160':'Obsidian 16.0'}[id]||'Stockfish 19');}
 function normalizeEngine(){if(!(globalThis.chessNative?.engines||[{id:'stockfish19'}]).some(item=>item.id===settings.engine))settings.engine='stockfish19';}
 let nativeSuspended=false,benchmarkMode=false,nativeBackgroundClock=null,nativeNextClock=null,screenAwakeState=null;
+let gameReview=null;
 let menus=null,bookTimer,searchProgress=null,analysisProgress=null,analysisPaused=false,brainSuspended=false;
 let gameOwner=null,inactiveTab=false;
 let progressTimer=null,pendingProgress=null,lastProgressRender=0;
@@ -285,7 +287,7 @@ function syncScreenAwake(){
   screenAwakeState=enabled;
   chessNative.setScreenAwake(enabled).catch(()=>{screenAwakeState=null;});
 }
-function renderStatus(){syncClock();syncScreenAwake();renderSearchCount();const position=session.position(),positionStatus=tab==='analysis'&&!position.isGameOver()?'':gameStatus(position);$('status').textContent=(tab==='game'||tab==='analysis')&&position.isCheckmate()?'':session.live&&clockExpired()?clockStatus():matchActive()&&engineMatch.paused&&!position.isGameOver()?'Match paused':!session.live&&tab!=='analysis'?'Reviewing position'+(positionStatus?' · '+positionStatus:''):computerTurn()?(engineFailed?'Engine unavailable · choose Both Sides':''):tab==='game'&&!position.isGameOver()?'':positionStatus;const headers=session.game.getHeaders();$('whiteName').textContent=headers.White&&headers.White!=='?'?headers.White:(settings.opponent==='local'?(settings.yourName||'Player 1'):settings.side==='w'?(settings.yourName||'You'):engineName());$('blackName').textContent=headers.Black&&headers.Black!=='?'?headers.Black:(settings.opponent==='local'?(settings.yourName||'Player 2'):settings.side==='b'?(settings.yourName||'You'):engineName());$('whiteIndicator').classList.toggle('turn',position.turn()==='w');$('blackIndicator').classList.toggle('turn',position.turn()==='b');$('hint').disabled=!session.live||computerTurn()||position.isGameOver()||engineFailed;if(!engineReady)$('engineBadge').textContent=engineFailed?'Engine unavailable':'';menus?.sync();}
+function renderStatus(){gameReview?.update();syncClock();syncScreenAwake();renderSearchCount();const position=session.position(),positionStatus=tab==='analysis'&&!position.isGameOver()?'':gameStatus(position);$('status').textContent=(tab==='game'||tab==='analysis')&&position.isCheckmate()?'':session.live&&clockExpired()?clockStatus():matchActive()&&engineMatch.paused&&!position.isGameOver()?'Match paused':!session.live&&tab!=='analysis'?'Reviewing position'+(positionStatus?' · '+positionStatus:''):computerTurn()?(engineFailed?'Engine unavailable · choose Both Sides':''):tab==='game'&&!position.isGameOver()?'':positionStatus;const headers=session.game.getHeaders();$('whiteName').textContent=headers.White&&headers.White!=='?'?headers.White:(settings.opponent==='local'?(settings.yourName||'Player 1'):settings.side==='w'?(settings.yourName||'You'):engineName());$('blackName').textContent=headers.Black&&headers.Black!=='?'?headers.Black:(settings.opponent==='local'?(settings.yourName||'Player 2'):settings.side==='b'?(settings.yourName||'You'):engineName());$('whiteIndicator').classList.toggle('turn',position.turn()==='w');$('blackIndicator').classList.toggle('turn',position.turn()==='b');$('hint').disabled=!session.live||computerTurn()||position.isGameOver()||engineFailed;if(!engineReady)$('engineBadge').textContent=engineFailed?'Engine unavailable':'';menus?.sync();}
 function renderGraph(){const moves=session.moves,positions=moves.length?[moves[0].before,...moves.map(m=>m.after)]:[session.game.fen()];const svg=$('graph');svg.innerHTML='<line x1="12" y1="65" x2="428" y2="65" stroke="#777"/><line x1="12" y1="8" x2="12" y2="123" stroke="#aaa"/>';let segment=[];const flush=()=>{if(segment.length){const path=document.createElementNS('http://www.w3.org/2000/svg','polyline');path.setAttribute('points',segment.join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#30383b');path.setAttribute('stroke-width','1.5');svg.append(path);if(settings.graphStyle==='filled'&&segment.length>1){const area=document.createElementNS('http://www.w3.org/2000/svg','polygon');area.setAttribute('points',segment[0].split(',')[0]+',65 '+segment.join(' ')+' '+segment.at(-1).split(',')[0]+',65');area.setAttribute('fill','#586da52b');svg.prepend(area);}segment=[];}};positions.forEach((fen,i)=>{if(typeof scores[fen]!=='number'){flush();return;}const x=12+(positions.length>1?i/(positions.length-1)*416:0),y=65-Math.max(-6,Math.min(6,scores[fen]*(settings.graphStyle==='black'?-1:1)))/6*55;segment.push(x+','+y);const point=document.createElementNS('http://www.w3.org/2000/svg','circle');point.setAttribute('cx',x);point.setAttribute('cy',y);point.setAttribute('r',i===session.cursor?'4':'2');point.setAttribute('fill',i===session.cursor?'#3232ff':'#555');svg.append(point);});flush();document.querySelector('.graph-title>span').textContent=settings.graphStyle==='black'?'Black advantage':'White advantage';const score=scores[session.position().fen()],current=typeof score==='number'?score*(settings.graphStyle==='black'?-1:1):undefined;$('graphScore').textContent=typeof current==='number'?(current>=0?'+':'')+current.toFixed(2):'Not analyzed';$('graphHelp').textContent=(settings.graphStyle==='black'?'Black above the line · White below':'White above the line · Black below')+' · Gaps are unanalyzed positions';}
 function render(){renderCoach();renderBoard();renderHistory();renderStatus();renderGraph();renderAnalysis();}
 function changed(motion){
@@ -485,6 +487,7 @@ menus=installMenus({
  recoverReset:()=>{try{const data=JSON.parse(localStorage.getItem('chess-preview-reset-backup'));if(!data)throw Error();session.load(data.pgn);settings={...DEFAULT_SETTINGS,...data.settings};engineMatch=data.engineMatch?{...data.engineMatch,paused:true}:null;resetGameClock(data.clock);saved=data.saved||[];scores=data.scores||{};flipped=!!data.flipped;syncSettings();setTab('game');persist();toast('Previous games and settings restored.');}catch{toast('No valid recovery copy is available.');}}
 },MENU_MARKUP);
 installCoachCard();
+gameReview=installGameReview({state:()=>({settings,session,tab,suspended:nativeSuspended,inactive:inactiveTab,clockExpired:clockExpired()?gameClock.expired:null,result:clockExpired()?clockStatus():gameStatus(session.game),white:$('whiteName').textContent,black:$('blackName').textContent}),ratingFor:move=>moveRatings.get(move),open:showDialog});
 const saveScreen=installSaveGame({open:showDialog,snapshot:()=>({pgn:session.game.pgn(),white:playerHeader('White'),black:playerHeader('Black'),clock:clockSave()}),save:entry=>{
  saved.unshift({...entry,id:Date.now().toString(),date:new Date().toLocaleString()});
  if(!persist()){saved.shift();return false;}
@@ -622,7 +625,7 @@ function syncClock(){if(benchmarkMode){gameClock?.run(null);return;}if(nativeSus
   if(clockExpired()&&!clockFlagHandled){
     clockFlagHandled=true;++requestId;clearTimeout(bookTimer);engine.cancel();searchProgress=null;
     $('status').textContent=clockStatus();$('positionCount').hidden=true;
-    $('engineBadge').textContent=clockStatus();syncScreenAwake();persist();
+    $('engineBadge').textContent=clockStatus();syncScreenAwake();persist();gameReview?.update();
   }
 }
 

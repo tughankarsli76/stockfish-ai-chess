@@ -23,3 +23,9 @@ A phone-sized browser smoke check using a mock native UCI transport verified the
 3. Repeat playing as Black; advice should name White's response.
 4. Verify normal replies, clocks, undo, background/foreground, and dismissing advice.
 5. Turn it off and confirm subsequent moves produce no coach card.
+
+## End-of-game review
+
+With coaching enabled in Play Computer, a completed live game opens Game Review after the final move animation. Checkmate, draws, and clock expiration are included. White and Black have separate counts for every move-quality category, total moves, rated moves, and moves not yet rated. Counts use the same stored classifications as Move List; they do not fabricate an accuracy percentage or Elo rating.
+
+The review opens once per completed game, can be dismissed with Done, and can be reopened through Move → Game Review. Disabling coaching hides that entry. Reviewing an earlier position, starting another game, and engine tournaments do not automatically open a summary. Existing coach message expiry remains separate from the summary.

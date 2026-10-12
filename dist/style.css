@@ -710,3 +710,16 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 .move-rating-legend>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 6px;margin-top:12px}
 .move-rating-legend>div>span{display:flex;align-items:center}
 @media(max-width:380px){.move-rating-legend>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.game-review-dialog{width:min(460px,calc(100% - 24px));padding:18px 16px;overflow-y:auto}
+#gameReviewResult{margin:0 0 14px;text-align:center;font-weight:600}
+.game-review-table{width:100%;border-collapse:collapse;font-size:14px}
+.game-review-table th,.game-review-table td{padding:9px 4px;border-bottom:1px solid #dedee5}
+.game-review-table th{text-align:left;font-weight:500}
+.game-review-table td,.game-review-table thead th:not(:first-child){text-align:center;font-variant-numeric:tabular-nums;min-width:48px}
+.game-review-table thead th{font-weight:700}
+.game-review-table small{display:block;font-size:11px;font-weight:400;color:#666;max-width:95px;overflow-wrap:anywhere;margin:4px auto 0}
+.game-review-table .move-rating-label{font-size:14px;color:#171717;margin-left:8px}
+.game-review-note{font-size:12px!important;color:#666;margin-bottom:0}
+
+#gameReviewButton[hidden]{display:none}
