@@ -303,10 +303,10 @@ export async function engines(){
  return results;
 }
 
-export async function tenEngines(){
+export async function nativeEngines(){
  const api=nativeIntegration,results=[];
- const names=['Stockfish 19','Reckless 0.9.0','PlentyChess 8.0.0','Pawnocchio 2.0.1','Obsidian 16.0','Cinder 0.6.1','Viridithas 20.0.0','Halogen 16.0.0','Clover 9.1','Starzix 6.1'];
- if(chessNative.engines.length!==10||new Set(chessNative.engines.map(e=>e.id)).size!==10||chessNative.engines.some(e=>e.id==='stockfish18'))throw Error('Wrong native engine catalog');
+ const names=['Stockfish 19','Karsli 1.0-dev','Reckless 0.9.0','PlentyChess 8.0.0','Pawnocchio 2.0.1','Obsidian 16.0','Cinder 0.6.1','Viridithas 20.0.0','Halogen 16.0.0','Clover 9.1','Starzix 6.1'];
+ if(chessNative.engines.length!==11||new Set(chessNative.engines.map(e=>e.id)).size!==11||chessNative.engines.some(e=>e.id==='stockfish18'))throw Error('Wrong native engine catalog');
  if(JSON.stringify(chessNative.engines.map(e=>e.name))!==JSON.stringify(names))throw Error('Wrong release versions');
  api.stopEngineMatch();api.patch({opponent:'local',openingBook:false,showAnalysis:true,threads:2,hash:150,time:1});api.reset();api.setTab('analysis');
  const original=api.state().fen;
@@ -318,9 +318,9 @@ export async function tenEngines(){
    for(const line of api.state().lines){const board=new Chess(original);const uci=line.uci;if(!uci||!board.move({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci[4]||'q'}))throw Error('Illegal PV from '+entry.name);}
    results.push(entry.name+' native identity and legal analysis ('+count+' PV)');
  }
- for(const entry of chessNative.engines.slice(5)){
+ for(const entry of chessNative.engines.filter(e=>['cinder061','viridithas200','halogen160','clover91','starzix61','karsli01','obsidian160'].includes(e.id))){
    api.startEngineMatch({white:'stockfish19',black:entry.id,seconds:1});api.setTab('game');
-   await until(()=>api.state().length>=4,'Match failed: '+entry.name);
+   try{await until(()=>api.state().length>=4,'Match failed: '+entry.name);}catch(error){throw Error(error.message+' '+JSON.stringify(api.state()));}
    api.pauseEngineMatch();await delay(250);
    const game=new Chess();game.loadPgn(api.state().pgn);
    if(game.history().length<4)throw Error('Illegal match PGN: '+entry.name);
@@ -609,4 +609,43 @@ export async function optionsDetailNavigation(){
   watch=false;document.querySelector('#settingsDialog [data-close]').click();
   return {pages:rows,modalGaps:gaps};
  }finally{HTMLDialogElement.prototype.close=close;}
+}
+
+// Real native material tests; run only in the isolated test app.
+export async function karsliMaterial(){
+ const api=nativeIntegration;
+ api.stopEngineMatch();api.patch({engine:'karsli01',opponent:'local',showAnalysis:false,openingBook:false});
+ await delay(200);
+ const transport=new chessNative.Transport('karsli01'),lines=[];
+ transport.onmessage=e=>lines.push(String(e.data));
+ let failure=null;transport.onerror=e=>{failure=e;};
+ const send=c=>transport.postMessage(c);
+ try{
+  send('uci');await until(()=>failure||lines.includes('uciok'),'Karsli UCI handshake',15000);if(failure)throw failure;
+  if(!lines.includes('id name Karsli 1.0-dev'))throw Error('Wrong Karsli identity');
+  const profile=await (await fetch('./karsli-test-profile.json')).json();
+  const actual=lines.find(l=>l.startsWith('info string Karsli profile '));
+  if(!actual)throw Error('Missing applied profile');
+  for(const [name,value] of Object.entries(profile))if(!actual.split(' | ').includes(name+'='+Number(value)))throw Error('Inactive combined option: '+name);
+  send('setoption name Threads value 1');send('setoption name Hash value 16');send('setoption name MultiPV value 1');
+  const fixtures=[
+   ['white queen capture','7k/8/8/4q3/3P4/8/8/K7 w - - 0 1','d4e5'],
+   ['black queen capture','7k/8/8/3p4/4Q3/8/8/K7 b - - 0 1','d5e4'],
+   ['white defended queen','3r3k/8/8/3q4/2P5/8/8/K7 w - - 0 1','c4d5'],
+   ['black defended queen','7k/8/8/2p5/3Q4/8/8/K2R4 b - - 0 1','c5d4'],
+   ['white poisoned pawn','3r3k/8/8/3p4/8/8/8/3Q3K w - - 0 1',null,'d1d5'],
+   ['black poisoned pawn','3q3k/8/8/8/3P4/8/8/3R3K b - - 0 1',null,'d8d4'],
+   ['avoid promotion stalemate','8/k1P5/2K5/8/8/8/8/8 w - - 0 1',null,'c7c8q']
+  ];
+  const results=[];
+  for(const [name,fen,expected,avoid] of fixtures){
+   const start=lines.length;send('ucinewgame');send('position fen '+fen);send('go movetime 500');
+   await until(()=>failure||lines.slice(start).some(l=>l.startsWith('bestmove ')),name,15000);if(failure)throw failure;
+   const uci=lines.slice(start).find(l=>l.startsWith('bestmove ')).split(' ')[1];
+   const chess=new Chess(fen);chess.move({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci[4]});
+   if(expected&&uci!==expected||avoid&&uci===avoid)throw Error('Material regression '+name+': '+uci);
+   results.push({name,uci});
+  }
+  return {identity:'Karsli 1.0-dev',profile:actual,material:results};
+ }finally{transport.terminate();api.patch({engine:'stockfish19',opponent:'local',showAnalysis:false});api.reset();}
 }

@@ -165,3 +165,10 @@ During a live foreground game, the native idle timer is disabled, including whil
 ## Version 1.3 pause policy — October 8, 2026
 
 The owner approved removing the background-match status message and pausing engine matches whenever they leave the app. This supersedes the earlier minimized-match continuation behavior and test results above. The centered Resume Match button is now smaller and positioned lower. Ordinary computer-game background search behavior remains as described above.
+
+
+## Karsli 1.0-dev research blend
+
+Karsli is the eleventh selectable native engine, available in Options → Change Engine, normal games, Analysis, Engine Match and tournaments. It uses `engine/karsli-1.0` with the same app-bundled Stockfish network. Each Karsli backend explicitly loads all fourteen settings from its pinned `combined-profile.json`; the five new standalone research options remain off in their source defaults. `prepare-karsli.py` verifies source/profile hashes and generates the native commands. All engine translation units and the backend compile with `Stockfish=KarsliIOS`, independently of Stockfish 19. Native source and retained license notices are included in `Licenses/KarsliSource`.
+
+Use an isolated `.corebench.` bundle for `testKarsliCombinedProfileAndMaterial`, `testKarsliBackgroundSearch` and `testNativeEnginesOfflineAnalysisMatchesAndStop`. The material test checks the actual fourteen native option values and seven material/stalemate fixtures; the full catalog test checks eleven identities/legal analysis and the retained five newer engines, Karsli and Obsidian in timed matches and stop/switch flows. This establishes native functionality, not Elo improvement. Read `engine/karsli-1.0/IOS-NOTES.md` for scope and provenance.

@@ -1,0 +1,9 @@
+# Karsli 1.0-dev revision 9 native iOS integration
+
+Source imported from the preserved Karsli revision-9 Mac experiment on October 12, 2026. `IOS-SOURCE-MANIFEST.json` records every imported source hash, native source hashes and the profile hash. `NOTICE.md`, `Copying.txt`, `AUTHORS` and `licenses/` retain the component grants and attribution, including Reckless AGPL and Hobbes MIT. No foreign network is added; the app's pinned Stockfish 19 network is shared without duplication.
+
+The three native adapter changes are the existing app's `UCIEngine::command` / `stop_and_wait` interface and the existing node heartbeat. Engine sources and the backend are all compiled with `-DStockfish=KarsliIOS` to isolate global state and symbols from Stockfish 19. The native command queue stops and joins the previous search before switching engines. No subprocess, executable download or runtime code loading is used.
+
+Selecting **Karsli 1.0-dev** loads `combined-profile.json`, enabling the full tested revision-9 research blend. These phone backend settings deliberately enable the experimental controls, while the standalone research engine's individual defaults remain unchanged. No claim of Elo improvement or superiority is made. Threads, hash, MultiPV, clocks and tablebases use the existing application controls. The same engine can be selected for normal games, analysis, matches and tournaments.
+
+`python3 ios/prepare-karsli.py` verifies the immutable imported source/profile and generates `KarsliProfile.h`; it is called by project generation and the build preparation phase. The exact engine, profile and retained licenses are bundled under `Licenses/KarsliSource` by `bundle-web.py`. Build/device testing records are kept outside the source tree in the parent experiment's `reports/ios-integration/` folder.

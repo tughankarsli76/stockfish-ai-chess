@@ -1,0 +1,525 @@
+{
+  "engine": "Karsli",
+  "version": "1.0-dev",
+  "status": "experimental; strength unproven",
+  "base": {
+    "name": "Stockfish",
+    "version": "19",
+    "tag": "sf_19",
+    "repository": "https://github.com/official-stockfish/Stockfish",
+    "localSource": "engine/stockfish-19/stockfish",
+    "files": {
+      "AUTHORS": "59c7a457f0665f26453ad90f474db7cd328f0983a7e8031cded5d6f25e1a1eb6",
+      "CITATION.cff": "f98b029076a0aa0a668f03e5e2623a98cfa34854ff6cb66b852e0a736802a701",
+      "CONTRIBUTING.md": "b3f68dcb61f3742a54aeaebebdb700edb5ce70d55023f7f323252a3d66919946",
+      "Copying.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "README.md": "ae3ef5c2282400d643c6e923d0b8b8d8fe35cf98762701f0379c79bde16c3a26",
+      "Top CPU Contributors.txt": "2f5589fb7df96e732605cf4af303f4c126e7adc3f1cbbcd23b48e1cbfc6c50ca",
+      "scripts/check_universal.sh": "b1e5566a695b519c504cf13e11c2cf58a73e1338d1beb6bcf8b8af04446c781b",
+      "scripts/check_universal_arm.sh": "26adf3da328e8d1ca4209554841f6d7cc05fb6242df69c67fdde306a64185139",
+      "scripts/check_universal_macos.sh": "86ce982e76e7c89e2062daeba92ff149e80417789ef02e4450060ca29917cf6b",
+      "scripts/check_universal_riscv.sh": "75b4cef47585deb04c0cbea9d06df390891076b7c6d971a9f3ac24353792c68c",
+      "scripts/get_native_properties.sh": "ff5caf017460c2b27e37987c493a4b2be4e726c1c453c3eaac90569dfed155a4",
+      "scripts/net.sh": "c0df735168d5e4f49109e91319f350f6c4238d74b72396f012fce2e495ae8d32",
+      "src/Makefile": "3dd5246221b5e98280ac035f5752b10008ae818d1ce21abcf219ca0bb8b81274",
+      "src/attacks.cpp": "260c2cceb38d7a87a69e4df0f84d84e6729b1a77bbc321a13fed8cff66b2c704",
+      "src/attacks.h": "561d2eb1268ba66e7aa065387a033e686a49925d8e8c58a75826239a358cb1f5",
+      "src/benchmark.cpp": "5706d3a9f7990442d0adf6bc4d9b0f50fff92c7e96156f62f3d166ca146acf0c",
+      "src/benchmark.h": "af18da73fecd343a43971722550524f7a260ac83f9c76e2e32e5e28ddbf4c52e",
+      "src/bitboard.cpp": "b73064f2270344bce175865174666b92d1f3653c6ee4f98fd075f0fb1865b735",
+      "src/bitboard.h": "5d739e8b8300a04084c4dea41b9124f2a2d59dea365ad2996804f53c5340f5b7",
+      "src/engine.cpp": "15c87f0b4ac5741d9b4f287cd7420a8599bda4193b2e0209fb0f7f9beb16960b",
+      "src/engine.h": "be37f8052c96707478840fd2e5512eae79d50f581f1a5a1b6471246defaffe86",
+      "src/evaluate.cpp": "68a1675ef7ae943026ca0e54368b88ab90dd0082d22b5504f743afb2765dffb7",
+      "src/evaluate.h": "bab0750b2d80c72bb121bfe730a55ecba5fc221394d3d8a7ae2aa3ae04fe9998",
+      "src/history.h": "f6e957d6e717348f58aa308f88aefddb5975e6a6c1d23e936ecf3548cbb48c39",
+      "src/incbin/UNLICENCE": "80f60d0578200231dac96e2a42bf508f22ce8540b96f96777b649498656842ff",
+      "src/incbin/incbin.h": "70995329299ec55d414ad6df6929ddcfe0a43a40102cf6c05ff3c74ddd2765cb",
+      "src/main.cpp": "20ecc928260f46dfa3622ef0a4d810fe880322b1444659d155ce295be84b343a",
+      "src/memory.cpp": "7181c3b2c98d4ac247e7d0282b1cf265c9f00768a0e01e5adf8854de6ac24537",
+      "src/memory.h": "0c96b7742ed66a4ed1fe49c8f9e78b05833790155e3e33b4c64e81ddf71487ba",
+      "src/misc.cpp": "9a5a58e3404afc0a30de142b1b81049877b42cee308379654253c593b9e14513",
+      "src/misc.h": "fa97bd3c16ab7ea48f1e1e392f7723843daaa6aa0056a43127facb158ccc10d4",
+      "src/movegen.cpp": "a7f19e6167aae8b9f69da69cc656d346913aa37322ceecb8217597e1b91e71c2",
+      "src/movegen.h": "8180128aafed4aacdfc75999b17e7cb64da250b6c94b87e06a2e1bf65b3a6276",
+      "src/movepick.cpp": "5ac6b57885a7e12428422438a28207f25a24182b008aca85a788e000a7a38217",
+      "src/movepick.h": "6082a59beec9cd7badae9d2463df91d5067af490ae498a377eac9bc94ad1fe06",
+      "src/nnue/features/full_threats.cpp": "4bd9602142ca97cb40ba3c02718236e0e15e41e29913d5917de599288dd23277",
+      "src/nnue/features/full_threats.h": "dd1d9b1cd360b8c5e41b5e0e9836c335cc250ade8a30fc28357e482f0aeff874",
+      "src/nnue/features/half_ka_v2_hm.cpp": "c00c84b37f979f9ff62b7081d5147a58982805fa5b42b802b841701a04802679",
+      "src/nnue/features/half_ka_v2_hm.h": "c6c24b6246a10278e992e5494f38a02f96436764fe0fb0e11f21e96e6b3b45d5",
+      "src/nnue/features/pp_3wide.cpp": "55dad256e38a27149d48958747131afa6c87a41f6b4771e12c6113bc82b6614f",
+      "src/nnue/features/pp_3wide.h": "3889a046b7eb5c9147d0c89be69514200d414e276a68809b4f512c8fe139e635",
+      "src/nnue/layers/affine_transform.h": "b0a30ba12d1f11e8fddab66d8592c42ac3ca56233d0117ccf3bb9a9c27fefda2",
+      "src/nnue/layers/affine_transform_sparse_input.h": "5471180cbe69b91f7f39278bef5c79ce37f538307cb8f11d3f51fafe9a0eab14",
+      "src/nnue/layers/clipped_relu.h": "13d0f93da3b40df3a7c4b23fe34a4199e5f3cee03f529eac4f060299efa64e76",
+      "src/nnue/layers/sqr_clipped_relu.h": "d2b6fb4f7045d2851f7ca48c4daa9a6292655ba026dc7b94c34105706eb7504b",
+      "src/nnue/network.cpp": "95cafe51c0d05842fdeffb8d2690549e9deee43edc0b56caf277f21fda63ec4b",
+      "src/nnue/network.h": "9f5f0e8282ed8478a59005946618dfbfb4d8484a9d38923cfbe1a261436359c8",
+      "src/nnue/nnue_accumulator.cpp": "4450e090389760851e7aebaf38bb9b1acf0bfca73130ded3e8677a22c7c0824c",
+      "src/nnue/nnue_accumulator.h": "50f65fa2bd5a5c31f1ac70e34b3f9213d7b3ef22c922b4cf955e283be9931b26",
+      "src/nnue/nnue_architecture.h": "00870050cb0c7c8862b76ed0ee65da2fd0118343432bcebbdb896f885283bc8e",
+      "src/nnue/nnue_common.h": "89a9c40893ea8e341bb7874796fcec2e69aecf548e969b55fa33a59579b60eae",
+      "src/nnue/nnue_feature_transformer.h": "9edc933b6bd53871ff8ba8cda35d35490a4eef34f0b72b6562da17b60fa888bc",
+      "src/nnue/nnue_misc.cpp": "3008e556a3352b607b6940be7c215aba8e53b577bfc82a1d0d0b0d57cf1f8ac1",
+      "src/nnue/nnue_misc.h": "658f48eec561c9f040527ace4ef42c87e1943e2bd4f17a74fe90e69e142436a7",
+      "src/nnue/nnz_helper.h": "5118876cd8008d84f397c07785be4f5ad2df9715e5d671b1537888f3d469fd0b",
+      "src/nnue/simd.h": "3581a018aa6bafa18e130b7ca4c65c27bd59abb987a580ae96c0815e31e2da14",
+      "src/numa.h": "6d39ba07c1ae5f3f3f9c541a59913bd54d63a2c4955643c84767e5cbacd7c7ad",
+      "src/perft.h": "3fd970d05be7e38299cdeeee8a9dc45b446a5527173245ff7d7296e0d439d356",
+      "src/position.cpp": "79bb06e1f73768e1a7e6ce39766fde94f481327168cf0aa2580f55a0865f8dec",
+      "src/position.h": "2d67489c98c16b828fe80e5fdd000820613b79a0c5ff63161efd9ad6e9ee05b1",
+      "src/score.cpp": "c5877628d70984fef345f2ace3f155ea883f316505485f2115701aac313dfb01",
+      "src/score.h": "b1355a14624fb743e7bde5b68030ae40650e3b34c36a4feac6d4b4704e56efd1",
+      "src/search.cpp": "a934524dd2f386ec38cdf95b7b2e41cecdc85c9b17e12c0668621e6ae16be28a",
+      "src/search.h": "06a9339666e75c43a92185c33a111307bca143cf57c85e64f368ca34a87c8071",
+      "src/shm.h": "f0c660b640602b35f9fb324fb799cc37448e03c30b678200ce88f565d23a10d5",
+      "src/shm_unix.h": "155defb7084b0f81bedb37dbb65c1f399929d7a06952ace2b6cec9d8c5467a70",
+      "src/syzygy/tbprobe.cpp": "39d87629573a92ee75c30ea6d76bc53c8aaaa0ea16a706300a840de0a256bc32",
+      "src/syzygy/tbprobe.h": "5b86ca73b73cd9850f7cd89a766a7d8e861fbb2e0dfa8ae3ebf151801e1d3930",
+      "src/thread.cpp": "26d04132676189a6b9ce59afb574c116a672ce8bb273f1b008af8522e7760006",
+      "src/thread.h": "d39544eea0dc30fa6edd541f5f87ed06af554ba0364161ab04a78b4b9757a897",
+      "src/thread_native.h": "e716bc066bac3feb1a80d65d03022a9a4a415fd961bf72a4922cbc85b55666d4",
+      "src/timeman.cpp": "96d3c58a5f20afe65423affc28ef43665c3325a98adad60da00b55ee84bce4b7",
+      "src/timeman.h": "8aed34863e004e978ab6c011d9ded7318c3e25da817d1760aa904b1249e88e85",
+      "src/tt.cpp": "56435808c1ed7557e69afb85fc0fa0116fcb574bfa528d53cc0f07d20a926702",
+      "src/tt.h": "0e8deb3207a9fc3adfe5f6df806bf7dd70cc818f89c3284484979aac20b15033",
+      "src/tune.cpp": "3f0157baeaf981aa1e60aa178a33e9017f73efe82724d3694aa6088307fdaa36",
+      "src/tune.h": "9298669723766aea05f2d4317e5cd8119cdb6ad3f1d3e48f47ecc63c25bc3703",
+      "src/types.h": "9a6bae5b151595eb80b56e90c4496fefa92e013f1772bcc7b3ce60c178bb95f6",
+      "src/uci.cpp": "a31fa10719b1d9ecaa23f774f14a5a995be65eeb52722798c2f2bb4255991b21",
+      "src/uci.h": "6ad20b4d5f02ad529ccc947d425f182ff68ad17dd8ab6f3984a652709f9307d0",
+      "src/ucioption.cpp": "5d699e2fa1d57cfa5f3169412dc8fc5d26685563be38c221cdbfde7237305e8a",
+      "src/ucioption.h": "85468dec1694abd49af3997edac57eb48a897a844369f86ecfb75ea575d546cb",
+      "src/universal/entry_arm64.cpp": "8d344fa02d4a6315c49bae32a5182578557c8543a8f146cf6690495f48691bdf",
+      "src/universal/entry_riscv64.cpp": "85ef23b0eeb56620df3dfe149ed2f60b2b6fbee2f66944e22173ac3fd9f718dc",
+      "src/universal/entry_x86.cpp": "523fa2ebc9bcca8378ce5a8e46ec0fee21385cc50bfae4eadbcabda6ba3c7225",
+      "src/universal/nnue_embed.cpp": "a1c8960bb0f57ca54d83ea99c0170b79061ebeb103bacc7866212e4aba78a3a2",
+      "src/universal/patch_x86_slice.sh": "f20555e2a4327077ba4d4f3a83292e4da54c7033516c523d2299219db2cd8bd8",
+      "src/universal/rewrite_asm_sections.awk": "0811fae900d717365f261755e87c5d926506ee20de8f95dde3d7df873176dee3",
+      "wiki/Advanced-topics.md": "286e8bda964054ad32d5e8a55b3cf0145e557dbef36e993442eb2e7fdeed91e3",
+      "wiki/Compiling-from-source.md": "0fec30ba8afea610670cee71c7ceeb0ecce935ec7d04637fd3b23b7687bf53fb",
+      "wiki/Developers.md": "946c386493984c5faa5642e8f29a189767c4e22743e62eb4a20cb540938e63c7",
+      "wiki/Download-and-usage.md": "7fb882d18be38617f068809bc5467dab59387d81eb9695a29379466c87b7005d",
+      "wiki/Governance-and-responsibilities.md": "902f0c1ada79421457ac175b9277d5e0ee5f1493c4348358d00728a889d0cfbe",
+      "wiki/Home.md": "6adb02f2e3776a101e0128c94410822dca6e29ee4b04b6941abdfcb0938291d6",
+      "wiki/Regression-Tests.md": "0d89d24d015a143861380551f207ecdfe354676f13c84d785beb6ee760ede31f",
+      "wiki/Stockfish-FAQ.md": "c6110cfe711c1ae965c721136a437b4dffb4bd7bfe43e03cd396aeba6da7deff",
+      "wiki/Terminology.md": "48ef732907285a65751ab6b8112979a6042c91380c369382935f0d4be8986ff2",
+      "wiki/UCI-Protocol-and-Stockfish-Commands.md": "07504bea42118d42483497fb94f900ee68322000f4e812fd570a358425d39bb2",
+      "wiki/Useful-data.md": "53442c2f2fef9cd7b20071460b2d7b5683ea7c7432dd48204f6fd31f156f4f2f",
+      "wiki/_Footer.md": "54d2efd769ad70454b1d2baa7a137cb0aa4d47b5604afd512f3a12fe39858709"
+    }
+  },
+  "network": {
+    "file": "nn-1a298aa575a0.nnue",
+    "sha256": "1a298aa575a085434d29027978dc36867fe9c5bcea9376654b7a8eba1e52dfc2",
+    "origin": "existing pinned Stockfish 19 app network; unchanged",
+    "trainingData": "Leela Chess Zero data, ODbL-1.0 attribution retained"
+  },
+  "license": "GPLv3-covered Stockfish/earlier components combined with AGPL-3.0-only Reckless adaptations under section 13",
+  "appIntegration": false,
+  "revision": 9,
+  "experiments": [
+    {
+      "id": "quiet-check-lmr-v1",
+      "option": "Karsli Check Bonus",
+      "default": 512,
+      "range": [
+        0,
+        1024
+      ],
+      "ideaSource": {
+        "engine": "Clover",
+        "version": "9.1",
+        "author": "Luca Metehau",
+        "commit": "e647926a8f23b6b93f7f27c01cb6f686909ec482",
+        "repository": "https://github.com/lucametehau/CloverEngine",
+        "files": [
+          "src/search.h:633",
+          "src/params.h:145"
+        ],
+        "license": "GPL-3.0-or-later"
+      },
+      "description": "Reduce positive late-move reductions for quiet checking moves (excluding captures and promotions). Zero disables it; existing negative reductions and depth bounds remain intact."
+    },
+    {
+      "id": "depth-aware-deeper-research-v1",
+      "option": "Karsli Depth Slope",
+      "default": 0,
+      "range": [
+        0,
+        4
+      ],
+      "selectedIsolatedValue": 2,
+      "isolatedSettings": {
+        "Karsli Check Bonus": 0,
+        "Karsli Depth Slope": 2
+      },
+      "ideaSource": {
+        "engine": "PlentyChess",
+        "version": "7.0.0",
+        "tag": "b-v7.0.0",
+        "author": "Yoshie2000 and PlentyChess contributors",
+        "commit": "e2060ab4b3021babb7d74af3cbe908154c03b2fd",
+        "repository": "https://github.com/Yoshie2000/PlentyChess",
+        "files": [
+          "src/search.cpp:162",
+          "src/search.cpp:1100"
+        ],
+        "license": "GPL-3.0"
+      },
+      "description": "Raise the existing extra one-ply LMR re-search improvement margin from 53 to 53 + slope * max(0, childDepth), using Stockfish internal score units. Zero reproduces the original margin. Existing fail-high, reduced-depth, shallower-search and depth-bound conditions remain unchanged."
+    },
+    {
+      "id": "bounded-alpha-raise-lmr-v1",
+      "option": "Karsli Alpha Bonus",
+      "default": 0,
+      "range": [
+        0,
+        256
+      ],
+      "counterCap": 8,
+      "addedReductionCap": 1024,
+      "selectedIsolatedValue": 128,
+      "isolatedSettings": {
+        "Karsli Check Bonus": 0,
+        "Karsli Depth Slope": 0,
+        "Karsli Alpha Bonus": 128
+      },
+      "ideaSource": {
+        "engine": "Pawnocchio",
+        "version": "2.0.1",
+        "tag": "v2.0.1",
+        "author": "Jonathan Hallström",
+        "repository": "https://github.com/JonathanHallstrom/pawnocchio",
+        "files": {
+          "src/Searcher.zig": {
+            "sha256": "d08d576530a74f581b05c2a5d5f9dd345bfec4e1f7c6c667c370b23b3c555fa7",
+            "lines": [
+              1105,
+              1372,
+              1516
+            ]
+          },
+          "src/tuning/defaults.txt": {
+            "sha256": "0b620f144923ae538ccfb26d5e218c2552fdea26d7e3f9865aa46a5f45196a4a",
+            "lines": [
+              120
+            ]
+          }
+        },
+        "license": "GPL-3.0-or-later",
+        "commit": "2903efa6652d1b00d0bdd2fb5983ba35165e9282"
+      },
+      "description": "For existing positive LMR reductions only, add at most 1024 fixedpoint units according to a saturated counter of genuine prior non-cutoff alpha raises. Counter excludes equal-score artificial promotions. All earlier experiments disabled during isolated comparison. Existing search clamps, beta/failhigh/full-depth gates and negative extensions remain intact."
+    }
+  ],
+  "defaultCandidateBinary": "build/karsli-orange",
+  "recklessIntegration": {
+    "version": "0.9.0",
+    "tag": "v0.9.0",
+    "commit": "0e92358f5acd66e5ac77b1bf558202e47c515435",
+    "repository": "https://github.com/codedeliveryservice/Reckless",
+    "license": "AGPL-3.0",
+    "author": "codedeliveryservice and Reckless contributors",
+    "sourceManifest": "reports/reckless-0.9.0-deep-review/source-manifest.json",
+    "snapshotBeforeIntegration": "snapshots/alpha-raise-v3/SNAPSHOT.json",
+    "status": "implemented; functional validation complete; strength unproven",
+    "masterOption": "Karsli Reckless Pack",
+    "masterDefault": true,
+    "adaptation": "bounded C++ integration; Stockfish evaluator and network retained",
+    "defaults": {
+      "Karsli Recapture LMR": 512,
+      "Karsli Recapture Extension": false,
+      "Karsli NMP Capture Guard": true,
+      "Karsli Quiet Threat History": 256,
+      "Karsli Capture Threat History": 256,
+      "Karsli Eval Stability": 256,
+      "Karsli Reverse Qsearch": true,
+      "Karsli Improvement LMR": 256,
+      "Karsli Adaptive ProbCut": true,
+      "Karsli Soft Vote Percent": 65,
+      "Karsli Depth Votes": true,
+      "Karsli Shared Optimism": true,
+      "Karsli Diagnostics": false
+    },
+    "sourceLocations": [
+      "src/search.rs:534",
+      "src/search.rs:600",
+      "src/search.rs:669",
+      "src/search.rs:793",
+      "src/search.rs:1146",
+      "src/history.rs:17",
+      "src/search.rs:190",
+      "src/search.rs:491",
+      "src/search.rs:231",
+      "src/uci.rs:189",
+      "src/search.rs:123"
+    ],
+    "validationReports": [
+      "reports/reckless-pack/validation.json",
+      "reports/reckless-pack/sanitized-validation.json",
+      "reports/reckless-pack/default-profile-validation.json",
+      "reports/reckless-pack/artifact-audit.json"
+    ],
+    "comparison": {
+      "report": "reports/reckless-pack/paired-match.json",
+      "games": 32,
+      "movetimeMs": 100,
+      "threads": 1,
+      "summary": {
+        "completed": 30,
+        "truncated": 2,
+        "candidateWins": 0,
+        "baselineWins": 3,
+        "draws": 27
+      },
+      "interpretation": "no gain demonstrated; short functional comparison, not an Elo test"
+    }
+  },
+  "plentyIntegration": {
+    "version": "7.0.0",
+    "tag": "b-v7.0.0",
+    "commit": "e2060ab4b3021babb7d74af3cbe908154c03b2fd",
+    "repository": "https://github.com/Yoshie2000/PlentyChess",
+    "author": "Yoshie2000 and contributors",
+    "license": "GPL-3.0",
+    "sourceManifest": "reports/plentychess-7.0.0-deep-review/source-manifest.json",
+    "snapshotBeforeIntegration": "snapshots/reckless-v4/SNAPSHOT.json",
+    "status": "two new adaptations complete; functional/sanitizer checks passed; strength unproven",
+    "defaults": {
+      "Karsli Plenty Threat Guard": false,
+      "Karsli Plenty Capture LMR": 0,
+      "Karsli Plenty Diagnostics": false
+    },
+    "testedActiveSettings": {
+      "Karsli Plenty Threat Guard": true,
+      "Karsli Plenty Capture LMR": 256
+    },
+    "sourceLocations": [
+      "src/board.h:100",
+      "src/search.cpp:787",
+      "src/search.cpp:1055",
+      "src/search.cpp:1081"
+    ],
+    "previouslyImplemented": "Karsli Depth Slope, unchanged default 0; source search.cpp:1100",
+    "adaptation": "Retain Stockfish RFP formula except guarded improving discount; additive bounded PV/TT-PV actual non-losing capture protection with maximum, not sum, of overlapping Reckless recapture bonus; default off pending strength evidence",
+    "validationReports": [
+      "reports/plenty-pack/validation.json",
+      "reports/plenty-pack/sanitized-validation.json",
+      "reports/plenty-pack/reckless-regression.json",
+      "reports/plenty-pack/artifact-audit.json"
+    ],
+    "comparison": {
+      "report": "reports/plenty-pack/smoke-match.json",
+      "games": 8,
+      "movetimeMs": 100,
+      "threads": 1,
+      "summary": {
+        "completed": 8,
+        "truncated": 0,
+        "candidateWins": 0,
+        "baselineWins": 0,
+        "draws": 8
+      },
+      "interpretation": "eight draws; functional smoke match, no Elo claim"
+    }
+  },
+  "pawnocchioIntegration": {
+    "version": "2.0.1",
+    "tag": "v2.0.1",
+    "commit": "2903efa6652d1b00d0bdd2fb5983ba35165e9282",
+    "repository": "https://github.com/JonathanHallstrom/pawnocchio",
+    "author": "Jonathan Hallström and contributors",
+    "license": "GPL-3.0-or-later",
+    "sourceManifest": "reports/pawnocchio-2.0.1-deep-review/source-manifest.json",
+    "snapshotBeforeIntegration": "snapshots/plenty-v5/SNAPSHOT.json",
+    "status": "two new adaptations complete; optimized/sanitizer/regression checks passed; strength unproven",
+    "defaults": {
+      "Karsli Pawnocchio Razor Margin": 0,
+      "Karsli Pawnocchio Pawn Escape": 0,
+      "Karsli Pawnocchio Diagnostics": false
+    },
+    "testedActiveSettings": {
+      "Karsli Pawnocchio Razor Margin": 128,
+      "Karsli Pawnocchio Pawn Escape": 256
+    },
+    "sourceLocations": [
+      "src/Searcher.zig:939",
+      "src/Board.zig:810",
+      "src/MovePicker.zig:199",
+      "src/MovePicker.zig:318"
+    ],
+    "previouslyImplemented": "Karsli Alpha Bonus; unchanged default 0",
+    "adaptation": "bounded own-material-opportunity razoring margin and symmetric undefended quiet-pawn escape ordering; existing evaluation/network preserved",
+    "validationReports": [
+      "reports/pawnocchio-pack/validation.json",
+      "reports/pawnocchio-pack/sanitized-validation.json",
+      "reports/pawnocchio-pack/plenty-regression.json",
+      "reports/pawnocchio-pack/artifact-audit.json"
+    ],
+    "comparison": {
+      "report": "reports/pawnocchio-pack/smoke-match.json",
+      "games": 8,
+      "movetimeMs": 100,
+      "threads": 1,
+      "summary": {
+        "completed": 8,
+        "truncated": 0,
+        "candidateWins": 0,
+        "baselineWins": 0,
+        "draws": 8
+      },
+      "interpretation": "eight draws; short functional comparison, no Elo claim"
+    }
+  },
+  "codaReview": {
+    "version": "0.9.4",
+    "tag": "v0.9.4",
+    "commit": "6531e16a36a47cdf0a7781112205c7cac7b97199",
+    "repository": "https://github.com/adamtwiss/coda",
+    "documentationManifest": "reports/coda-0.9.4-review/documentation-manifest.json",
+    "scope": "public documentation and release descriptions; no Coda implementation/weights reused",
+    "priorRestriction": "direct code/weights excluded under prior project provenance policy",
+    "independentExperiment": {
+      "option": "Karsli Coda Idea LMP Margin",
+      "default": 0,
+      "range": [
+        0,
+        256
+      ],
+      "testedValue": 64,
+      "description": "Independent alpha-proximity band postpones Stockfish quiet LMP trigger by at most two move-count slots at eligible non-PV normal-score shallow nodes; no foreign formula/table used"
+    },
+    "snapshotBeforeExperiment": "snapshots/pawnocchio-v6/SNAPSHOT.json",
+    "status": "public-document review and one independent experiment complete; functional/sanitizer/regression checks passed; strength unproven",
+    "validationReports": [
+      "reports/coda-idea/validation.json",
+      "reports/coda-idea/sanitized-validation.json",
+      "reports/coda-idea/pawnocchio-regression.json",
+      "reports/coda-idea/artifact-audit.json"
+    ],
+    "comparison": {
+      "report": "reports/coda-idea/smoke-match.json",
+      "summary": {
+        "completed": 8,
+        "truncated": 0,
+        "candidateWins": 1,
+        "baselineWins": 1,
+        "draws": 6
+      },
+      "games": 8,
+      "movetimeMs": 100,
+      "threads": 1,
+      "interpretation": "functional smoke match; one win, one loss, six draws; no Elo claim"
+    }
+  },
+  "first10Review": {
+    "scope": "Screenshot first 10 ranks, excluding Torch; 9 orange engines through Alexandria",
+    "status": "focused review and three selected adaptations complete; normal19/19 sanitizer19/19 regression17/17; both exploratory comparisons complete; strength unproven",
+    "sourceSnapshot": "snapshots/coda-v7",
+    "binary": "build/karsli-first10",
+    "adaptations": {
+      "Cinder": "one-ply worker-local bounded transition correction",
+      "Obsidian": "positive first-quiet history suppression in shallow non-PV uncontested nodes; Ethereal credit retained",
+      "Alexandria": "bounded relative learned-correction discount on positive quiet LMR"
+    },
+    "sources": {
+      "cinder": {
+        "repository": "https://github.com/brunocodutra/cinder",
+        "tag": "v0.6.1",
+        "commit": "f5d8b06701b059561e70bfb5dfbc98f65d910131"
+      },
+      "obsidian": {
+        "repository": "https://github.com/gab8192/Obsidian",
+        "tag": "v16.0",
+        "commit": "2838ce52c1a3f997cb1175b360cd8c6b2ae6791c"
+      },
+      "alexandria": {
+        "repository": "https://github.com/PGG106/Alexandria",
+        "tag": "v9.0.0",
+        "commit": "f65f76c4e25e03602bf7512b726dace67c01a07d"
+      }
+    },
+    "defaults": {
+      "Karsli Cinder Transition Weight": 0,
+      "Karsli Obsidian Shallow History": false,
+      "Karsli Alexandria Relative Correction": 0
+    },
+    "testedProfile": {
+      "Karsli Cinder Transition Weight": 128,
+      "Karsli Obsidian Shallow History": true,
+      "Karsli Alexandria Relative Correction": 256
+    },
+    "comparisons": [
+      {
+        "report": "reports/first10-blend/combined-vs-stockfish.json",
+        "summary": {
+          "completed": 32,
+          "truncated": 0,
+          "candidateWins": 0,
+          "referenceWins": 1,
+          "draws": 31,
+          "timeForfeits": 0
+        }
+      },
+      {
+        "report": "reports/first10-blend/combined-vs-revision7.json",
+        "summary": {
+          "completed": 16,
+          "truncated": 0,
+          "candidateWins": 1,
+          "referenceWins": 0,
+          "draws": 15,
+          "timeForfeits": 0
+        }
+      }
+    ]
+  },
+  "orangeReview": {
+    "source": "user-provided ranking screenshot",
+    "scope": "23 orange engines through Horsie; focused source comparison, not exhaustive repository security audit",
+    "selectedAdditions": [
+      "Hobbes capture route history",
+      "Halogen material-threat RFP margin"
+    ],
+    "status": "23 focused/public review decisions complete; five selected new adaptations integrated; normal22/22 sanitizer22/22 regression19/19 material20/20 sanitized-material14/14; both final comparisons complete; strength unproven",
+    "report": "reports/full-orange/ANALIZ.md",
+    "binary": "build/karsli-orange",
+    "binarySHA256": "6441f59222f148b49c1e952b24a2e17e8c5a5bbf86cc108ca43243f094dabef9",
+    "profile": "reports/full-orange/combined-profile.json",
+    "comparisons": [
+      {
+        "report": "reports/full-orange/combined-vs-stockfish.json",
+        "summary": {
+          "completed": 32,
+          "truncated": 0,
+          "candidateWins": 2,
+          "referenceWins": 0,
+          "draws": 30,
+          "timeForfeits": 0
+        }
+      },
+      {
+        "report": "reports/full-orange/combined-vs-first10.json",
+        "summary": {
+          "completed": 16,
+          "truncated": 0,
+          "candidateWins": 2,
+          "referenceWins": 0,
+          "draws": 14,
+          "timeForfeits": 0
+        }
+      }
+    ],
+    "validationReports": [
+      "reports/full-orange/validation.json",
+      "reports/full-orange/sanitized-validation.json",
+      "reports/full-orange/first10-regression.json",
+      "reports/full-orange/material-validation.json",
+      "reports/full-orange/material-sanitized-validation.json",
+      "reports/full-orange/artifact-audit.json"
+    ]
+  }
+}
