@@ -1,4 +1,4 @@
-import {moveAccuracy} from './accuracy.js';
+import {moveAccuracy,ACCURACY_VERSION} from './accuracy.js';
 import {Chess} from './vendor/chess.js';
 import {bookMoves} from './features.js';
 
@@ -108,7 +108,7 @@ export class MoveRatings {
   for(const [id,rating] of Object.entries(data).slice(0,1000)){
    if(id.length>400||!rating)continue;
    const metric=rating.accuracy;
-   if(metric&&Number.isFinite(metric.score)&&metric.score>=0&&metric.score<=100&&Number.isFinite(metric.loss)&&metric.loss>=0&&metric.loss<=100&&metric.beforeDepth>=10&&metric.afterDepth>=10)this.accuracies.set(id,{...metric});
+   if(metric&&metric.version===ACCURACY_VERSION&&Number.isFinite(metric.score)&&metric.score>=0&&metric.score<=100&&Number.isFinite(metric.loss)&&metric.loss>=0&&metric.loss<=100&&metric.beforeDepth>=10&&metric.afterDepth>=10)this.accuracies.set(id,{...metric});
    if(Object.hasOwn(MOVE_RATINGS,rating.kind)&&typeof rating.reason==='string'&&rating.reason.length<=300)this.ratings.set(id,result(rating.kind,rating.reason));
   }
  }

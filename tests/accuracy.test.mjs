@@ -22,10 +22,10 @@ test('WDL evidence is preferred and Black perspective is symmetric',()=>{
  const black=play('6k1/p7/5n2/8/8/2B5/8/6K1 b - - 0 1','a7a6');
  assert.equal(moveAccuracy(black,info(0,['f6d5']),info(300,['c3f6'])).score,moveAccuracy(move,info(0,['f3d4']),info(300,['c6f3'])).score);
 });
-test('the same cp loss costs less winning chance in an already dominant position',()=>{
+test('chance loss shrinks in a dominant position but evaluation loss still counts',()=>{
  const equal=moveAccuracy(move,info(0,['f3d4']),info(100,['c6f3']));
  const winning=moveAccuracy(move,info(1000,['f3d4']),info(-900,['c6f3']));
- assert.ok(winning.score>equal.score);
+ assert.ok(winning.loss<equal.loss);assert.ok(winning.score<=100*Math.exp(-100/200));
 });
 test('missing, shallow, bounded and invalid PV evidence cannot produce Accuracy',()=>{
  assert.equal(moveAccuracy(move,null,info(300,['c6f3'])),null);
@@ -38,12 +38,12 @@ test('per-player Accuracy is withheld until every move for that player is analyz
  const scores=new Map([[session.moves[0],100],[session.moves[1],80]]);
  let summary=gameAccuracy(session.moves,m=>scores.has(m)?{score:scores.get(m)}:null);
  assert.equal(summary.w.accuracy,null);assert.equal(summary.b.accuracy,80);
- scores.set(session.moves[2],50);summary=gameAccuracy(session.moves,m=>({score:scores.get(m)}));assert.equal(summary.w.accuracy,75);
+ scores.set(session.moves[2],50);summary=gameAccuracy(session.moves,m=>({score:scores.get(m)}));assert.ok(Math.abs(summary.w.accuracy-70.83333333333334)<1e-8);
  assert.equal(gameAccuracy([],()=>null).w.accuracy,null);
 });
 test('Game Rating is a bounded app index and never produced without Accuracy',()=>{
- assert.equal(estimatedGameRating(null),null);assert.equal(estimatedGameRating(100),3000);assert.equal(estimatedGameRating(0),0);
- assert.equal(estimatedGameRating(78.7),2350);assert.equal(estimatedGameRating(101),null);
+ assert.equal(estimatedGameRating(null),null);assert.equal(estimatedGameRating(100),2400);assert.equal(estimatedGameRating(0),0);
+ assert.equal(estimatedGameRating(78.7),1150);assert.equal(estimatedGameRating(101),null);
 });
 test('completed Accuracy survives device persistence independently of raw search data',()=>{
  const ratings=new MoveRatings();ratings.record(move.before,info(0,['f3d4']));ratings.record(move.after,info(300,['c6f3']));
@@ -69,4 +69,18 @@ test('a checkmating move can use a known terminal score without a fictional cont
 test('review requests only one PV in forced-move positions',()=>{
  const session=new GameSession();session.load('8/8/8/8/8/6k1/7r/7K w - - 0 1');session.move({from:'h1',to:'g1'});
  const review=new ReviewAnalysis(new MoveRatings());review.start(session,'clock-ended');assert.equal(review.job(1,2).multiPV,1);
+});
+
+test('large errors in a lost position cannot score nearly perfect',()=>{
+ const metric=moveAccuracy(move,info(-1500,['f3d4'],{wdl:[0,0,1000]}),info(1800,['c6f3'],{wdl:[1000,0,0]}));
+ assert.equal(metric.loss,0);assert.equal(metric.cpLoss,300);assert.ok(metric.score<25);
+});
+test('three blunders and two mistakes cannot be washed out by other moves',()=>{
+ const scores=[100,100,100,100,100,100,100,100,100,100,100,...[50,50,50,100,100,200,200,200].map(cp=>100*Math.exp(-cp/200))];
+ const moves=scores.map(score=>({color:'w',score}));const accuracy=gameAccuracy(moves,m=>({score:m.score})).w.accuracy;
+ assert.ok(accuracy<80);assert.ok(estimatedGameRating(accuracy)<1250);
+});
+test('old inflated saved Accuracy is discarded for reanalysis',()=>{
+ const ratings=new MoveRatings(),key=move.before+'|'+move.lan+'|'+move.after;
+ ratings.restore({[key]:{accuracy:{score:100,loss:0,beforeDepth:14,afterDepth:14}}});assert.equal(ratings.accuracy(move),null);
 });

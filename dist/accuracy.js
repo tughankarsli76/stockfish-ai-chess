@@ -1,4 +1,5 @@
 import {Chess} from './vendor/chess.js';
+export const ACCURACY_VERSION=2;
 
 export function usableAccuracyInfo(info){
  return !!info&&info.depth>=10&&['cp','mate'].includes(info.type)&&Number.isFinite(info.score)&&!info.lowerbound&&!info.upperbound&&(info.terminal===true||Array.isArray(info.pv)&&info.pv.length>0);
@@ -21,12 +22,15 @@ export function moveAccuracy(move,before,after){
  try{const uci=before.pv[0];best=game.move({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci[4]});}catch{return null;}
  if(!after.terminal){try{const uci=after.pv[0];new Chess(move.after).move({from:uci.slice(0,2),to:uci.slice(2,4),promotion:uci[4]});}catch{return null;}}
  const loss=best.lan===move.lan?0:Math.max(0,winningChances(before)-(100-winningChances(after)));
- return {score:Math.max(0,Math.min(100,100*Math.exp(-loss/20))),loss,beforeDepth:before.depth,afterDepth:after.depth};
+ // Chance saturation must not hide another lost piece in a losing position.
+ const cpLoss=best.lan===move.lan?0:before.type==='cp'&&after.type==='cp'?Math.max(0,before.score+after.score):before.type==='cp'&&after.type==='mate'&&after.score>0?1000:before.type==='mate'&&before.score>0&&!(after.type==='mate'&&after.score<0)?1000:0;
+ const score=100*Math.exp(-Math.max(loss/20,cpLoss/200));
+ return {version:ACCURACY_VERSION,score:Math.max(0,Math.min(100,score)),loss,cpLoss,beforeDepth:before.depth,afterDepth:after.depth};
 }
 export function gameAccuracy(moves,accuracyFor){
- const result={w:{total:0,analyzed:0,accuracy:null},b:{total:0,analyzed:0,accuracy:null}},sums={w:0,b:0};
- for(const move of moves){const side=result[move.color];if(!side)continue;side.total++;const metric=accuracyFor(move);if(metric&&Number.isFinite(metric.score)){side.analyzed++;sums[move.color]+=metric.score;}}
- for(const color of ['w','b'])if(result[color].total>0&&result[color].analyzed===result[color].total)result[color].accuracy=sums[color]/result[color].total;
+ const result={w:{total:0,analyzed:0,accuracy:null},b:{total:0,analyzed:0,accuracy:null}},sums={w:0,b:0},reciprocals={w:0,b:0};
+ for(const move of moves){const side=result[move.color];if(!side)continue;side.total++;const metric=accuracyFor(move);if(metric&&Number.isFinite(metric.score)){side.analyzed++;sums[move.color]+=metric.score;reciprocals[move.color]+=1/metric.score;}}
+ for(const color of ['w','b'])if(result[color].total>0&&result[color].analyzed===result[color].total)result[color].accuracy=(sums[color]/result[color].total+result[color].total/reciprocals[color])/2;
  return result;
 }
 
@@ -52,5 +56,5 @@ export class ReviewAnalysis {
 // Explicitly an uncalibrated app performance index, not an Elo estimate.
 export function estimatedGameRating(accuracy){
  if(!Number.isFinite(accuracy)||accuracy<0||accuracy>100)return null;
- return Math.max(0,Math.min(3000,Math.round(accuracy*30/50)*50));
+ return Math.max(0,Math.min(2400,Math.round(2400*Math.pow(accuracy/100,3)/50)*50));
 }
