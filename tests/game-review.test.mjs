@@ -20,7 +20,7 @@ test('book and forced ratings contribute without fabricated accuracy or Elo',()=
 test('summary appears only for a finished live computer game with coach enabled',()=>{
  const session=ended(),state={session,settings:{chessCoach:true,opponent:'computer'},tab:'game'};
  assert.equal(canShowGameReview(state),true);
- for(const patch of [{settings:{chessCoach:false,opponent:'computer'}},{settings:{chessCoach:true,opponent:'match'}},{tab:'analysis'},{suspended:true},{inactive:true}])assert.equal(canShowGameReview({...state,...patch}),false);
+ for(const patch of [{settings:{chessCoach:false,opponent:'computer'}},{settings:{chessCoach:true,opponent:'match'}},{tab:'analysis'},{suspended:true},{inactive:true},{celebrating:true}])assert.equal(canShowGameReview({...state,...patch}),false);
  session.navigate(1);assert.equal(canShowGameReview(state),false);
 });
 test('draws and clock expiration are included, but unfinished games are not',()=>{

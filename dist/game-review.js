@@ -14,12 +14,12 @@ export function gameReviewStats(moves,ratingFor){
  return stats;
 }
 export function canShowGameReview(state){
- return state.settings.chessCoach===true&&state.settings.opponent==='computer'&&state.tab==='game'&&state.session.live&&!state.suspended&&!state.inactive&&(state.session.game.isGameOver()||!!state.clockExpired);
+ return state.settings.chessCoach===true&&state.settings.opponent==='computer'&&state.tab==='game'&&state.session.live&&!state.suspended&&!state.inactive&&!state.celebrating&&(state.session.game.isGameOver()||!!state.clockExpired);
 }
 
 export function installGameReview(api){
  const dialog=document.createElement('dialog');dialog.id='gameReviewDialog';dialog.className='game-review-dialog';dialog.setAttribute('aria-labelledby','gameReviewTitle');
- dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Move Quality</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table><p class="game-review-note">Accuracy measures how much estimated winning chance your moves preserve (0–100), not the percentage of correct moves. Game Rating estimates your performance in this game on a 0–2400 scale. Scores appear only when all moves for that player have enough analysis.</p>';
+ dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Move Quality</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table>';
  document.body.append(dialog);
  document.getElementById('gameReviewDone').onclick=()=>dialog.close();
  dialog.addEventListener('close',()=>api.cancelAnalysis?.());
@@ -62,15 +62,22 @@ export function installGameReview(api){
   reopen.hidden=state.settings.chessCoach!==true||state.settings.opponent!=='computer';
   reopen.disabled=!canShowGameReview(state);
   if(!finished){seen=null;shownKey=null;cancel();if(dialog.open)dialog.close();api.cancelAnalysis?.();return;}
+  if(state.celebrating&&canShowGameReview({...state,celebrating:false})){if(timer===null)schedule(key,250);return;}
   if(!canShowGameReview(state)){cancel();if(dialog.open)dialog.close();api.cancelAnalysis?.();return;}
   if(dialog.open&&shownKey!==key){shownKey=key;fill(state);}
   if(seen===key||timer!==null)return;
+  schedule(key);
+ }
+ function schedule(key,delay=1000){
   timer=setTimeout(()=>{
    timer=null;
    const current=api.state();
+   if(!canShowGameReview({...current,celebrating:false})||gameKey(current)!==key||seen===key)return;
+   if(current.celebrating){schedule(key,250);return;}
    // Do not interrupt another dialog or open an old game's summary.
-   if(canShowGameReview(current)&&gameKey(current)===key&&!document.querySelector('dialog[open]'))open();
-  },1000);
+   if(!document.querySelector('dialog[open]'))open();
+  },delay);
  }
+
  return {update,open,refresh:()=>{if(dialog.open)fill(api.state());}};
 }
