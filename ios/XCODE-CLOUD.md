@@ -1,6 +1,6 @@
 # Phone to TestFlight workflow
 
-Version 1.7 development continues from version 1.6 with optional offline Chess Coach. The GitHub `develop` branch contains editable interface, native integration and engine sources. The 13 large engine model files stay in the immutable public build 21 source asset and are restored with checksum verification. No credentials or compiler installations are committed.
+Version 1.8 development continues from version 1.6 with optional offline Chess Coach. The GitHub `develop` branch contains editable interface, native integration and engine sources. The 13 large engine model files stay in the immutable public build 21 source asset and are restored with checksum verification. No credentials or compiler installations are committed.
 
 ## Xcode Cloud configuration
 
@@ -10,7 +10,7 @@ Open `ios/StockfishChess.xcodeproj` from the `develop` checkout in Xcode. Choose
 
 Use a workflow named **Phone Development** with an Apple Silicon environment, Xcode 27.0 (or a compatible later release), branch-change start condition limited to `develop`, and an iOS Archive action using the shared StockfishChess scheme and Release configuration. Start the cloud build sequence at 22. Set TestFlight internal testing as the delivery postaction and select the owner's internal tester group. Keep App Store releases manual.
 
-Apple discovers `ios/ci_scripts/ci_post_clone.sh` automatically. It restores model inputs, installs Rust nightly-2026-08-16 and Zig 0.16.0, runs all web tests, then regenerates the project using version 1.7 and the cloud build number. The initial end-to-end validation completed with build 25: the clean archive and TestFlight delivery succeeded, and version 1.5 (25) was Testing in Owner Testing. All 13 model checks and all 153 web tests passed in that build. This setup has no automatic App Review submission or public release action.
+Apple discovers `ios/ci_scripts/ci_post_clone.sh` automatically. It restores model inputs, installs Rust nightly-2026-08-16 and Zig 0.16.0, runs all web tests, then regenerates the project using version 1.8 and the cloud build number. The initial end-to-end validation completed with build 25: the clean archive and TestFlight delivery succeeded, and version 1.5 (25) was Testing in Owner Testing. All 13 model checks and all 153 web tests passed in that build. This setup has no automatic App Review submission or public release action.
 
 ## Ask an AI agent from your phone
 

@@ -1,4 +1,4 @@
-# Move ratings — version 1.7
+# Move ratings — version 1.8
 
 The Game → Move → Move List screen shows colored badges and labels beside rated moves. Expand Move Ratings to see the symbol legend. The compact game history uses the same badges. Move navigation stays unchanged.
 

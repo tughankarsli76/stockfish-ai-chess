@@ -1,4 +1,4 @@
-# Chess Coach — version 1.7
+# Chess Coach — version 1.8
 
 Options → Chess Coach appears directly below Game Difficulty and defaults to off. The setting is saved on the device. Coaching applies to live Play Computer games and the human player's moves. It does not coach engine matches, tournaments, analysis, or historical review.
 
