@@ -9,7 +9,7 @@ import {GameSession,gameStatus} from './model.js';
 import {GameOwner} from './game-owner.js';
 import {ReviewAnalysis} from './accuracy.js';
 import {installGameReview,gameReviewFinished} from './game-review.js';
-import {MoveRatings} from './move-ratings.js';
+import {MoveRatings,appendMoveRating} from './move-ratings.js';
 import {ChessCoach} from './coach.js';
 import {StockfishEngine} from './engine.js';
 import {NativeEngineTransport} from './native-engine.js';
@@ -312,7 +312,7 @@ function makeMove(move){
     return result;
   }catch(e){toast(e.message);throw e;}
 }
-function renderHistory(){const moves=session.moves;$('history').replaceChildren();if(!moves.length){const d=document.createElement('div');d.className='empty-history';d.innerHTML='<p>Select a piece, then its destination.</p>';$('history').append(d);}else moves.forEach((move,i)=>{if(move.color==='w'||i===0){const n=document.createElement('span');n.className='move-number';n.textContent=move.before.split(' ')[5]+(move.color==='w'?'.':'…');$('history').append(n);}const b=document.createElement('button');b.className='move-button'+(session.cursor===i+1?' current':'');b.textContent=notation(move.san,settings.figurine);b.setAttribute('aria-label','View move '+(i+1)+': '+move.san);b.onclick=()=>navigate(i+1);$('history').append(b);});if(session.live)$('history').scrollTop=$('history').scrollHeight;$('timeline').max=moves.length;$('timeline').value=session.cursor;for(const id of ['first','previous'])$(id).disabled=session.cursor===0;for(const id of ['next','last'])$(id).disabled=session.live;$('undo').disabled=moves.length===0;$('positionLabel').textContent=session.cursor===0?'Starting position':(session.live?'Latest position':'Reviewing')+' · '+session.cursor+' / '+moves.length;}
+function renderHistory(){const moves=session.moves;$('history').replaceChildren();if(!moves.length){const d=document.createElement('div');d.className='empty-history';d.innerHTML='<p>Select a piece, then its destination.</p>';$('history').append(d);}else moves.forEach((move,i)=>{if(move.color==='w'||i===0){const n=document.createElement('span');n.className='move-number';n.textContent=move.before.split(' ')[5]+(move.color==='w'?'.':'…');$('history').append(n);}const b=document.createElement('button');b.className='move-button'+(session.cursor===i+1?' current':'');b.textContent=notation(move.san,settings.figurine);const rating=moveRatings.get(move);appendMoveRating(b,rating);b.setAttribute('aria-label','View move '+(i+1)+': '+move.san+(rating?' — '+rating.label:''));b.onclick=()=>navigate(i+1);$('history').append(b);});if(session.live)$('history').scrollTop=$('history').scrollHeight;$('timeline').max=moves.length;$('timeline').value=session.cursor;for(const id of ['first','previous'])$(id).disabled=session.cursor===0;for(const id of ['next','last'])$(id).disabled=session.live;$('undo').disabled=moves.length===0;$('positionLabel').textContent=session.cursor===0?'Starting position':(session.live?'Latest position':'Reviewing')+' · '+session.cursor+' / '+moves.length;}
 function syncScreenAwake(){
   if(!globalThis.chessNative?.setScreenAwake)return;
   const enabled=!nativeSuspended&&!document.hidden&&(benchmarkMode||session.live&&!session.game.isGameOver()&&!clockExpired()&&(tab==='game'||matchActive()&&matchView())&&(!matchActive()||!engineMatch.paused));

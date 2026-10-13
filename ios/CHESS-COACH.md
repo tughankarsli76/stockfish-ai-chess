@@ -28,7 +28,7 @@ A phone-sized browser smoke check using a mock native UCI transport verified the
 
 Game Review is available below Move List for completed human, computer and historical games, regardless of Chess Coach. Normal games open it once automatically at the final position, after confetti ends. Historical resignation and draw results use the PGN Result header. Setup/FEN games and engine tournaments allow manual review but never open it automatically. Setup provenance is saved as PositionSetup in PGN, including setups reset to the standard starting board. Navigating earlier moves allows manual full-game review without auto-opening it.
 
-The dialog closes 12 seconds after opening, including manual reopening. Done closes it sooner. Closing cancels missing-position analysis; reopening resumes it. All table numbers are bold. Move List and the compact move history display only notation, without quality badges or a ratings legend. Classification remains available in Game Review.
+The dialog closes 20 seconds after opening, including manual reopening. Done closes it sooner. Closing cancels missing-position analysis; reopening resumes it. All table numbers are bold. Move List and the compact move history show move-quality badges next to the notation. Move List includes the quality labels but no explanatory ratings legend below the moves. Classification remains available in Game Review.
 
 ## Accuracy and estimated game performance
 

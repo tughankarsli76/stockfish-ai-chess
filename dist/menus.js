@@ -1,3 +1,4 @@
+import {appendMoveRating} from './move-ratings.js';
 import {installTournament} from './tournament.js';
 import {installTablebases} from './tablebases.js';
 import {installBenchmark} from './benchmark.js';
@@ -244,7 +245,7 @@ export function installMenus(api,html){
   click('coordSetup',()=>{setupCoordinates=!setupCoordinates;renderSetup();});
   click('setupTurn',()=>{draft.turn=draft.turn==='w'?'b':'w';draft.enPassant='-';draft.halfmove=0;syncDraft();$('setupError').textContent='';});
   click('applySetup',()=>{try{const fen=positionFromDraft(draft);if(!api.save())return;api.loadPosition(fen);close();api.toast('Position loaded. Previous game saved.');}catch(error){$('setupError').textContent=error.message;$('setupError').scrollIntoView({block:'nearest'});}});
-  function renderMoveList(){const {session,settings}=api.state();$('fullMoveList').replaceChildren();if(!session.length){$('fullMoveList').textContent='No moves yet.';return;}for(const [i,m] of session.moves.entries()){const button=document.createElement('button');button.textContent=m.before.split(' ')[5]+(m.color==='w'?'. ':'… ')+notation(m.san,settings.figurine);button.className=session.cursor===i+1?'current':'';button.onclick=()=>{api.navigate(i+1);close();};$('fullMoveList').append(button);}}
+  function renderMoveList(){const {session,settings}=api.state();$('fullMoveList').replaceChildren();if(!session.length){$('fullMoveList').textContent='No moves yet.';return;}for(const [i,m] of session.moves.entries()){const button=document.createElement('button');button.textContent=m.before.split(' ')[5]+(m.color==='w'?'. ':'… ')+notation(m.san,settings.figurine);button.className=session.cursor===i+1?'current':'';appendMoveRating(button,api.moveRating?.(m),true);button.onclick=()=>{api.navigate(i+1);close();};$('fullMoveList').append(button);}}
   function sync(){
     const {settings:s,session,tab}=api.state();
     $('activeEngine').value=s.engine||'stockfish19';

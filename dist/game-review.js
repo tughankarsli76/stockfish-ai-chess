@@ -57,7 +57,7 @@ export function installGameReview(api){
  }
  function open(){
   const state=api.state();if(!canShowGameReview(state))return;
-  cancel();seen=shownKey=gameKey(state);fill(state);api.open(dialog.id);api.startAnalysis?.();clearTimeout(dismissTimer);dismissTimer=setTimeout(()=>{if(dialog.open)dialog.close();},12000);
+  cancel();seen=shownKey=gameKey(state);fill(state);api.open(dialog.id);api.startAnalysis?.();clearTimeout(dismissTimer);dismissTimer=setTimeout(()=>{if(dialog.open)dialog.close();},20000);
  }
  reopen.onclick=open;
  function update(){
