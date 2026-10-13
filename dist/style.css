@@ -729,3 +729,6 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 .game-review-table tr[data-category="Accuracy"] td{font-size:27.5px;font-weight:700}
 
 .game-review-table td{font-size:17.5px;font-weight:700}
+
+.game-review-dialog{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif}
+.game-review-dialog .move-rating{font-family:inherit}
