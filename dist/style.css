@@ -741,3 +741,7 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 
 .move-rating.review-symbol{width:21px;height:21px;min-width:21px;font-size:15px;letter-spacing:-1px;padding:0}
 .move-rating.review-symbol svg{width:15px;height:15px}
+
+#settingsDialog .right-control-only{cursor:default}
+#settingsDialog .option-control{cursor:pointer;min-width:44px;padding-block:10px;margin-block:-10px}
+#settingsDialog .right-control-only input[type="checkbox"]{cursor:pointer}
