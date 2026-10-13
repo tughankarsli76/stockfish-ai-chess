@@ -1,4 +1,4 @@
-import {gameAccuracy} from './accuracy.js';
+import {gameAccuracy,estimatedGameRating} from './accuracy.js';
 import {MOVE_RATINGS,appendMoveRating} from './move-ratings.js';
 
 export function gameReviewStats(moves,ratingFor){
@@ -54,10 +54,11 @@ export function installGameReview(api){
   row('Accuracy',accuracy.w.accuracy===null?'—':accuracy.w.accuracy.toFixed(1),accuracy.b.accuracy===null?'—':accuracy.b.accuracy.toFixed(1));
   row('Total moves',stats.w.total,stats.b.total);
   for(const kind of ['brilliant','great','best','excellent','good','book','inaccuracy','mistake','miss','missedWin','blunder'])row('',stats.w.counts[kind],stats.b.counts[kind],kind);
+  row('Game Rating',estimatedGameRating(accuracy.w.accuracy)??'—',estimatedGameRating(accuracy.b.accuracy)??'—');
  }
  function open(){
   const state=api.state();if(!canShowGameReview(state))return;
-  cancel();seen=shownKey=gameKey(state);fill(state);api.open(dialog.id);api.startAnalysis?.();clearTimeout(dismissTimer);dismissTimer=setTimeout(()=>{if(dialog.open)dialog.close();},20000);
+  cancel();seen=shownKey=gameKey(state);fill(state);api.open(dialog.id);api.startAnalysis?.();clearTimeout(dismissTimer);dismissTimer=setTimeout(()=>{if(dialog.open)dialog.close();},60000);
  }
  reopen.onclick=open;
  function update(){
