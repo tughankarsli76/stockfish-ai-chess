@@ -726,6 +726,6 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 
 #gameReviewRetry[hidden]{display:none}
 #gameReviewProgress{font-size:13px;line-height:1.4;color:#666;min-height:0;margin:0 0 10px}
-.game-review-table tr[data-category="Accuracy"] td{font-size:22px;font-weight:700}
+.game-review-table tr[data-category="Accuracy"] td{font-size:27.5px;font-weight:700}
 
-.game-review-table td{font-weight:700}
+.game-review-table td{font-size:17.5px;font-weight:700}
