@@ -62,10 +62,11 @@ export function installGameReview(api){
   cancel();seen=shownKey=gameKey(state);fill(state);api.open(dialog.id);api.startAnalysis?.();clearTimeout(dismissTimer);dismissTimer=setTimeout(()=>{if(dialog.open)dialog.close();},60000);
  }
  reopen.onclick=open;
+ const optionsReopen=document.getElementById('optionsGameReviewButton');if(optionsReopen)optionsReopen.onclick=open;
  function update(){
   const state=api.state(),finished=gameReviewFinished(state),key=finished?gameKey(state):null;
   reopen.hidden=false;
-  reopen.disabled=!canShowGameReview(state);
+  reopen.disabled=!canShowGameReview(state);if(optionsReopen)optionsReopen.disabled=reopen.disabled;
   if(!finished){seen=null;shownKey=null;cancel();if(dialog.open)dialog.close();api.cancelAnalysis?.();return;}
   if(state.celebrating&&canShowGameReview({...state,celebrating:false},{automatic:true})){if(timer===null)schedule(key,250);return;}
   if(!canShowGameReview(state)){cancel();if(dialog.open)dialog.close();api.cancelAnalysis?.();return;}
