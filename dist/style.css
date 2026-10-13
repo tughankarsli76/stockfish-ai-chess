@@ -732,3 +732,9 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 
 .game-review-dialog{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif}
 .game-review-dialog .move-rating{font-family:inherit}
+
+.game-review-table tr[data-category] td[data-side]{color:var(--review-color,inherit)}
+.game-review-table .review-symbol-cell{min-width:30px;width:30px;padding-inline:2px}
+.review-symbol{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;color:white;font-size:20px;font-weight:800;line-height:1;vertical-align:middle;letter-spacing:-1px}
+.review-symbol svg{width:19px;height:19px;display:block}
+.game-review-table thead th[aria-label="Move quality symbol"]{min-width:30px;width:30px}

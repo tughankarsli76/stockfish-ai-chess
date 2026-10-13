@@ -1,5 +1,6 @@
+import {REVIEW_SYMBOLS,reviewSymbol} from './review-symbols.js';
 import {gameAccuracy,estimatedGameRating} from './accuracy.js';
-import {MOVE_RATINGS,appendMoveRating} from './move-ratings.js';
+import {MOVE_RATINGS} from './move-ratings.js';
 
 export function gameReviewStats(moves,ratingFor){
  const side=()=>({total:0,rated:0,unrated:0,counts:Object.fromEntries(Object.keys(MOVE_RATINGS).map(kind=>[kind,0]))});
@@ -25,7 +26,7 @@ export function canShowGameReview(state,{automatic=false}={}){
 
 export function installGameReview(api){
  const dialog=document.createElement('dialog');dialog.id='gameReviewDialog';dialog.className='game-review-dialog';dialog.setAttribute('aria-labelledby','gameReviewTitle');
- dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Players</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table>';
+ dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Players</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col" aria-label="Move quality symbol"></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table>';
  document.body.append(dialog);
  document.getElementById('gameReviewDone').onclick=()=>dialog.close();
  dialog.addEventListener('close',()=>{clearTimeout(dismissTimer);dismissTimer=null;api.cancelAnalysis?.();});
@@ -46,9 +47,9 @@ export function installGameReview(api){
   const body=document.getElementById('gameReviewCounts');body.replaceChildren();
   const row=(label,w,b,kind=null)=>{
    const tr=document.createElement('tr'),heading=document.createElement('th');heading.scope='row';
-   if(kind)appendMoveRating(heading,{...MOVE_RATINGS[kind],kind,reason:MOVE_RATINGS[kind].label},true);else heading.textContent=label;
-   tr.dataset.category=kind||label;tr.append(heading);
-   for(const [color,count] of [['w',w],['b',b]]){const cell=document.createElement('td');cell.dataset.side=color;cell.textContent=count;tr.append(cell);}
+   heading.textContent=kind?MOVE_RATINGS[kind].label:label;
+   tr.dataset.category=kind||label;if(kind)tr.style.setProperty('--review-color',REVIEW_SYMBOLS[kind].color);tr.append(heading);
+   for(const [color,count] of [['w',w],['b',b]]){const cell=document.createElement('td');cell.dataset.side=color;cell.textContent=count;tr.append(cell);if(color==='w'){const symbol=document.createElement('td');symbol.className='review-symbol-cell';symbol.setAttribute('aria-hidden','true');if(kind)symbol.append(reviewSymbol(kind));tr.append(symbol);}}
    body.append(tr);
   };
   row('Accuracy',accuracy.w.accuracy===null?'—':accuracy.w.accuracy.toFixed(1),accuracy.b.accuracy===null?'—':accuracy.b.accuracy.toFixed(1));
