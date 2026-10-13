@@ -1,0 +1,805 @@
+{
+  "notes": "Reference ratings are reported by the user, not independently verified. Screenshots contain 81 and 104 plies but no final result or player ratings. Do not hard-code these ratings in the app or fit a validated strength model from these two games.",
+  "samples": [
+    {
+      "id": "user-reference-1",
+      "source": "User-reported Chess.com Game Rating; screenshots transcribed and legally validated",
+      "pgn": "[Event \"User-provided Chess.com comparison sample 1\"]\n[Site \"?\"]\n[Date \"????.??.??\"]\n[Round \"?\"]\n[White \"?\"]\n[Black \"?\"]\n[Result \"*\"]\n[ReferenceWhiteGameRating \"1200\"]\n[ReferenceBlackGameRating \"1250\"]\n\n1. d4 d6 2. c4 e6 3. Nf3 b6 4. e3 Bb7 5. Be2 Nf6 6. O-O g6 7. Nc3 Bg7 8. Re1 O-O 9. b3 Re8 10. Bb2 Nc6 11. Ng5 h6 12. Nf3 Nb4 13. a3 Nc6 14. Qd3 e5 15. Bd1 exd4 16. Nxd4 Nxd4 17. Qxd4 c5 18. Qd3 Be4 19. Qd2 Qe7 20. Bc2 Rad8 21. Bxe4 Nxe4 22. Nxe4 Bxb2 23. Qxb2 Qxe4 24. Qd2 h5 25. h3 Re5 26. Rac1 g5 27. Qe2 Qg6 28. Qf3 g4 29. Qb7 gxh3 30. g3 h4 31. Qf3 hxg3 32. fxg3 Rg5 33. Kh2 Rh5 34. g4 Rh4 35. Rg1 Kg7 36. Rcf1 Rdh8 37. Rf2 Qe6 38. Qf4 Qe5 39. Qxe5+ dxe5 40. Rgf1 Rf8 41. Rf5 *\n",
+      "reference": {
+        "white": 1200,
+        "black": 1250
+      },
+      "completeResult": false,
+      "moveMetrics": [
+        {
+          "score": 92.77434863285528,
+          "cpLoss": 15
+        },
+        {
+          "score": 74.63952450358816,
+          "cpLoss": 40
+        },
+        {
+          "score": 79.85162187593771,
+          "cpLoss": 26
+        },
+        {
+          "score": 73.52828675478007,
+          "cpLoss": 33
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 32.54651139116839,
+          "cpLoss": 51
+        },
+        {
+          "score": 25.34724855768434,
+          "cpLoss": 73
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 89.13661439068315,
+          "cpLoss": 19
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 99.00498337491679,
+          "cpLoss": 1
+        },
+        {
+          "score": 93.2393819905948,
+          "cpLoss": 8
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 82.69591339433624,
+          "cpLoss": 33
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 90.93729344682315,
+          "cpLoss": 19
+        },
+        {
+          "score": 92.31163463866358,
+          "cpLoss": 16
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 86.07079764250578,
+          "cpLoss": 26
+        },
+        {
+          "score": 90.93729344682315,
+          "cpLoss": 14
+        },
+        {
+          "score": 96.80224498313062,
+          "cpLoss": 5
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 75.3896641959321,
+          "cpLoss": 27
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 44.70879265593566,
+          "cpLoss": 41
+        },
+        {
+          "score": 35.169181937806705,
+          "cpLoss": 68
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 7.408812618043001,
+          "cpLoss": 452
+        },
+        {
+          "score": 10.025884372280375,
+          "cpLoss": 386
+        },
+        {
+          "score": 55.15625658678296,
+          "cpLoss": 41
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 42.31620823177488,
+          "cpLoss": 74
+        },
+        {
+          "score": 98.01986733067552,
+          "cpLoss": 4
+        },
+        {
+          "score": 71.533808635256,
+          "cpLoss": 67
+        },
+        {
+          "score": 78.27045382418682,
+          "cpLoss": 49
+        },
+        {
+          "score": 97.53099120283326,
+          "cpLoss": 5
+        },
+        {
+          "score": 97.04455335485082,
+          "cpLoss": 6
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 98.01986733067552,
+          "cpLoss": 4
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 54.471094563451295,
+          "cpLoss": 78
+        },
+        {
+          "score": 52.20457767610161,
+          "cpLoss": 102
+        },
+        {
+          "score": 45.726142760272595,
+          "cpLoss": 107
+        },
+        {
+          "score": 46.4172049104362,
+          "cpLoss": 100
+        },
+        {
+          "score": 86.93582353988059,
+          "cpLoss": 28
+        },
+        {
+          "score": 80.25187979624785,
+          "cpLoss": 44
+        },
+        {
+          "score": 79.05708496287356,
+          "cpLoss": 47
+        },
+        {
+          "score": 93.23938199059482,
+          "cpLoss": 14
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 98.51119396030626,
+          "cpLoss": 3
+        },
+        {
+          "score": 10.806741863482927,
+          "cpLoss": 143
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 27.803730045319412,
+          "cpLoss": 256
+        },
+        {
+          "score": 97.04455335485082,
+          "cpLoss": 6
+        },
+        {
+          "score": 36.05949401730783,
+          "cpLoss": 204
+        },
+        {
+          "score": 54.60744266397094,
+          "cpLoss": 121
+        },
+        {
+          "score": 14.0858420921045,
+          "cpLoss": 392
+        },
+        {
+          "score": 2.106799952304143,
+          "cpLoss": 772
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 19.789869908361464,
+          "cpLoss": 59
+        },
+        {
+          "score": 12.493021219858246,
+          "cpLoss": 140
+        },
+        {
+          "score": 20.240189074236184,
+          "cpLoss": 120
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 57.26388730252153,
+          "cpLoss": 54
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 85.21437889662113,
+          "cpLoss": 32
+        },
+        {
+          "score": 86.07079764250578,
+          "cpLoss": 30
+        },
+        {
+          "score": 96.07894391523232,
+          "cpLoss": 8
+        },
+        {
+          "score": 93.23938199059482,
+          "cpLoss": 14
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 99.0049833749168,
+          "cpLoss": 2
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 97.53099120283326,
+          "cpLoss": 5
+        },
+        {
+          "score": 81.05842459701871,
+          "cpLoss": 42
+        }
+      ],
+      "measured": {
+        "w": {
+          "total": 41,
+          "analyzed": 41,
+          "accuracy": 61.416717413237976,
+          "averageCentipawnLoss": 56.26829268292683
+        },
+        "b": {
+          "total": 40,
+          "analyzed": 40,
+          "accuracy": 56.159031535221274,
+          "averageCentipawnLoss": 55.475
+        }
+      }
+    },
+    {
+      "id": "user-reference-2",
+      "source": "User-reported Chess.com Game Rating; screenshots transcribed and legally validated",
+      "pgn": "[Event \"User-provided Chess.com comparison sample 2\"]\n[Site \"?\"]\n[Date \"????.??.??\"]\n[Round \"?\"]\n[White \"White\"]\n[Black \"Black\"]\n[Result \"*\"]\n[ReferenceWhiteGameRating \"850\"]\n[ReferenceBlackGameRating \"1200\"]\n\n1. e4 g6 2. Nf3 Bg7 3. Bc4 b6 4. Nc3 Bb7 5. b3 d6 6. Bb2 e6 7. d4 Nf6 8. e5 dxe5 9. dxe5 Nfd7 10. Bb5 a6 11. Bxd7+ Qxd7 12. Qxd7+ Nxd7 13. O-O Nxe5 14. Nxe5 Bxe5 15. Rfe1 Bxc3 16. Bxc3 Rg8 17. Rad1 Rd8 18. Rxd8+ Kxd8 19. Rd1+ Ke7 20. a4 Rd8 21. Rxd8 Kxd8 22. Bf6+ Kd7 23. Kf1 Kd6 24. Ke2 Kd5 25. g3 c5 26. c3 Bc6 27. Kd2 Ke4 28. Bg5 f5 29. Be3 Bd5 30. c4 Bc6 31. f4 Kf3 32. Kd3 Kg2 33. h4 Kxg3 34. h5 Kg4 35. hxg6 hxg6 36. Bd2 Kf3 37. b4 cxb4 38. Bxb4 Bxa4 39. c5 bxc5 40. Bxc5 Bb5+ 41. Kd4 Kxf4 42. Bd6+ Kg5 43. Ke5 f4 44. Kxe6 f3 45. Bc5 Kf4 46. Kf6 g5 47. Bf2 g4 48. Ke6 g3 49. Bd4 f2 50. Be5+ Kf3 51. Bxg3 Kxg3 52. Ke5 f1=Q *\n",
+      "reference": {
+        "white": 850,
+        "black": 1200
+      },
+      "completeResult": false,
+      "moveMetrics": [
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 84.15582888117734,
+          "cpLoss": 16
+        },
+        {
+          "score": 86.50222931107415,
+          "cpLoss": 13
+        },
+        {
+          "score": 81.26132417730977,
+          "cpLoss": 18
+        },
+        {
+          "score": 70.99931193855511,
+          "cpLoss": 38
+        },
+        {
+          "score": 37.71923535631569,
+          "cpLoss": 69
+        },
+        {
+          "score": 84.36648165963841,
+          "cpLoss": 7
+        },
+        {
+          "score": 50.78851193447447,
+          "cpLoss": 28
+        },
+        {
+          "score": 19.544036196159663,
+          "cpLoss": 129
+        },
+        {
+          "score": 77.10515858035663,
+          "cpLoss": 52
+        },
+        {
+          "score": 93.47277206160275,
+          "cpLoss": 10
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 93.70674633774034,
+          "cpLoss": 13
+        },
+        {
+          "score": 81.87307530779819,
+          "cpLoss": 40
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 14.697393806446039,
+          "cpLoss": 149
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 14.734183258616195,
+          "cpLoss": 128
+        },
+        {
+          "score": 8.20849986238988,
+          "cpLoss": 274
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 48.19089900902024,
+          "cpLoss": 146
+        },
+        {
+          "score": 46.76664270099092,
+          "cpLoss": 152
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 10.48735437362869,
+          "cpLoss": 210
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 73.16156289466417,
+          "cpLoss": 18
+        },
+        {
+          "score": 57.839398937800844,
+          "cpLoss": 79
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 40.6569659740599,
+          "cpLoss": 84
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 3.65161737537404,
+          "cpLoss": 315
+        },
+        {
+          "score": 8.20849986238988,
+          "cpLoss": 231
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 8.20849986238988,
+          "cpLoss": 242
+        },
+        {
+          "score": 8.20849986238988,
+          "cpLoss": 242
+        },
+        {
+          "score": 49.41085742561418,
+          "cpLoss": 83
+        },
+        {
+          "score": 49.53453910686223,
+          "cpLoss": 81
+        },
+        {
+          "score": 93.23938199059482,
+          "cpLoss": 14
+        },
+        {
+          "score": 91.85122844014573,
+          "cpLoss": 17
+        },
+        {
+          "score": 95.1229424500714,
+          "cpLoss": 10
+        },
+        {
+          "score": 98.01986733067552,
+          "cpLoss": 4
+        },
+        {
+          "score": 83.5270211411272,
+          "cpLoss": 36
+        },
+        {
+          "score": 85.21437889662113,
+          "cpLoss": 32
+        },
+        {
+          "score": 77.49164979610809,
+          "cpLoss": 51
+        },
+        {
+          "score": 74.08182206817179,
+          "cpLoss": 60
+        },
+        {
+          "score": 21.171801661471065,
+          "cpLoss": 109
+        },
+        {
+          "score": 21.171801661471065,
+          "cpLoss": 109
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 8.20849986238988,
+          "cpLoss": 437
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 58.860496967835516,
+          "cpLoss": 106
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 52.993548831756854,
+          "cpLoss": 127
+        },
+        {
+          "score": 99.50124791926824,
+          "cpLoss": 1
+        },
+        {
+          "score": 67.36800392488675,
+          "cpLoss": 79
+        },
+        {
+          "score": 33.7901785894713,
+          "cpLoss": 217
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 79.05708496287356,
+          "cpLoss": 47
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 95.1229424500714,
+          "cpLoss": 10
+        },
+        {
+          "score": 98.51119396030626,
+          "cpLoss": 3
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 52.993548831756854,
+          "cpLoss": 127
+        },
+        {
+          "score": 52.729242404304856,
+          "cpLoss": 128
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 93.23938199059482,
+          "cpLoss": 14
+        },
+        {
+          "score": 94.17645335842487,
+          "cpLoss": 12
+        },
+        {
+          "score": 97.53099120283326,
+          "cpLoss": 5
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 82.28346580560184,
+          "cpLoss": 39
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 81.87307530779819,
+          "cpLoss": 40
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 24.536705645292635,
+          "cpLoss": 281
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 89.13661439068314,
+          "cpLoss": 23
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 0.6737946999085467,
+          "cpLoss": 1000
+        },
+        {
+          "score": 0.6737946999085467,
+          "cpLoss": 1000
+        },
+        {
+          "score": 0.6737946999085467,
+          "cpLoss": 1000
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        },
+        {
+          "score": 100,
+          "cpLoss": 0
+        }
+      ],
+      "measured": {
+        "w": {
+          "total": 52,
+          "analyzed": 52,
+          "accuracy": 42.323315186528305,
+          "averageCentipawnLoss": 96.01923076923077
+        },
+        "b": {
+          "total": 52,
+          "analyzed": 52,
+          "accuracy": 49.75357295616182,
+          "averageCentipawnLoss": 57.92307692307692
+        }
+      }
+    }
+  ],
+  "analysis": {
+    "engine": "Stockfish 19.0.1 full single-thread WASM (npm package)",
+    "movetimeMs": 1000,
+    "hashMB": 64,
+    "multiPV": 1,
+    "showWDL": true,
+    "notes": "Offline reference run; different hardware, MultiPV, depth and search noise can change scores. Both screenshot sequences omit the result. These are training examples, not independent validation."
+  }
+}

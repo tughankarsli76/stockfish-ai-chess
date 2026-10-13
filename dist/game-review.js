@@ -54,7 +54,7 @@ export function installGameReview(api){
   row('Accuracy',accuracy.w.accuracy===null?'—':accuracy.w.accuracy.toFixed(1),accuracy.b.accuracy===null?'—':accuracy.b.accuracy.toFixed(1));
   row('Total moves',stats.w.total,stats.b.total);
   for(const kind of ['brilliant','great','best','excellent','good','book','inaccuracy','mistake','miss','missedWin','blunder'])row('',stats.w.counts[kind],stats.b.counts[kind],kind);
-  row('Game Rating',estimatedGameRating(accuracy.w.accuracy)??'—',estimatedGameRating(accuracy.b.accuracy)??'—');
+  row('Game Rating',estimatedGameRating(accuracy.w.averageCentipawnLoss)??'—',estimatedGameRating(accuracy.b.averageCentipawnLoss)??'—');
  }
  function open(){
   const state=api.state();if(!canShowGameReview(state))return;

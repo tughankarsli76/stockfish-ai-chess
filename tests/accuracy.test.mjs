@@ -41,9 +41,10 @@ test('per-player Accuracy is withheld until every move for that player is analyz
  scores.set(session.moves[2],50);summary=gameAccuracy(session.moves,m=>({score:scores.get(m)}));assert.ok(Math.abs(summary.w.accuracy-70.83333333333334)<1e-8);
  assert.equal(gameAccuracy([],()=>null).w.accuracy,null);
 });
-test('Game Rating is a bounded app index and never produced without Accuracy',()=>{
- assert.equal(estimatedGameRating(null),null);assert.equal(estimatedGameRating(100),2400);assert.equal(estimatedGameRating(0),0);
- assert.equal(estimatedGameRating(78.7),1150);assert.equal(estimatedGameRating(101),null);
+test('Game Rating uses mean evaluation loss and withholds missing evidence',()=>{
+ assert.equal(estimatedGameRating(null),null);assert.equal(estimatedGameRating(-1),null);assert.equal(estimatedGameRating(Infinity),null);
+ assert.equal(estimatedGameRating(0),2050);assert.equal(estimatedGameRating(1000),0);
+ assert.ok(estimatedGameRating(50)>estimatedGameRating(100));
 });
 test('completed Accuracy survives device persistence independently of raw search data',()=>{
  const ratings=new MoveRatings();ratings.record(move.before,info(0,['f3d4']));ratings.record(move.after,info(300,['c6f3']));
@@ -78,9 +79,15 @@ test('large errors in a lost position cannot score nearly perfect',()=>{
 test('three blunders and two mistakes cannot be washed out by other moves',()=>{
  const scores=[100,100,100,100,100,100,100,100,100,100,100,...[50,50,50,100,100,200,200,200].map(cp=>100*Math.exp(-cp/200))];
  const moves=scores.map(score=>({color:'w',score}));const accuracy=gameAccuracy(moves,m=>({score:m.score})).w.accuracy;
- assert.ok(accuracy<80);assert.ok(estimatedGameRating(accuracy)<1250);
+ assert.ok(accuracy<80);
 });
 test('old inflated saved Accuracy is discarded for reanalysis',()=>{
  const ratings=new MoveRatings(),key=move.before+'|'+move.lan+'|'+move.after;
  ratings.restore({[key]:{accuracy:{score:100,loss:0,beforeDepth:14,afterDepth:14}}});assert.equal(ratings.accuracy(move),null);
+});
+
+test('mean evaluation loss is separate per player and requires all moves',()=>{
+ const moves=[{color:'w',score:90,cpLoss:20},{color:'b',score:70,cpLoss:80},{color:'w',score:60,cpLoss:100}];
+ const stats=gameAccuracy(moves,m=>m);assert.equal(stats.w.averageCentipawnLoss,60);assert.equal(stats.b.averageCentipawnLoss,80);
+ assert.equal(gameAccuracy(moves,m=>m===moves[2]?{score:60}:m).w.averageCentipawnLoss,null);
 });

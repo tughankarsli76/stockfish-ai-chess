@@ -28,9 +28,10 @@ export function moveAccuracy(move,before,after){
  return {version:ACCURACY_VERSION,score:Math.max(0,Math.min(100,score)),loss,cpLoss,beforeDepth:before.depth,afterDepth:after.depth};
 }
 export function gameAccuracy(moves,accuracyFor){
- const result={w:{total:0,analyzed:0,accuracy:null},b:{total:0,analyzed:0,accuracy:null}},sums={w:0,b:0},reciprocals={w:0,b:0};
- for(const move of moves){const side=result[move.color];if(!side)continue;side.total++;const metric=accuracyFor(move);if(metric&&Number.isFinite(metric.score)){side.analyzed++;sums[move.color]+=metric.score;reciprocals[move.color]+=1/metric.score;}}
+ const result={w:{total:0,analyzed:0,accuracy:null,averageCentipawnLoss:null},b:{total:0,analyzed:0,accuracy:null,averageCentipawnLoss:null}},sums={w:0,b:0},reciprocals={w:0,b:0},cpSums={w:0,b:0},cpCounts={w:0,b:0};
+ for(const move of moves){const side=result[move.color];if(!side)continue;side.total++;const metric=accuracyFor(move);if(metric&&Number.isFinite(metric.score)){side.analyzed++;sums[move.color]+=metric.score;reciprocals[move.color]+=1/metric.score;if(Number.isFinite(metric.cpLoss)&&metric.cpLoss>=0){cpSums[move.color]+=metric.cpLoss;cpCounts[move.color]++;}}}
  for(const color of ['w','b'])if(result[color].total>0&&result[color].analyzed===result[color].total)result[color].accuracy=(sums[color]/result[color].total+result[color].total/reciprocals[color])/2;
+ for(const color of ['w','b'])if(result[color].total>0&&cpCounts[color]===result[color].total)result[color].averageCentipawnLoss=cpSums[color]/result[color].total;
  return result;
 }
 
@@ -53,8 +54,10 @@ export class ReviewAnalysis {
  cancel(){this.token++;this.running=false;this.queue=[];this.attempt=0;this.activeId=null;}
 }
 
-// Explicitly an uncalibrated app performance index, not an Elo estimate.
-export function estimatedGameRating(accuracy){
- if(!Number.isFinite(accuracy)||accuracy<0||accuracy>100)return null;
- return Math.max(0,Math.min(2400,Math.round(2400*Math.pow(accuracy/100,3)/50)*50));
+// Provisional log-linear fit to two user-reported reference games (four sides).
+// Based on mean evaluation loss, independently of the Accuracy display formula.
+// References cover ACPL 55–96 only; do not claim calibration outside that range.
+export function estimatedGameRating(averageCentipawnLoss){
+ if(!Number.isFinite(averageCentipawnLoss)||averageCentipawnLoss<0)return null;
+ return Math.max(0,Math.min(2400,Math.round(2035.0367269419546*Math.exp(-averageCentipawnLoss/109.93336198679971)/50)*50));
 }
