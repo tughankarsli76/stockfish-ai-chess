@@ -26,9 +26,9 @@ A phone-sized browser smoke check using a mock native UCI transport verified the
 
 ## End-of-game review
 
-With coaching enabled in Play Computer, a completed live game opens Game Review after the final move animation and the confetti finishes, without waiting for the king animation. The review has no explanatory footer. Checkmate, draws, and clock expiration are included. White and Black have separate counts for every move-quality category, and total moves. Rated/unrated totals and Game Rating are not shown in the review. Counts use the same stored classifications as Move List; they do not fabricate an Elo rating. Accuracy and the separate app performance index are described below.
+Game Review is available below Move List for completed human, computer and historical games, regardless of Chess Coach. Normal games open it once automatically at the final position, after confetti ends. Historical resignation and draw results use the PGN Result header. Setup/FEN games and engine tournaments allow manual review but never open it automatically. Setup provenance is saved as PositionSetup in PGN, including setups reset to the standard starting board. Navigating earlier moves allows manual full-game review without auto-opening it.
 
-The review opens once per completed game, can be dismissed with Done, and can be reopened through Move → Game Review. Disabling coaching hides that entry. Reviewing an earlier position, starting another game, and engine tournaments do not automatically open a summary. Existing coach message expiry remains separate from the summary.
+The dialog closes 12 seconds after opening, including manual reopening. Done closes it sooner. Closing cancels missing-position analysis; reopening resumes it. All table numbers are bold. Move List and the compact move history display only notation, without quality badges or a ratings legend. Classification remains available in Game Review.
 
 ## Accuracy and estimated game performance
 

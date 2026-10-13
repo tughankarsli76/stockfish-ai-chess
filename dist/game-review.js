@@ -13,8 +13,14 @@ export function gameReviewStats(moves,ratingFor){
  }
  return stats;
 }
-export function canShowGameReview(state){
- return state.settings.chessCoach===true&&state.settings.opponent==='computer'&&state.tab==='game'&&state.session.live&&!state.suspended&&!state.inactive&&!state.celebrating&&(state.session.game.isGameOver()||!!state.clockExpired);
+export function gameReviewFinished(state){
+ return state.session.game.isGameOver()||!!state.clockExpired||['1-0','0-1','1/2-1/2'].includes(state.session.game.getHeaders().Result);
+}
+export function canShowGameReview(state,{automatic=false}={}){
+ if(state.suspended||state.inactive||state.celebrating||!gameReviewFinished(state))return false;
+ if(!automatic)return true;
+ const headers=state.session.game.getHeaders();
+ return state.session.live&&!state.engineMatch?.tournamentId&&headers.Event!=='Engine Tournament'&&headers['PositionSetup']!=='1'&&!headers.FEN;
 }
 
 export function installGameReview(api){
@@ -22,11 +28,11 @@ export function installGameReview(api){
  dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Move Quality</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table>';
  document.body.append(dialog);
  document.getElementById('gameReviewDone').onclick=()=>dialog.close();
- dialog.addEventListener('close',()=>api.cancelAnalysis?.());
+ dialog.addEventListener('close',()=>{clearTimeout(dismissTimer);dismissTimer=null;api.cancelAnalysis?.();});
  document.getElementById('gameReviewRetry').onclick=()=>{api.startAnalysis?.();fill(api.state());};
  const reopen=document.createElement('button');reopen.id='gameReviewButton';reopen.type='button';reopen.textContent='Game Review';reopen.hidden=true;
  document.getElementById('moveListButton').insertAdjacentElement('afterend',reopen);
- let timer=null,seen=null,shownKey=null;
+ let timer=null,dismissTimer=null,seen=null,shownKey=null;
  const gameKey=state=>state.session.game.pgn()+'|'+(state.clockExpired||'');
  const cancel=()=>{clearTimeout(timer);timer=null;};
  function fill(state){
@@ -51,16 +57,17 @@ export function installGameReview(api){
  }
  function open(){
   const state=api.state();if(!canShowGameReview(state))return;
-  cancel();seen=shownKey=gameKey(state);fill(state);api.open(dialog.id);api.startAnalysis?.();
+  cancel();seen=shownKey=gameKey(state);fill(state);api.open(dialog.id);api.startAnalysis?.();clearTimeout(dismissTimer);dismissTimer=setTimeout(()=>{if(dialog.open)dialog.close();},12000);
  }
  reopen.onclick=open;
  function update(){
-  const state=api.state(),finished=state.session.game.isGameOver()||!!state.clockExpired,key=finished?gameKey(state):null;
-  reopen.hidden=state.settings.chessCoach!==true||state.settings.opponent!=='computer';
+  const state=api.state(),finished=gameReviewFinished(state),key=finished?gameKey(state):null;
+  reopen.hidden=false;
   reopen.disabled=!canShowGameReview(state);
   if(!finished){seen=null;shownKey=null;cancel();if(dialog.open)dialog.close();api.cancelAnalysis?.();return;}
-  if(state.celebrating&&canShowGameReview({...state,celebrating:false})){if(timer===null)schedule(key,250);return;}
+  if(state.celebrating&&canShowGameReview({...state,celebrating:false},{automatic:true})){if(timer===null)schedule(key,250);return;}
   if(!canShowGameReview(state)){cancel();if(dialog.open)dialog.close();api.cancelAnalysis?.();return;}
+  if(!canShowGameReview(state,{automatic:true})){cancel();return;}
   if(dialog.open&&shownKey!==key){shownKey=key;fill(state);}
   if(seen===key||timer!==null)return;
   schedule(key);
@@ -69,7 +76,7 @@ export function installGameReview(api){
   timer=setTimeout(()=>{
    timer=null;
    const current=api.state();
-   if(!canShowGameReview({...current,celebrating:false})||gameKey(current)!==key||seen===key)return;
+   if(!canShowGameReview({...current,celebrating:false},{automatic:true})||gameKey(current)!==key||seen===key)return;
    if(current.celebrating){schedule(key,250);return;}
    // Do not interrupt another dialog or open an old game's summary.
    if(!document.querySelector('dialog[open]'))open();

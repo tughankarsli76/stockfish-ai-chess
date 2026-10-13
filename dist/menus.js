@@ -1,4 +1,3 @@
-import {appendMoveRating,MOVE_RATINGS} from './move-ratings.js';
 import {installTournament} from './tournament.js';
 import {installTablebases} from './tablebases.js';
 import {installBenchmark} from './benchmark.js';
@@ -171,11 +170,6 @@ export function installMenus(api,html){
   click('menuNew',()=>open('newDialog'));click('saveButton',()=>api.openSave());click('gamesButton',()=>{api.renderSaved();open('gamesDialog');});click('importButton',()=>api.openImport());click('exportButton',()=>api.openExport());
   click('takeBack',()=>{close();api.takeBack();});click('stepForward',()=>{const s=api.state().session;api.navigate(Math.min(s.length,s.cursor+1));close();});click('startOfGame',()=>{api.navigate(0);close();});click('endOfGame',()=>{api.navigate(api.state().session.length);close();});
   click('moveNow',()=>{close();api.moveNow();});
-  const ratingLegend=document.createElement('details');ratingLegend.className='move-rating-legend';
-  const ratingSummary=document.createElement('summary');ratingSummary.textContent='Move Ratings';ratingLegend.append(ratingSummary);
-  const ratingGrid=document.createElement('div');
-  for(const [kind,rating] of Object.entries(MOVE_RATINGS)){const item=document.createElement('span');appendMoveRating(item,{...rating,kind,reason:rating.label},true);ratingGrid.append(item);}
-  ratingLegend.append(ratingGrid);$('moveListDialog').append(ratingLegend);
   click('moveListButton',()=>{renderMoveList();open('moveListDialog');});
   for(const [id,tab] of [['showGameView','game'],['showAnalysisView','analysis'],['showGraphView','graph']])click(id,()=>{close();if(tab==='analysis'&&!api.state().settings.showAnalysis)api.patch({showAnalysis:true});api.setTab(tab);});
 
@@ -250,7 +244,7 @@ export function installMenus(api,html){
   click('coordSetup',()=>{setupCoordinates=!setupCoordinates;renderSetup();});
   click('setupTurn',()=>{draft.turn=draft.turn==='w'?'b':'w';draft.enPassant='-';draft.halfmove=0;syncDraft();$('setupError').textContent='';});
   click('applySetup',()=>{try{const fen=positionFromDraft(draft);if(!api.save())return;api.loadPosition(fen);close();api.toast('Position loaded. Previous game saved.');}catch(error){$('setupError').textContent=error.message;$('setupError').scrollIntoView({block:'nearest'});}});
-  function renderMoveList(){const {session,settings}=api.state();$('fullMoveList').replaceChildren();if(!session.length){$('fullMoveList').textContent='No moves yet.';return;}for(const [i,m] of session.moves.entries()){const button=document.createElement('button');button.textContent=m.before.split(' ')[5]+(m.color==='w'?'. ':'… ')+notation(m.san,settings.figurine);button.className=session.cursor===i+1?'current':'';appendMoveRating(button,api.moveRating?.(m),true);button.onclick=()=>{api.navigate(i+1);close();};$('fullMoveList').append(button);}}
+  function renderMoveList(){const {session,settings}=api.state();$('fullMoveList').replaceChildren();if(!session.length){$('fullMoveList').textContent='No moves yet.';return;}for(const [i,m] of session.moves.entries()){const button=document.createElement('button');button.textContent=m.before.split(' ')[5]+(m.color==='w'?'. ':'… ')+notation(m.san,settings.figurine);button.className=session.cursor===i+1?'current':'';button.onclick=()=>{api.navigate(i+1);close();};$('fullMoveList').append(button);}}
   function sync(){
     const {settings:s,session,tab}=api.state();
     $('activeEngine').value=s.engine||'stockfish19';

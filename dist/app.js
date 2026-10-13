@@ -8,8 +8,8 @@ import {GameClock,clockLabel,gameMinutes,moveIncrement,timeWinner,timeResult} fr
 import {GameSession,gameStatus} from './model.js';
 import {GameOwner} from './game-owner.js';
 import {ReviewAnalysis} from './accuracy.js';
-import {installGameReview} from './game-review.js';
-import {MoveRatings,appendMoveRating} from './move-ratings.js';
+import {installGameReview,gameReviewFinished} from './game-review.js';
+import {MoveRatings} from './move-ratings.js';
 import {ChessCoach} from './coach.js';
 import {StockfishEngine} from './engine.js';
 import {NativeEngineTransport} from './native-engine.js';
@@ -90,7 +90,7 @@ function renderCoach(){
   $('coachExplanation').textContent=feedback.reason;
 }
 function reviewKey(){return session.game.pgn()+'|'+connectedEngine+'|'+(clockExpired()?gameClock.expired:'');}
-function reviewAllowed(){return coachEnabled()&&!nativeSuspended&&(session.game.isGameOver()||clockExpired())&&$('gameReviewDialog')?.open;}
+function reviewAllowed(){return !nativeSuspended&&!inactiveTab&&gameReviewFinished({session,clockExpired:clockExpired()})&&$('gameReviewDialog')?.open;}
 function cancelReviewAnalysis(){
   clearTimeout(reviewTimer);reviewTimer=null;reviewAnalysis.cancel();
   if(engine.pending?.review)engine.pending=null;
@@ -312,7 +312,7 @@ function makeMove(move){
     return result;
   }catch(e){toast(e.message);throw e;}
 }
-function renderHistory(){const moves=session.moves;$('history').replaceChildren();if(!moves.length){const d=document.createElement('div');d.className='empty-history';d.innerHTML='<p>Select a piece, then its destination.</p>';$('history').append(d);}else moves.forEach((move,i)=>{if(move.color==='w'||i===0){const n=document.createElement('span');n.className='move-number';n.textContent=move.before.split(' ')[5]+(move.color==='w'?'.':'…');$('history').append(n);}const b=document.createElement('button');b.className='move-button'+(session.cursor===i+1?' current':'');b.textContent=notation(move.san,settings.figurine);const rating=moveRatings.get(move);appendMoveRating(b,rating);b.setAttribute('aria-label','View move '+(i+1)+': '+move.san+(rating?' — '+rating.label:''));b.onclick=()=>navigate(i+1);$('history').append(b);});if(session.live)$('history').scrollTop=$('history').scrollHeight;$('timeline').max=moves.length;$('timeline').value=session.cursor;for(const id of ['first','previous'])$(id).disabled=session.cursor===0;for(const id of ['next','last'])$(id).disabled=session.live;$('undo').disabled=moves.length===0;$('positionLabel').textContent=session.cursor===0?'Starting position':(session.live?'Latest position':'Reviewing')+' · '+session.cursor+' / '+moves.length;}
+function renderHistory(){const moves=session.moves;$('history').replaceChildren();if(!moves.length){const d=document.createElement('div');d.className='empty-history';d.innerHTML='<p>Select a piece, then its destination.</p>';$('history').append(d);}else moves.forEach((move,i)=>{if(move.color==='w'||i===0){const n=document.createElement('span');n.className='move-number';n.textContent=move.before.split(' ')[5]+(move.color==='w'?'.':'…');$('history').append(n);}const b=document.createElement('button');b.className='move-button'+(session.cursor===i+1?' current':'');b.textContent=notation(move.san,settings.figurine);b.setAttribute('aria-label','View move '+(i+1)+': '+move.san);b.onclick=()=>navigate(i+1);$('history').append(b);});if(session.live)$('history').scrollTop=$('history').scrollHeight;$('timeline').max=moves.length;$('timeline').value=session.cursor;for(const id of ['first','previous'])$(id).disabled=session.cursor===0;for(const id of ['next','last'])$(id).disabled=session.live;$('undo').disabled=moves.length===0;$('positionLabel').textContent=session.cursor===0?'Starting position':(session.live?'Latest position':'Reviewing')+' · '+session.cursor+' / '+moves.length;}
 function syncScreenAwake(){
   if(!globalThis.chessNative?.setScreenAwake)return;
   const enabled=!nativeSuspended&&!document.hidden&&(benchmarkMode||session.live&&!session.game.isGameOver()&&!clockExpired()&&(tab==='game'||matchActive()&&matchView())&&(!matchActive()||!engineMatch.paused));
@@ -510,7 +510,7 @@ menus=installMenus({
  hint:()=>{$('hint').onclick();},
  patch:patchSettings,
  moveNow:forceMove,
- loadPosition:(fen,view='game')=>{session.load(fen);resetGameClock();settings.opponent='local';selected=null;scores={};if(view==='analysis')settings.showAnalysis=true;syncSettings();setTab(view);persist();},
+ loadPosition:(fen,view='game')=>{session.load(fen);session.game.setHeader('PositionSetup','1');resetGameClock();settings.opponent='local';selected=null;scores={};if(view==='analysis')settings.showAnalysis=true;syncSettings();setTab(view);persist();},
  pauseForScan:()=>{if(matchActive())pauseEngineMatch();clearTimeout(bookTimer);engine.cancel();},
  resumeAfterScan:()=>analyze(),
  resetEverything:keep=>{
@@ -520,7 +520,7 @@ menus=installMenus({
  recoverReset:()=>{try{const data=JSON.parse(localStorage.getItem('chess-preview-reset-backup'));if(!data)throw Error();session.load(data.pgn);settings={...DEFAULT_SETTINGS,...data.settings};engineMatch=data.engineMatch?{...data.engineMatch,paused:true}:null;resetGameClock(data.clock);saved=data.saved||[];scores=data.scores||{};flipped=!!data.flipped;syncSettings();setTab('game');persist();toast('Previous games and settings restored.');}catch{toast('No valid recovery copy is available.');}}
 },MENU_MARKUP);
 installCoachCard();
-gameReview=installGameReview({state:()=>({settings,session,tab,celebrating:winCelebration.active,suspended:nativeSuspended,inactive:inactiveTab,clockExpired:clockExpired()?gameClock.expired:null,result:clockExpired()?clockStatus():gameStatus(session.game),white:$('whiteName').textContent,black:$('blackName').textContent,reviewProgress:reviewAnalysis}),ratingFor:move=>moveRatings.get(move),accuracyFor:move=>moveRatings.accuracy(move),open:showDialog,startAnalysis:startReviewAnalysis,cancelAnalysis:cancelReviewAnalysis});
+gameReview=installGameReview({state:()=>({settings,session,tab,engineMatch,celebrating:winCelebration.active,suspended:nativeSuspended,inactive:inactiveTab,clockExpired:clockExpired()?gameClock.expired:null,result:clockExpired()?clockStatus():session.game.isGameOver()?gameStatus(session.game):({'1-0':'White wins','0-1':'Black wins','1/2-1/2':'Draw'}[session.game.getHeaders().Result]||gameStatus(session.game)),white:$('whiteName').textContent,black:$('blackName').textContent,reviewProgress:reviewAnalysis}),ratingFor:move=>moveRatings.get(move),accuracyFor:move=>moveRatings.accuracy(move),open:showDialog,startAnalysis:startReviewAnalysis,cancelAnalysis:cancelReviewAnalysis});
 const saveScreen=installSaveGame({open:showDialog,snapshot:()=>({pgn:session.game.pgn(),white:playerHeader('White'),black:playerHeader('Black'),clock:clockSave()}),save:entry=>{
  saved.unshift({...entry,id:Date.now().toString(),date:new Date().toLocaleString()});
  if(!persist()){saved.shift();return false;}
