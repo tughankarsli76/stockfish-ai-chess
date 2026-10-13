@@ -75,14 +75,16 @@ export function installMenus(api,html){
   $('analysisPanel').insertAdjacentHTML('beforeend','<div id="wdlSummary" class="wdl-summary"></div>');
 
   // Pointer taps activate only the right-hand control; keyboard activation stays available.
-  const rightControlRows=['modeButton','difficultyButton','bookVarietyButton','engineMatchButton','timeButton','threadsButton','hashButton','tablebasesButton','benchmarkButton','historicalGamesButton','fideRankingsButton','computerRankingsButton','languageButton','resetButton'];
+  const rightControlRows=['modeButton','difficultyButton','boardButton','piecesButton','optionsGameReviewButton','nameButton','bookVarietyButton','engineMatchButton','timeButton','threadsButton','hashButton','tablebasesButton','benchmarkButton','historicalGamesButton','fideRankingsButton','computerRankingsButton','languageButton','resetButton'];
   for(const id of rightControlRows){
     const button=$(id);button.classList.add('right-control-only');
     const control=button.querySelector('.option-value')||button.lastElementChild;control.classList.add('option-control');
+    button.addEventListener('pointerdown',event=>{if(!control.contains(event.target))event.preventDefault();},true);
     button.addEventListener('click',event=>{if(event.detail!==0&&!control.contains(event.target)){event.preventDefault();event.stopImmediatePropagation();}},true);
   }
   for(const input of $('settingsDialog').querySelectorAll('input[type="checkbox"]')){
     const label=input.closest('label');label.classList.add('right-control-only');
+    label.addEventListener('pointerdown',event=>{if(event.target!==input)event.preventDefault();},true);
     label.addEventListener('click',event=>{if(event.target!==input)event.preventDefault();},true);
   }
   let draft,palette='P',setupFlipped=false,setupCoordinates=true,limits={maxThreads:2,maxHashMB:64},hashSizes=[];

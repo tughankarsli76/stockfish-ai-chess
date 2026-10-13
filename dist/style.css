@@ -745,3 +745,6 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 #settingsDialog .right-control-only{cursor:default}
 #settingsDialog .option-control{cursor:pointer;min-width:44px;padding-block:10px;margin-block:-10px}
 #settingsDialog .right-control-only input[type="checkbox"]{cursor:pointer}
+
+#settingsDialog .right-control-only,#settingsDialog .right-control-only *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+#settingsDialog button.right-control-only:hover,#settingsDialog button.right-control-only:active{background:transparent}
