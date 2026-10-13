@@ -14,3 +14,10 @@ test('transcribed reference games are legal and the provisional curve fits the m
   }
  }
 });
+
+test('screenshot reference categories account for all moves on each side',()=>{
+ for(const sample of fixtures.samples){
+  const reference=sample.referenceReview;
+  for(const side of ['white','black'])assert.equal(Object.values(reference.counts[side]).reduce((a,b)=>a+b,0),reference.totalMoves[side]);
+ }
+});

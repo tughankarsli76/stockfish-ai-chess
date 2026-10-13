@@ -25,7 +25,7 @@ export function canShowGameReview(state,{automatic=false}={}){
 
 export function installGameReview(api){
  const dialog=document.createElement('dialog');dialog.id='gameReviewDialog';dialog.className='game-review-dialog';dialog.setAttribute('aria-labelledby','gameReviewTitle');
- dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Move Quality</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table>';
+ dialog.innerHTML='<div class="dialog-heading"><h2 id="gameReviewTitle">Game Review</h2><button id="gameReviewDone" type="button">Done</button></div><p id="gameReviewResult"></p><p id="gameReviewProgress" role="status" aria-live="polite"></p><button id="gameReviewRetry" type="button" hidden>Retry Analysis</button><table class="game-review-table"><thead><tr><th scope="col">Players</th><th scope="col"><span>White</span><small id="gameReviewWhite"></small></th><th scope="col"><span>Black</span><small id="gameReviewBlack"></small></th></tr></thead><tbody id="gameReviewCounts"></tbody></table>';
  document.body.append(dialog);
  document.getElementById('gameReviewDone').onclick=()=>dialog.close();
  dialog.addEventListener('close',()=>{clearTimeout(dismissTimer);dismissTimer=null;api.cancelAnalysis?.();});
@@ -53,7 +53,7 @@ export function installGameReview(api){
   };
   row('Accuracy',accuracy.w.accuracy===null?'—':accuracy.w.accuracy.toFixed(1),accuracy.b.accuracy===null?'—':accuracy.b.accuracy.toFixed(1));
   row('Total moves',stats.w.total,stats.b.total);
-  for(const kind of ['brilliant','great','best','excellent','good','book','inaccuracy','mistake','miss','missedWin','blunder'])row('',stats.w.counts[kind],stats.b.counts[kind],kind);
+  for(const kind of ['brilliant','great','book','best','excellent','good','inaccuracy','mistake','miss','blunder'])row('',stats.w.counts[kind]+(kind==='miss'?stats.w.counts.missedWin:kind==='best'?stats.w.counts.forced:0),stats.b.counts[kind]+(kind==='miss'?stats.b.counts.missedWin:kind==='best'?stats.b.counts.forced:0),kind);
   row('Game Rating',estimatedGameRating(accuracy.w.averageCentipawnLoss)??'—',estimatedGameRating(accuracy.b.averageCentipawnLoss)??'—');
  }
  function open(){

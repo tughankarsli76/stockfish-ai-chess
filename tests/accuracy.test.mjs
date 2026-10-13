@@ -43,7 +43,7 @@ test('per-player Accuracy is withheld until every move for that player is analyz
 });
 test('Game Rating uses mean evaluation loss and withholds missing evidence',()=>{
  assert.equal(estimatedGameRating(null),null);assert.equal(estimatedGameRating(-1),null);assert.equal(estimatedGameRating(Infinity),null);
- assert.equal(estimatedGameRating(0),2050);assert.equal(estimatedGameRating(1000),0);
+ assert.equal(estimatedGameRating(0),2100);assert.equal(estimatedGameRating(1000),0);
  assert.ok(estimatedGameRating(50)>estimatedGameRating(100));
 });
 test('completed Accuracy survives device persistence independently of raw search data',()=>{

@@ -59,5 +59,5 @@ export class ReviewAnalysis {
 // References cover ACPL 55–96 only; do not claim calibration outside that range.
 export function estimatedGameRating(averageCentipawnLoss){
  if(!Number.isFinite(averageCentipawnLoss)||averageCentipawnLoss<0)return null;
- return Math.max(0,Math.min(2400,Math.round(2035.0367269419546*Math.exp(-averageCentipawnLoss/109.93336198679971)/50)*50));
+ return Math.max(0,Math.min(2400,Math.round(2104.8109581729514*Math.exp(-averageCentipawnLoss/105.81656664880687)/50)*50));
 }
