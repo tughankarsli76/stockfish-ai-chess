@@ -1,3 +1,4 @@
+import {REVIEW_SYMBOLS,reviewSymbol} from './review-symbols.js';
 import {moveAccuracy,ACCURACY_VERSION} from './accuracy.js';
 import {Chess} from './vendor/chess.js';
 import {bookMoves} from './features.js';
@@ -115,8 +116,8 @@ export class MoveRatings {
 }
 export function appendMoveRating(element,rating,showLabel=false){
  if(!rating)return;
- const badge=document.createElement('span');badge.className='move-rating';badge.dataset.rating=rating.kind;badge.style.setProperty('--rating-color',rating.color);
- badge.textContent=rating.symbol;badge.setAttribute('aria-label',rating.label);badge.title=rating.label+' — '+rating.reason;
+ const shared=REVIEW_SYMBOLS[rating.kind],badge=shared?reviewSymbol(rating.kind):document.createElement('span');badge.classList.add('move-rating');badge.dataset.rating=rating.kind;badge.style.setProperty('--rating-color',shared?.color||rating.color);
+ if(!shared)badge.textContent=rating.symbol;badge.removeAttribute('aria-hidden');badge.setAttribute('role','img');badge.setAttribute('aria-label',rating.label);badge.title=rating.label+' — '+rating.reason;
  element.append(document.createTextNode(' '),badge);element.title=badge.title;
  if(showLabel){const label=document.createElement('span');label.className='move-rating-label';label.textContent=rating.label;element.append(label);}
 }

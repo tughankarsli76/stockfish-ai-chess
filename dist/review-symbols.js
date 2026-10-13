@@ -1,4 +1,4 @@
-// Review-only presentation: monochrome vector symbols avoid colored emoji fonts.
+// Shared Move List and Game Review presentation: monochrome vector symbols avoid colored emoji fonts.
 export const REVIEW_SYMBOLS={
  brilliant:{color:'#20bba5',text:'!!'},
  great:{color:'#739bbf',text:'!'},

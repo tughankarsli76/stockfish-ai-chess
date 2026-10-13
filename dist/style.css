@@ -738,3 +738,6 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 .review-symbol{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;color:white;font-size:20px;font-weight:800;line-height:1;vertical-align:middle;letter-spacing:-1px}
 .review-symbol svg{width:19px;height:19px;display:block}
 .game-review-table thead th[aria-label="Move quality symbol"]{min-width:30px;width:30px}
+
+.move-rating.review-symbol{width:21px;height:21px;min-width:21px;font-size:15px;letter-spacing:-1px;padding:0}
+.move-rating.review-symbol svg{width:15px;height:15px}
