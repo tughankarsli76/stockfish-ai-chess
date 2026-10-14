@@ -69,8 +69,11 @@ can develop and test the standalone engine and web app.
 
 ## Exact next work
 
-Complete PZ sanitizer validation and independently audited paired games, then the
-same checks for Tarnished. Record failures and final results in the checkpoint.
+Mac PZ and Tarnished optimized and sanitizer validation passed nine checks each.
+PZ scored 1W/1L/14D and Tarnished 0W/0L/16D in separately audited sixteen-game
+on/off samples. These results establish functionality, not a strength gain.
+Linux and native Xcode Cloud checks are in progress. Read `WORK-STATE.json` for
+current results; imported candidate manifests also retain historical status.
 Review combined effects before native promotion. Continue remaining feature
 scope listed in `AGENTS.md`; keep individual candidates and unproven strength
 clearly distinguished.

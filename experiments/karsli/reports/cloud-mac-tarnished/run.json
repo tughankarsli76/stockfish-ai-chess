@@ -1,0 +1,100 @@
+{
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "architecture": "apple-silicon",
+  "networkSHA256": "1a298aa575a085434d29027978dc36867fe9c5bcea9376654b7a8eba1e52dfc2",
+  "builds": [
+    {
+      "name": "berserk-nmp",
+      "sha256": "965833e204994eff04a5923d7e0c2acccad9b8579e841e76262eb3d767c4c6de",
+      "sourceSHA256": "42c8c75a247ea165dfea3ab8c22bc1f335af9be027619f0147f3cb6cae505797",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-berserk-nmp"
+      ]
+    },
+    {
+      "name": "caissa-node-cache",
+      "sha256": "1e2d7657bd9fef6e32e38e171a21184e4fcca3a161ef61fca2616270907595ae",
+      "sourceSHA256": "096e3403f6b0b0e4f77fe90f53483668b51ff01240322db1ae8c7d16e24f746c",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-caissa-node-cache"
+      ]
+    },
+    {
+      "name": "trium-disagreement",
+      "sha256": "b767ae9086aed749460a30dab2dd894a979a93768a2c2fe5aa6df04e12fb37ef",
+      "sourceSHA256": "dddcc92a2a3e92ad34d6dd5056f0cd5ac4a6c75b809fe24ed8a07ee30c73b48e",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-trium-disagreement"
+      ]
+    },
+    {
+      "name": "pz-threat-correction",
+      "sha256": "ff4a5de8402fcf0bb39472c1f55d574b6b527191199f39e5102db81f09165040",
+      "sourceSHA256": "e13413aa065a2a9cf2837ce332899e6a29a4baa04566c87b90623541140cf0d0",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-pz-threat-correction"
+      ]
+    },
+    {
+      "name": "tarnished-interactions",
+      "sha256": "d9946d4b204a0bba517d16937e60f2e0353508e2dbeff79cf0ea481dbe6a1085",
+      "sourceSHA256": "4fe311b9da9165814a3dc7a43e6e47efb6df405217b73df043a8759ff529d471",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-tarnished-interactions"
+      ]
+    },
+    {
+      "name": "tarnished-interactions-sanitized",
+      "sha256": "b6617b82b598387f3b1dcb6a10ecb58706c4fe0e3362ccf99b84cd0f197ddc12",
+      "sourceSHA256": "4fe311b9da9165814a3dc7a43e6e47efb6df405217b73df043a8759ff529d471",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-tarnished-interactions-sanitized",
+        "debug=yes",
+        "optimize=no",
+        "sanitize=address undefined",
+        "EXTRACXXFLAGS=-O1 -fno-omit-frame-pointer"
+      ]
+    }
+  ],
+  "validation": {
+    "tarnished-interactions": {
+      "passed": true,
+      "checks": 9
+    },
+    "tarnished-interactions-sanitized": {
+      "passed": true,
+      "checks": 9
+    }
+  },
+  "passed": true
+}

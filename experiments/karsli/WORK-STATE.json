@@ -36,7 +36,7 @@
   "pushedToDevelop": true,
   "activeCandidate": {
     "path": "experiments/karsli/candidates/tarnished-interactions",
-    "status": "PZ completed on Mac: bounds, nine optimized checks, nine ASan/UBSan checks and independently audited sixteen paired games; Linux/cloud validation next",
+    "status": "Mac PZ and Tarnished validation complete; Linux/GitHub/cloud checks running; combined-effects review and native promotion decision pending",
     "promotedToPhone": false
   },
   "completedCandidates": {
@@ -77,19 +77,45 @@
       "promotedToPhone": false,
       "platform": "Apple Silicon Mac",
       "reports": "experiments/karsli/reports/cloud-mac-pz"
+    },
+    "tarnished-interactions": {
+      "technicalChecks": 9,
+      "sanitizedChecks": 9,
+      "boundsPassed": true,
+      "pairedGames": 16,
+      "result": "0W 0L 16D",
+      "gameAuditPassed": true,
+      "promotedToPhone": false,
+      "platform": "Apple Silicon Mac",
+      "reports": "experiments/karsli/reports/cloud-mac-tarnished"
     }
   },
   "laterCandidate": {
     "path": "experiments/karsli/candidates/tarnished-interactions",
-    "status": "implemented bounded pair/triple blend; bounds sanitizer passed; engine build, UCI/sanitizer tests and matches pending; Karsli retuning pending"
+    "status": "Mac optimized9/9 and sanitizer9/9; bounds passed; audited16-game comparison all draws; Linux checks and Karsli-specific retuning pending"
   },
   "pausedByUser": false,
   "resumeSteps": [
     "Read this checkpoint; fetch the research branch before editing.",
     "Check GitHub Actions/Linux validation and fix concrete portability failures.",
-    "Tarnished: complete optimized and sanitizer checks, paired on/off games and independent replay/clock audit.",
+    "Both Mac candidate suites and paired-game audits are complete. Inspect Linux and Xcode Cloud results, then review combined effects before native promotion.",
     "Review combined effects before native promotion; the installed/native engine still has revision9 fourteen-option profile.",
     "Remaining scope: Trium time management/TRANN1; Karsli-specific LMR tuning; Raphael full fractional depth."
   ],
-  "cloudBranch": "codex/karsli-cloud-research"
+  "cloudBranch": "codex/karsli-cloud-research",
+  "cloudSetup": {
+    "repository": "https://github.com/tughankarsli76/stockfish-ai-chess",
+    "branch": "codex/karsli-cloud-research",
+    "pullRequest": "https://github.com/tughankarsli76/stockfish-ai-chess/pull/2",
+    "codingChat": "01a12832-000f-7517-bdd9-ca18ec9b80e6",
+    "codingChatStatus": "active; Linux candidate chain building",
+    "githubRun": "https://github.com/tughankarsli76/stockfish-ai-chess/actions/runs/38495772685",
+    "githubStatus": "in progress",
+    "xcodeValidationWorkflow": "621457fb-9e51-4068-9d70-619d5e83ede9",
+    "xcodeValidationBuild": 79,
+    "xcodeValidationBuildID": "c7eba6fb-84d7-4863-a132-2e57cab00dd6",
+    "xcodeValidationStatus": "started; test action waiting for available environment",
+    "xcodeTestFlightWorkflow": "6e41bfff-56aa-4c56-93eb-fbea05097d9f",
+    "testFlightStatus": "configured manual-only for research branch and existing Owner Testing group; no archive started yet"
+  }
 }
