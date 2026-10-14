@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {createHash} from 'node:crypto';
 import {MoveRatings} from '../dist/move-ratings.js';
 import {ChessCoach} from '../dist/coach.js';
 import {GameSession} from '../dist/model.js';
@@ -26,13 +27,14 @@ test('every historical game has complete legal notation and its published result
     assert.equal(headers.Black,entry.black,entry.title);
     assert.equal(headers.Result,entry.result,entry.title);
     assert.equal(headers.Date,entry.date,entry.title);
+    assert.equal(headers.Event,entry.event,entry.title);
     assert.ok(entry.sources.length>0,entry.title);
     for(const source of entry.sources)assert.equal(new URL(source.url).protocol,'https:',entry.title);
   }
 });
 
 test('the expanded collection includes multiple games from the requested legends',()=>{
-  assert.equal(HISTORICAL_GAMES.length,100);
+  assert.equal(HISTORICAL_GAMES.length,150);
   for(const player of ['Kasparov','Karpov','Tal','Carlsen','Fischer','Anand','Capablanca']){
     const name=new RegExp('\\b'+player+'\\b','i');
     assert.ok(HISTORICAL_GAMES.filter(entry=>name.test(entry.white+' '+entry.black)).length>=2,player+' needs multiple games');
@@ -44,7 +46,7 @@ test('the expanded collection includes multiple games from the requested legends
   assert.equal(new Set(scores).size,scores.length,'The collection must not repeat the same game');
 });
 
-test('the hundred-game collection spans older classics and recent players',()=>{
+test('the 150-game collection spans older classics and recent players',()=>{
   assert.ok(HISTORICAL_GAMES.filter(game=>game.year<1900).length>=10);
   assert.ok(HISTORICAL_GAMES.filter(game=>game.year>=1900&&game.year<2000).length>=35);
   assert.ok(HISTORICAL_GAMES.filter(game=>game.year>=2000).length>=40);
@@ -53,6 +55,31 @@ test('the hundred-game collection spans older classics and recent players',()=>{
     assert.ok(findHistoricalGames(player).length>0,player);
   }
   for(let i=1;i<HISTORICAL_GAMES.length;i++)assert.ok(HISTORICAL_GAMES[i].year>=HISTORICAL_GAMES[i-1].year);
+});
+
+test('the fifty new records prioritize human-computer matches and recent games, preserving the original catalog',()=>{
+ const report=JSON.parse(readFileSync(new URL('../release/reports/version-1.8-150-games-sources.json',import.meta.url),'utf8'));
+ const addedIds=new Set(report.records.map(record=>record.id));
+ assert.equal(addedIds.size,50);
+ const originals=HISTORICAL_GAMES.filter(game=>!addedIds.has(game.id));
+ assert.equal(originals.length,100);
+ assert.equal(createHash('sha256').update(JSON.stringify(originals)).digest('hex'),report.baselineCatalogSHA256);
+ const additions=HISTORICAL_GAMES.filter(game=>addedIds.has(game.id));
+ assert.equal(additions.filter(game=>game.era==='Human vs computer').length,24);
+ assert.equal(additions.filter(game=>game.year>=2025).length,20);
+ assert.ok(additions.every(game=>game.year>=2000));
+ const engineGames=findHistoricalGames('AlphaZero','Engine vs engine');
+ assert.equal(engineGames.length,6);
+ assert.ok(engineGames.every(game=>game.year===2018&&/Stockfish 8/.test(game.white+' '+game.black)));
+ assert.ok(engineGames.some(game=>game.black==='AlphaZero'));
+ assert.ok(engineGames.some(game=>game.white==='Stockfish 8'&&game.result==='1-0'));
+ for(const record of report.records){
+  const game=HISTORICAL_GAMES.find(game=>game.id===record.id);
+  assert.ok(game,record.id);
+  assert.equal(createHash('sha256').update(game.pgn).digest('hex'),record.normalizedPGNSHA256,record.id);
+  assert.equal(game.expectedPlies,record.expectedPlies,record.id);
+  assert.equal(game.finalFen,record.finalFen,record.id);
+ }
 });
 
 test('search finds players with accents and combines era, year, and game context',()=>{

@@ -1,6 +1,6 @@
 import {HISTORICAL_GAMES} from './historical-games-data.js';
 
-const ERAS=['Early chess','Romantic era','Champions','Human vs computer'];
+const ERAS=['Early chess','Romantic era','Champions','Human vs computer','Engine vs engine'];
 const normalize=value=>String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 export function findHistoricalGames(query='',era='all',games=HISTORICAL_GAMES){
  const terms=normalize(query).trim().split(/\s+/).filter(Boolean);
@@ -16,7 +16,7 @@ export function installHistoricalGames(api){
  document.body.append(library,detail);
  const $=id=>document.getElementById(id);
  let current=null;
- const spanish={'Options':'Opciones','Games':'Partidas','Classical & Legendary Games':'Partidas clásicas y legendarias','Search games':'Buscar partidas','Player, game, or year':'Jugador, partida o año','Browse':'Explorar','All games':'Todas las partidas','Early chess':'Ajedrez antiguo','Romantic era':'Época romántica','Champions':'Campeones','Human vs computer':'Humano contra computadora','Analyze this game':'Analizar esta partida','Opens the full game in Analysis. Your current game is kept in Load Game.':'Abre la partida completa en Análisis. Tu partida actual se conserva en Cargar partida.'};
+ const spanish={'Options':'Opciones','Games':'Partidas','Classical & Legendary Games':'Partidas clásicas y legendarias','Search games':'Buscar partidas','Player, game, or year':'Jugador, partida o año','Browse':'Explorar','All games':'Todas las partidas','Early chess':'Ajedrez antiguo','Romantic era':'Época romántica','Champions':'Campeones','Human vs computer':'Humano contra computadora','Engine vs engine':'Motor contra motor','Analyze this game':'Analizar esta partida','Opens the full game in Analysis. Your current game is kept in Load Game.':'Abre la partida completa en Análisis. Tu partida actual se conserva en Cargar partida.'};
  const language=()=>{const value=api.state().settings.language;return value==='system'?(navigator.language.toLowerCase().startsWith('es')?'es':'en'):value;};
  const t=value=>language()==='es'?(spanish[value]||value):value;
  function translate(){

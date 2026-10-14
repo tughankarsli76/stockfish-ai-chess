@@ -3629,4 +3629,1254 @@ Be7 b5 52. Bf6 b4 53. Ka4 Kb6 54. Bd8+ Ka6 55. Kb3 Bd3 0-1`,
       }
     ],
   },
-];
+  {
+    "id": "garry-kasparov-deep-junior-2003-fide-man-machine-wc-1",
+    "title": "Kasparov–Deep Junior — game 1 (2003)",
+    "era": "Human vs computer",
+    "white": "Garry Kasparov",
+    "black": "Deep Junior",
+    "year": 2003,
+    "event": "Kasparov–Deep Junior match",
+    "date": "2003.01.26",
+    "result": "1-0",
+    "expectedPlies": 53,
+    "finalFen": "r5k1/p1R2ppp/6n1/1b2p1Pn/4P3/4B3/P2N1P1P/K3R3 b - - 1 27",
+    "pgn": "[Event \"Kasparov–Deep Junior match\"]\n[Site \"New York USA\"]\n[Date \"2003.01.26\"]\n[Round \"1\"]\n[White \"Garry Kasparov\"]\n[Black \"Deep Junior\"]\n[Result \"1-0\"]\n\n1. d4 d5 2. c4 c6 3. Nc3 Nf6 4. e3 e6 5. Nf3 Nbd7 6. Qc2 Bd6 7. g4 dxc4\n8. Bxc4 b6 9. e4 e5 10. g5 Nh5 11. Be3 O-O 12. O-O-O Qc7 13. d5 b5 14. dxc6 bxc4\n15. Nb5 Qxc6 16. Nxd6 Bb7 17. Qc3 Rae8 18. Nxe8 Rxe8 19. Rhe1 Qb5 20. Nd2 Rc8\n21. Kb1 Nf8 22. Ka1 Ng6 23. Rc1 Ba6 24. b3 cxb3 25. Qxb3 Ra8 26. Qxb5 Bxb5\n27. Rc7 1-0",
+    "summary": "Game 1 of the Kasparov–Deep Junior match in 2003. Garry Kasparov wins.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-junior-garry-kasparov-2003-fide-man-machine-wc-2",
+    "title": "Kasparov–Deep Junior — game 2 (2003)",
+    "era": "Human vs computer",
+    "white": "Deep Junior",
+    "black": "Garry Kasparov",
+    "year": 2003,
+    "event": "Kasparov–Deep Junior match",
+    "date": "2003.01.28",
+    "result": "1/2-1/2",
+    "expectedPlies": 60,
+    "finalFen": "2R5/1p3k1p/3p2p1/2nP4/2P5/4p3/P1R3PP/q4NK1 w - - 1 31",
+    "pgn": "[Event \"Kasparov–Deep Junior match\"]\n[Site \"New York USA\"]\n[Date \"2003.01.28\"]\n[Round \"2\"]\n[White \"Deep Junior\"]\n[Black \"Garry Kasparov\"]\n[Result \"1/2-1/2\"]\n\n1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6 5. Bd3 Bc5 6. Nb3 Ba7 7. c4 Nc6\n8. Nc3 d6 9. O-O Nge7 10. Re1 O-O 11. Be3 e5 12. Nd5 a5 13. Rc1 a4 14. Bxa7 Rxa7\n15. Nd2 Nd4 16. Qh5 Ne6 17. Rc3 Nc5 18. Bc2 Nxd5 19. exd5 g6 20. Qh6 f5\n21. Ra3 Qf6 22. b4 axb3 23. Rxa7 bxc2 24. Rc1 e4 25. Rxc2 Qa1+ 26. Nf1 f4\n27. Ra8 e3 28. fxe3 fxe3 29. Qxf8+ Kxf8 30. Rxc8+ Kf7 1/2-1/2",
+    "summary": "Game 2 of the Kasparov–Deep Junior match in 2003. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "garry-kasparov-deep-junior-2003-fide-man-machine-wc-3",
+    "title": "Kasparov–Deep Junior — game 3 (2003)",
+    "era": "Human vs computer",
+    "white": "Garry Kasparov",
+    "black": "Deep Junior",
+    "year": 2003,
+    "event": "Kasparov–Deep Junior match",
+    "date": "2003.01.30",
+    "result": "0-1",
+    "expectedPlies": 72,
+    "finalFen": "5k2/p5qp/1pp2p2/3r3R/3Q4/8/PP3P2/2K5 w - - 0 37",
+    "pgn": "[Event \"Kasparov–Deep Junior match\"]\n[Site \"New York USA\"]\n[Date \"2003.01.30\"]\n[Round \"3\"]\n[White \"Garry Kasparov\"]\n[Black \"Deep Junior\"]\n[Result \"0-1\"]\n\n1. d4 d5 2. c4 c6 3. Nc3 Nf6 4. e3 e6 5. Nf3 Nbd7 6. Qc2 b6 7. cxd5 exd5\n8. Bd3 Be7 9. Bd2 O-O 10. g4 Nxg4 11. Rg1 Ndf6 12. h3 Nh6 13. e4 dxe4\n14. Bxh6 exd3 15. Rxg7+ Kh8 16. Qxd3 Rg8 17. Rxg8+ Nxg8 18. Bf4 f6 19. O-O-O Bd6\n20. Qe3 Bxf4 21. Qxf4 Bxh3 22. Rg1 Qb8 23. Qe3 Qd6 24. Nh4 Be6 25. Rh1 Rd8\n26. Ng6+ Kg7 27. Nf4 Bf5 28. Nce2 Ne7 29. Ng3 Kh8 30. Nxf5 Nxf5 31. Qe4 Qd7\n32. Rh5 Nxd4 33. Ng6+ Kg8 34. Ne7+ Kf8 35. Nd5 Qg7 36. Qxd4 Rxd5 0-1",
+    "summary": "Game 3 of the Kasparov–Deep Junior match in 2003. Deep Junior wins.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-junior-garry-kasparov-2003-fide-man-machine-wc-4",
+    "title": "Kasparov–Deep Junior — game 4 (2003)",
+    "era": "Human vs computer",
+    "white": "Deep Junior",
+    "black": "Garry Kasparov",
+    "year": 2003,
+    "event": "Kasparov–Deep Junior match",
+    "date": "2003.02.02",
+    "result": "1/2-1/2",
+    "expectedPlies": 121,
+    "finalFen": "8/1r4k1/1Pr3p1/1R3pP1/5P1K/8/8/1R6 b - - 1 61",
+    "pgn": "[Event \"Kasparov–Deep Junior match\"]\n[Site \"New York USA\"]\n[Date \"2003.02.02\"]\n[Round \"4\"]\n[White \"Deep Junior\"]\n[Black \"Garry Kasparov\"]\n[Result \"1/2-1/2\"]\n\n1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 e6 5. Nb5 d6 6. c4 Nf6 7. N1c3 a6\n8. Na3 Nd7 9. Nc2 Be7 10. Be2 b6 11. O-O Bb7 12. h3 O-O 13. Be3 Rc8 14. Qd2 Nce5\n15. b3 Nf6 16. f3 Qc7 17. Rac1 Rfe8 18. a3 Ned7 19. Rfd1 Qb8 20. Bf2 Rcd8\n21. b4 Ba8 22. a4 Rc8 23. Rb1 Qc7 24. a5 bxa5 25. b5 Bb7 26. b6 Qb8 27. Ne3 Nc5\n28. Qa2 Nfd7 29. Na4 Ne5 30. Nc2 Ncd7 31. Nd4 Red8 32. Kh1 Nc6 33. Nxc6 Rxc6\n34. Kg1 h6 35. Qa3 Rdc8 36. Bg3 Bf8 37. Qc3 Ne5 38. c5 Nd7 39. Qxa5 Nxc5\n40. Nxc5 Rxc5 41. Qa4 R5c6 42. Bf2 d5 43. Bxa6 Bc5 44. Bxc5 Rxc5 45. Bxb7 Qxb7\n46. exd5 exd5 47. Qa7 R5c7 48. Qxb7 Rxb7 49. Rxd5 Rc6 50. Rdb5 h5 51. Kf2 Re6\n52. f4 g6 53. Kg3 Kg7 54. Kh4 Kh6 55. R1b4 Rd6 56. g3 f6 57. g4 hxg4 58. hxg4 Kg7\n59. Rb3 Rc6 60. g5 f5 61. Rb1 1/2-1/2",
+    "summary": "Game 4 of the Kasparov–Deep Junior match in 2003. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "garry-kasparov-deep-junior-2003-fide-man-machine-wc-5",
+    "title": "Kasparov–Deep Junior — game 5 (2003)",
+    "era": "Human vs computer",
+    "white": "Garry Kasparov",
+    "black": "Deep Junior",
+    "year": 2003,
+    "event": "Kasparov–Deep Junior match",
+    "date": "2003.02.05",
+    "result": "1/2-1/2",
+    "expectedPlies": 38,
+    "finalFen": "rnb1r2k/pp3ppB/2p5/3p4/3P1P1q/P1N1PKN1/1PQB2Pn/R4R2 w - - 7 20",
+    "pgn": "[Event \"Kasparov–Deep Junior match\"]\n[Site \"New York USA\"]\n[Date \"2003.02.05\"]\n[Round \"5\"]\n[White \"Garry Kasparov\"]\n[Black \"Deep Junior\"]\n[Result \"1/2-1/2\"]\n\n1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 O-O 5. Bd3 d5 6. cxd5 exd5 7. Ne2 Re8\n8. O-O Bd6 9. a3 c6 10. Qc2 Bxh2+ 11. Kxh2 Ng4+ 12. Kg3 Qg5 13. f4 Qh5\n14. Bd2 Qh2+ 15. Kf3 Qh4 16. Bxh7+ Kh8 17. Ng3 Nh2+ 18. Kf2 Ng4+ 19. Kf3 Nh2+\n1/2-1/2",
+    "summary": "Game 5 of the Kasparov–Deep Junior match in 2003. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-junior-garry-kasparov-2003-fide-man-machine-wc-6",
+    "title": "Kasparov–Deep Junior — game 6 (2003)",
+    "era": "Human vs computer",
+    "white": "Deep Junior",
+    "black": "Garry Kasparov",
+    "year": 2003,
+    "event": "Kasparov–Deep Junior match",
+    "date": "2003.02.07",
+    "result": "1/2-1/2",
+    "expectedPlies": 55,
+    "finalFen": "4n1k1/3nbpp1/pp1p3p/4p3/P4P2/BNr3PP/2P1R1K1/3R4 b - - 0 28",
+    "pgn": "[Event \"Kasparov–Deep Junior match\"]\n[Site \"New York USA\"]\n[Date \"2003.02.07\"]\n[Round \"6\"]\n[White \"Deep Junior\"]\n[Black \"Garry Kasparov\"]\n[Result \"1/2-1/2\"]\n\n1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Be2 e5 7. Nb3 Be7\n8. O-O O-O 9. Kh1 Bd7 10. Be3 Bc6 11. Bf3 Nbd7 12. a4 b6 13. Qd3 Bb7 14. h3 Rc8\n15. Rad1 h6 16. Rfe1 Qc7 17. g3 Rfd8 18. Kh2 Re8 19. Re2 Qc4 20. Qxc4 Rxc4\n21. Nd2 Rc7 22. Bg2 Rec8 23. Nb3 Rxc3 24. bxc3 Bxe4 25. Bc1 Bxg2 26. Kxg2 Rxc3\n27. Ba3 Ne8 28. f4 1/2-1/2",
+    "summary": "The sixth game is drawn, completing Kasparov’s 2003 New York match against Deep Junior with a 3–3 score.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "garry-kasparov-x3d-fritz-2003-x3d-match-1",
+    "title": "Kasparov–X3D Fritz — game 1 (2003)",
+    "era": "Human vs computer",
+    "white": "Garry Kasparov",
+    "black": "X3D Fritz",
+    "year": 2003,
+    "event": "Kasparov–X3D Fritz match",
+    "date": "2003.11.11",
+    "result": "1/2-1/2",
+    "expectedPlies": 73,
+    "finalFen": "1r4k1/p4ppp/2p5/2Q3P1/3R3P/8/bP6/2KR2q1 b - - 7 37",
+    "pgn": "[Event \"Kasparov–X3D Fritz match\"]\n[Site \"New York USA\"]\n[Date \"2003.11.11\"]\n[Round \"1\"]\n[White \"Garry Kasparov\"]\n[Black \"X3D Fritz\"]\n[Result \"1/2-1/2\"]\n\n1. Nf3 d5 2. c4 c6 3. d4 Nf6 4. Nc3 e6 5. e3 Nbd7 6. Qc2 Bd6 7. g4 Bb4 8. Bd2 Qe7\n9. Rg1 Bxc3 10. Bxc3 Ne4 11. O-O-O Qf6 12. Be2 Nxf2 13. Rdf1 Ne4 14. Bb4 c5\n15. cxd5 exd5 16. dxc5 Qe7 17. Nd4 O-O 18. Nf5 Qe5 19. c6 bxc6 20. Bxf8 Kxf8\n21. Ng3 Ndc5 22. Nxe4 Nxe4 23. Bd3 Be6 24. Bxe4 dxe4 25. Rf4 Bd5 26. Qc5+ Kg8\n27. Rgf1 Rb8 28. R1f2 Qc7 29. Rc2 Qd7 30. h4 Qd8 31. g5 Bxa2 32. Rxe4 Qd3\n33. Rd4 Qxe3+ 34. Rcd2 Qe1+ 35. Rd1 Qe3+ 36. R1d2 Qg1+ 37. Rd1 1/2-1/2",
+    "summary": "Game 1 of the Kasparov–X3D Fritz match in 2003. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "x3d-fritz-garry-kasparov-2003-x3d-match-2",
+    "title": "Kasparov–X3D Fritz — game 2 (2003)",
+    "era": "Human vs computer",
+    "white": "X3D Fritz",
+    "black": "Garry Kasparov",
+    "year": 2003,
+    "event": "Kasparov–X3D Fritz match",
+    "date": "2003.11.13",
+    "result": "1-0",
+    "expectedPlies": 77,
+    "finalFen": "4R1r1/1p1Q3k/6qb/P2P3p/3p2p1/8/5PPP/5NK1 b - - 7 39",
+    "pgn": "[Event \"Kasparov–X3D Fritz match\"]\n[Site \"New York USA\"]\n[Date \"2003.11.13\"]\n[Round \"2\"]\n[White \"X3D Fritz\"]\n[Black \"Garry Kasparov\"]\n[Result \"1-0\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. d3 d6 5. c3 g6 6. O-O Bg7 7. Nbd2 O-O\n8. Re1 Re8 9. d4 Bd7 10. d5 Ne7 11. Bxd7 Nxd7 12. a4 h6 13. a5 a6 14. b4 f5\n15. c4 Nf6 16. Bb2 Qd7 17. Rb1 g5 18. exf5 Qxf5 19. Nf1 Qh7 20. N3d2 Nf5\n21. Ne4 Nxe4 22. Rxe4 h5 23. Qd3 Rf8 24. Rbe1 Rf7 25. R1e2 g4 26. Qb3 Raf8\n27. c5 Qg6 28. cxd6 cxd6 29. b5 axb5 30. Qxb5 Bh6 31. Qb6 Kh7 32. Qb4 Rg7\n33. Rxe5 dxe5 34. Qxf8 Nd4 35. Bxd4 exd4 36. Re8 Rg8 37. Qe7+ Rg7 38. Qd8 Rg8\n39. Qd7+ 1-0",
+    "summary": "Game 2 of the Kasparov–X3D Fritz match in 2003. X3D Fritz wins.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "garry-kasparov-x3d-fritz-2003-x3d-match-3",
+    "title": "Kasparov–X3D Fritz — game 3 (2003)",
+    "era": "Human vs computer",
+    "white": "Garry Kasparov",
+    "black": "X3D Fritz",
+    "year": 2003,
+    "event": "Kasparov–X3D Fritz match",
+    "date": "2003.11.16",
+    "result": "1-0",
+    "expectedPlies": 89,
+    "finalFen": "r6k/1r1qnppp/NPp2n1b/2Pp4/3Pp3/1RB1P1PP/R1Q2P2/K4B2 b - - 4 45",
+    "pgn": "[Event \"Kasparov–X3D Fritz match\"]\n[Site \"New York USA\"]\n[Date \"2003.11.16\"]\n[Round \"3\"]\n[White \"Garry Kasparov\"]\n[Black \"X3D Fritz\"]\n[Result \"1-0\"]\n\n1. Nf3 Nf6 2. c4 e6 3. Nc3 d5 4. d4 c6 5. e3 a6 6. c5 Nbd7 7. b4 a5 8. b5 e5\n9. Qa4 Qc7 10. Ba3 e4 11. Nd2 Be7 12. b6 Qd8 13. h3 O-O 14. Nb3 Bd6 15. Rb1 Be7\n16. Nxa5 Nb8 17. Bb4 Qd7 18. Rb2 Qe6 19. Qd1 Nfd7 20. a3 Qh6 21. Nb3 Bh4\n22. Qd2 Nf6 23. Kd1 Be6 24. Kc1 Rd8 25. Rc2 Nbd7 26. Kb2 Nf8 27. a4 Ng6\n28. a5 Ne7 29. a6 bxa6 30. Na5 Rdb8 31. g3 Bg5 32. Bg2 Qg6 33. Ka1 Kh8\n34. Na2 Bd7 35. Bc3 Ne8 36. Nb4 Kg8 37. Rb1 Bc8 38. Ra2 Bh6 39. Bf1 Qe6\n40. Qd1 Nf6 41. Qa4 Bb7 42. Nxb7 Rxb7 43. Nxa6 Qd7 44. Qc2 Kh8 45. Rb3 1-0",
+    "summary": "Kasparov wins the third game of his 2003 X3D Fritz match, restoring equality before the final game.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "x3d-fritz-garry-kasparov-2003-x3d-match-4",
+    "title": "Kasparov–X3D Fritz — game 4 (2003)",
+    "era": "Human vs computer",
+    "white": "X3D Fritz",
+    "black": "Garry Kasparov",
+    "year": 2003,
+    "event": "Kasparov–X3D Fritz match",
+    "date": "2003.11.18",
+    "result": "1/2-1/2",
+    "expectedPlies": 54,
+    "finalFen": "3Q4/6pk/7p/8/8/8/r4qPP/3R3K w - - 2 28",
+    "pgn": "[Event \"Kasparov–X3D Fritz match\"]\n[Site \"New York USA\"]\n[Date \"2003.11.18\"]\n[Round \"4\"]\n[White \"X3D Fritz\"]\n[Black \"Garry Kasparov\"]\n[Result \"1/2-1/2\"]\n\n1. d4 d5 2. c4 dxc4 3. Nf3 e6 4. e3 Nf6 5. Bxc4 c5 6. O-O a6 7. Bb3 cxd4\n8. exd4 Nc6 9. Nc3 Be7 10. Re1 O-O 11. Bf4 Na5 12. d5 Nxb3 13. Qxb3 exd5\n14. Rad1 Be6 15. Qxb7 Bd6 16. Bg5 Rb8 17. Qxa6 Rxb2 18. Bxf6 Qxf6 19. Qxd6 Qxc3\n20. Nd4 Rxa2 21. Nxe6 fxe6 22. Qxe6+ Kh8 23. Rf1 Qc5 24. Qxd5 Rfxf2\n25. Rxf2 Qxf2+ 26. Kh1 h6 27. Qd8+ Kh7 1/2-1/2",
+    "summary": "Game 4 of the Kasparov–X3D Fritz match in 2003. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kasparov.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kasparov.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-fritz-vladimir-kramnik-2002-brains-in-bahrain-1",
+    "title": "Brains in Bahrain — game 1 (2002)",
+    "era": "Human vs computer",
+    "white": "Deep Fritz",
+    "black": "Vladimir Kramnik",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.04",
+    "result": "1/2-1/2",
+    "expectedPlies": 55,
+    "finalFen": "4k3/2p5/1p2p1p1/p1p1P1P1/P1P3p1/1P6/5PK1/8 b - - 2 28",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Bahrain UAE\"]\n[Date \"2002.10.04\"]\n[Round \"1\"]\n[White \"Deep Fritz\"]\n[Black \"Vladimir Kramnik\"]\n[Result \"1/2-1/2\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. O-O Nxe4 5. d4 Nd6 6. Bxc6 dxc6 7. dxe5 Nf5\n8. Qxd8+ Kxd8 9. Nc3 h6 10. b3 Ke8 11. Bb2 Be7 12. Rad1 a5 13. a4 h5 14. Ne2 Be6\n15. c4 Rd8 16. h3 b6 17. Nfd4 Nxd4 18. Nxd4 c5 19. Nxe6 fxe6 20. Rxd8+ Kxd8\n21. Bc1 Kc8 22. Rd1 Rd8 23. Rxd8+ Kxd8 24. g4 g6 25. h4 hxg4 26. Bg5 Bxg5\n27. hxg5 Ke8 28. Kg2 1/2-1/2",
+    "summary": "Game 1 of the Brains in Bahrain in 2002. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "vladimir-kramnik-deep-fritz-2002-brains-in-bahrain-2",
+    "title": "Brains in Bahrain — game 2 (2002)",
+    "era": "Human vs computer",
+    "white": "Vladimir Kramnik",
+    "black": "Deep Fritz",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.06",
+    "result": "1-0",
+    "expectedPlies": 113,
+    "finalFen": "8/3k4/5p1p/p2Rp2P/P3P3/1PK2P2/8/3r4 b - - 6 57",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Bahrain UAE\"]\n[Date \"2002.10.06\"]\n[Round \"2\"]\n[White \"Vladimir Kramnik\"]\n[Black \"Deep Fritz\"]\n[Result \"1-0\"]\n\n1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. e3 e6 5. Bxc4 c5 6. O-O a6 7. dxc5 Qxd1\n8. Rxd1 Bxc5 9. Kf1 b5 10. Be2 Bb7 11. Nbd2 Nbd7 12. Nb3 Bf8 13. a4 b4\n14. Nfd2 Bd5 15. f3 Bd6 16. g3 e5 17. e4 Be6 18. Nc4 Bc7 19. Be3 a5 20. Nc5 Nxc5\n21. Bxc5 Nd7 22. Nd6+ Kf8 23. Bf2 Bxd6 24. Rxd6 Ke7 25. Rad1 Rhc8 26. Bb5 Nc5\n27. Bc6 Bc4+ 28. Ke1 Nd3+ 29. R1xd3 Bxd3 30. Bc5 Bc4 31. Rd4+ Kf6 32. Rxc4 Rxc6\n33. Be7+ Kxe7 34. Rxc6 Kd7 35. Rc5 f6 36. Kd2 Kd6 37. Rd5+ Kc6 38. Kd3 g6\n39. Kc4 g5 40. h3 h6 41. h4 gxh4 42. gxh4 Ra7 43. h5 Ra8 44. Rc5+ Kb6\n45. Rb5+ Kc6 46. Rd5 Kc7 47. Kb5 b3 48. Rd3 Ra7 49. Rxb3 Rb7+ 50. Kc4 Ra7\n51. Rb5 Ra8 52. Kd5 Ra6 53. Rc5+ Kd7 54. b3 Rd6+ 55. Kc4 Rd4+ 56. Kc3 Rd1\n57. Rd5+ 1-0",
+    "summary": "Game 2 of the Brains in Bahrain in 2002. Vladimir Kramnik wins.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-fritz-vladimir-kramnik-2002-brains-in-bahrain-3",
+    "title": "Brains in Bahrain — game 3 (2002)",
+    "era": "Human vs computer",
+    "white": "Deep Fritz",
+    "black": "Vladimir Kramnik",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.08",
+    "result": "0-1",
+    "expectedPlies": 101,
+    "finalFen": "8/7p/2p1b3/2k2pP1/5P2/1pK5/4B3/8 b - - 1 51",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Manama BAH\"]\n[Date \"2002.10.08\"]\n[Round \"3\"]\n[White \"Deep Fritz\"]\n[Black \"Vladimir Kramnik\"]\n[Result \"0-1\"]\n\n1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4 Bc5 5. Nxc6 Qf6 6. Qd2 dxc6 7. Nc3 Ne7\n8. Qf4 Be6 9. Qxf6 gxf6 10. Na4 Bb4+ 11. c3 Bd6 12. Be3 b6 13. f4 O-O-O\n14. Kf2 c5 15. c4 Nc6 16. Nc3 f5 17. e5 Bf8 18. b3 Nb4 19. a3 Nc2 20. Rc1 Nxe3\n21. Kxe3 Bg7 22. Nd5 c6 23. Nf6 Bxf6 24. exf6 Rhe8 25. Kf3 Rd2 26. h3 Bd7\n27. g3 Re6 28. Rb1 Rxf6 29. Be2 Re6 30. Rhe1 Kc7 31. Bf1 b5 32. Rec1 Kb6\n33. b4 cxb4 34. axb4 Re4 35. Rd1 Rxd1 36. Rxd1 Be6 37. Bd3 Rd4 38. Be2 Rxd1\n39. c5+ Kb7 40. Bxd1 a5 41. bxa5 Ka6 42. Ke3 Kxa5 43. Kd4 b4 44. g4 fxg4\n45. hxg4 b3 46. Kc3 Ka4 47. Kb2 f6 48. Bf3 Kb5 49. g5 f5 50. Kc3 Kxc5 51. Be2 0-1",
+    "summary": "Game 3 of the Brains in Bahrain in 2002. Vladimir Kramnik wins.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "vladimir-kramnik-deep-fritz-2002-brains-in-bahrain-4",
+    "title": "Brains in Bahrain — game 4 (2002)",
+    "era": "Human vs computer",
+    "white": "Vladimir Kramnik",
+    "black": "Deep Fritz",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.10",
+    "result": "1/2-1/2",
+    "expectedPlies": 81,
+    "finalFen": "8/8/8/4pk2/P1R5/4P3/r7/6K1 b - - 2 41",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Manama BAH\"]\n[Date \"2002.10.10\"]\n[Round \"4\"]\n[White \"Vladimir Kramnik\"]\n[Black \"Deep Fritz\"]\n[Result \"1/2-1/2\"]\n\n1. d4 d5 2. c4 e6 3. Nf3 c5 4. cxd5 exd5 5. g3 Nc6 6. Bg2 Nf6 7. O-O Be7\n8. Nc3 O-O 9. Bg5 cxd4 10. Nxd4 h6 11. Bf4 Bg4 12. h3 Be6 13. Rc1 Re8\n14. Nxe6 fxe6 15. e4 d4 16. e5 dxc3 17. exf6 Bxf6 18. bxc3 Qxd1 19. Rfxd1 Rad8\n20. Be3 Rxd1+ 21. Rxd1 Bxc3 22. Rd7 Rb8 23. Bxc6 bxc6 24. Rxa7 Rb2 25. Ra6 Bd2\n26. Rxc6 Bxe3 27. fxe3 Kf7 28. a4 Ra2 29. Rc4 Kf6 30. Kf1 g5 31. h4 h5\n32. hxg5+ Kxg5 33. Ke1 e5 34. Kf1 Kf5 35. Rh4 Kg6 36. Re4 Kf5 37. Rh4 Kg5\n38. Kg1 Kg6 39. g4 hxg4 40. Rxg4+ Kf5 41. Rc4 1/2-1/2",
+    "summary": "Game 4 of the Brains in Bahrain in 2002. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-fritz-vladimir-kramnik-2002-brains-in-bahrain-5",
+    "title": "Brains in Bahrain — game 5 (2002)",
+    "era": "Human vs computer",
+    "white": "Deep Fritz",
+    "black": "Vladimir Kramnik",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.13",
+    "result": "1-0",
+    "expectedPlies": 69,
+    "finalFen": "6k1/4Np2/1p4pp/4n3/2q1Q3/4P1PP/5PK1/8 b - - 3 35",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Manama BAH\"]\n[Date \"2002.10.13\"]\n[Round \"5\"]\n[White \"Deep Fritz\"]\n[Black \"Vladimir Kramnik\"]\n[Result \"1-0\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Be7 5. Bg5 h6 6. Bh4 O-O 7. e3 Ne4\n8. Bxe7 Qxe7 9. cxd5 Nxc3 10. bxc3 exd5 11. Qb3 Rd8 12. c4 dxc4 13. Bxc4 Nc6\n14. Be2 b6 15. O-O Bb7 16. Rfc1 Rac8 17. Qa4 Na5 18. Rc3 c5 19. Rac1 cxd4\n20. Nxd4 Rxc3 21. Rxc3 Rc8 22. Rxc8+ Bxc8 23. h3 g6 24. Bf3 Bd7 25. Qc2 Qc5\n26. Qe4 Qc1+ 27. Kh2 Qc7+ 28. g3 Nc4 29. Be2 Ne5 30. Bb5 Bxb5 31. Nxb5 Qc5\n32. Nxa7 Qa5 33. Kg2 Qxa2 34. Nc8 Qc4 35. Ne7+ 1-0",
+    "summary": "Game 5 of the Brains in Bahrain in 2002. Deep Fritz wins.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "vladimir-kramnik-deep-fritz-2002-brains-in-bahrain-6",
+    "title": "Brains in Bahrain — game 6 (2002)",
+    "era": "Human vs computer",
+    "white": "Vladimir Kramnik",
+    "black": "Deep Fritz",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.15",
+    "result": "0-1",
+    "expectedPlies": 68,
+    "finalFen": "2r5/6kp/bp6/3n4/8/1p4P1/5P2/R3R1K1 w - - 0 35",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Manama BAH\"]\n[Date \"2002.10.15\"]\n[Round \"6\"]\n[White \"Vladimir Kramnik\"]\n[Black \"Deep Fritz\"]\n[Result \"0-1\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Ba6 5. b3 Bb4+ 6. Bd2 Be7 7. Bg2 c6 8. Bc3 d5\n9. Ne5 Nfd7 10. Nxd7 Nxd7 11. Nd2 O-O 12. O-O Rc8 13. a4 Bf6 14. e4 c5\n15. exd5 cxd4 16. Bb4 Re8 17. Ne4 exd5 18. Nd6 dxc4 19. Nxf7 Kxf7 20. Bd5+ Kg6\n21. Qg4+ Bg5 22. Be4+ Rxe4 23. Qxe4+ Kh6 24. h4 Bf6 25. Bd2+ g5 26. hxg5+ Bxg5\n27. Qh4+ Kg6 28. Qe4+ Kg7 29. Bxg5 Qxg5 30. Rfe1 cxb3 31. Qxd4+ Nf6 32. a5 Qd5\n33. Qxd5 Nxd5 34. axb6 axb6 0-1",
+    "summary": "Deep Fritz wins game six of Brains in Bahrain, bringing the 2002 match level after Kramnik’s early lead.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-fritz-vladimir-kramnik-2002-brains-in-bahrain-7",
+    "title": "Brains in Bahrain — game 7 (2002)",
+    "era": "Human vs computer",
+    "white": "Deep Fritz",
+    "black": "Vladimir Kramnik",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.17",
+    "result": "1/2-1/2",
+    "expectedPlies": 56,
+    "finalFen": "3qrrk1/5p1p/bp1p2pb/p2Pp3/P1PpPP2/1P1Q2PB/3NR2P/5RK1 w - - 9 29",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Manama BAH\"]\n[Date \"2002.10.17\"]\n[Round \"7\"]\n[White \"Deep Fritz\"]\n[Black \"Vladimir Kramnik\"]\n[Result \"1/2-1/2\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Be7 6. O-O O-O 7. Nc3 Ne4\n8. Qc2 Nxc3 9. Qxc3 c5 10. Rd1 d6 11. b3 Bf6 12. Bb2 Qe7 13. Qc2 Nc6 14. e4 e5\n15. d5 Nd4 16. Bxd4 cxd4 17. Bh3 g6 18. a4 a5 19. Rab1 Ba6 20. Re1 Kh8\n21. Kg2 Bg7 22. Qd3 Rae8 23. Nd2 Bh6 24. f4 Qc7 25. Rf1 Kg8 26. Rbe1 Qd8\n27. Kg1 Bb7 28. Re2 Ba6 1/2-1/2",
+    "summary": "Game 7 of the Brains in Bahrain in 2002. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "vladimir-kramnik-deep-fritz-2002-brains-in-bahrain-8",
+    "title": "Brains in Bahrain — game 8 (2002)",
+    "era": "Human vs computer",
+    "white": "Vladimir Kramnik",
+    "black": "Deep Fritz",
+    "year": 2002,
+    "event": "Brains in Bahrain",
+    "date": "2002.10.19",
+    "result": "1/2-1/2",
+    "expectedPlies": 41,
+    "finalFen": "3qnrk1/pp3ppp/2p3b1/8/3P4/PB3N1P/1P1Q1PP1/4R1K1 b - - 1 21",
+    "pgn": "[Event \"Brains in Bahrain\"]\n[Site \"Manama BAH\"]\n[Date \"2002.10.19\"]\n[Round \"8\"]\n[White \"Vladimir Kramnik\"]\n[Black \"Deep Fritz\"]\n[Result \"1/2-1/2\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 c6 5. Bg5 Be7 6. e3 O-O 7. Bd3 Nbd7\n8. O-O dxc4 9. Bxc4 Nd5 10. Bxe7 Qxe7 11. Rc1 Nxc3 12. Rxc3 e5 13. Bb3 exd4\n14. exd4 Nf6 15. Re1 Qd6 16. h3 Bf5 17. Rce3 Rae8 18. Re5 Bg6 19. a3 Qd8\n20. Rxe8 Nxe8 21. Qd2 1/2-1/2",
+    "summary": "Game 8 of the Brains in Bahrain in 2002. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "vladimir-kramnik-deep-fritz-2006-the-duel-1",
+    "title": "Kramnik–Deep Fritz — game 1 (2006)",
+    "era": "Human vs computer",
+    "white": "Vladimir Kramnik",
+    "black": "Deep Fritz",
+    "year": 2006,
+    "event": "Kramnik–Deep Fritz match",
+    "date": "2006.11.25",
+    "result": "1/2-1/2",
+    "expectedPlies": 93,
+    "finalFen": "8/8/2K5/4N3/P3k3/8/8/4b3 b - - 0 47",
+    "pgn": "[Event \"Kramnik–Deep Fritz match\"]\n[Site \"Bonne GER\"]\n[Date \"2006.11.25\"]\n[Round \"1\"]\n[White \"Vladimir Kramnik\"]\n[Black \"Deep Fritz\"]\n[Result \"1/2-1/2\"]\n\n1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 dxc4 5. Qa4+ Nbd7 6. Qxc4 a6 7. Qd3 c5\n8. dxc5 Bxc5 9. Nf3 O-O 10. O-O Qe7 11. Nc3 b6 12. Ne4 Nxe4 13. Qxe4 Nf6\n14. Qh4 Bb7 15. Bg5 Rfd8 16. Bxf6 Qxf6 17. Qxf6 gxf6 18. Rfd1 Kf8 19. Ne1 Bxg2\n20. Kxg2 f5 21. Rxd8+ Rxd8 22. Nd3 Bd4 23. Rc1 e5 24. Rc2 Rd5 25. Nb4 Rb5\n26. Nxa6 Rxb2 27. Rxb2 Bxb2 28. Nb4 Kg7 29. Nd5 Bd4 30. a4 Bc5 31. h3 f6\n32. f3 Kg6 33. e4 h5 34. g4 hxg4 35. hxg4 fxe4 36. fxe4 Kg5 37. Kf3 Kg6\n38. Ke2 Kg5 39. Kd3 Bg1 40. Kc4 Bf2 41. Kb5 Kxg4 42. Nxf6+ Kf3 43. Kc6 Bh4\n44. Nd7 Kxe4 45. Kxb6 Bf2+ 46. Kc6 Be1 47. Nxe5 1/2-1/2",
+    "summary": "Game 1 of the Kramnik–Deep Fritz match in 2006. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-fritz-vladimir-kramnik-2006-the-duel-2",
+    "title": "Kramnik–Deep Fritz — game 2 (2006)",
+    "era": "Human vs computer",
+    "white": "Deep Fritz",
+    "black": "Vladimir Kramnik",
+    "year": 2006,
+    "event": "Kramnik–Deep Fritz match",
+    "date": "2006.11.27",
+    "result": "1-0",
+    "expectedPlies": 69,
+    "finalFen": "5N1k/6pQ/7p/4P3/pp6/4q3/1P4PP/2b4K b - - 2 35",
+    "pgn": "[Event \"Kramnik–Deep Fritz match\"]\n[Site \"Bonne GER\"]\n[Date \"2006.11.27\"]\n[Round \"2\"]\n[White \"Deep Fritz\"]\n[Black \"Vladimir Kramnik\"]\n[Result \"1-0\"]\n\n1. d4 d5 2. c4 dxc4 3. e4 b5 4. a4 c6 5. Nc3 b4 6. Na2 Nf6 7. e5 Nd5 8. Bxc4 e6\n9. Nf3 a5 10. Bg5 Qb6 11. Nc1 Ba6 12. Qe2 h6 13. Be3 Bxc4 14. Qxc4 Nd7\n15. Nb3 Be7 16. Rc1 O-O 17. O-O Rfc8 18. Qe2 c5 19. Nfd2 Qc6 20. Qh5 Qxa4\n21. Nxc5 Nxc5 22. dxc5 Nxe3 23. fxe3 Bxc5 24. Qxf7+ Kh8 25. Qf3 Rf8 26. Qe4 Qd7\n27. Nb3 Bb6 28. Rfd1 Qf7 29. Rf1 Qa7 30. Rxf8+ Rxf8 31. Nd4 a4 32. Nxe6 Bxe3+\n33. Kh1 Bxc1 34. Nxf8 Qe3 35. Qh7# 1-0",
+    "summary": "Deep Fritz wins the second game of the 2006 match with 35.Qh7#, the famous missed mate in one. Replay the full score leading to the final position.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "vladimir-kramnik-deep-fritz-2006-the-duel-3",
+    "title": "Kramnik–Deep Fritz — game 3 (2006)",
+    "era": "Human vs computer",
+    "white": "Vladimir Kramnik",
+    "black": "Deep Fritz",
+    "year": 2006,
+    "event": "Kramnik–Deep Fritz match",
+    "date": "2006.11.29",
+    "result": "1/2-1/2",
+    "expectedPlies": 87,
+    "finalFen": "8/8/5kp1/7p/7P/4B1P1/r4PK1/8 b - - 1 44",
+    "pgn": "[Event \"Kramnik–Deep Fritz match\"]\n[Site \"Bonne GER\"]\n[Date \"2006.11.29\"]\n[Round \"3\"]\n[White \"Vladimir Kramnik\"]\n[Black \"Deep Fritz\"]\n[Result \"1/2-1/2\"]\n\n1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 dxc4 5. Qa4+ Nbd7 6. Qxc4 a6 7. Qc2 c5\n8. Nf3 b6 9. Ne5 Nd5 10. Nc3 Bb7 11. Nxd5 Bxd5 12. Bxd5 exd5 13. O-O Nxe5\n14. dxe5 Qc8 15. Rd1 Qe6 16. Qd3 Be7 17. Qxd5 Rd8 18. Qb3 Rxd1+ 19. Qxd1 O-O\n20. Qb3 c4 21. Qc3 f6 22. b3 Rc8 23. Bb2 b5 24. Qe3 fxe5 25. bxc4 Rxc4\n26. Bxe5 h6 27. Rd1 Rc2 28. Qb3 Qxb3 29. axb3 Rxe2 30. Bd6 Bf6 31. Bc5 a5\n32. Bd4 Be7 33. Bc3 a4 34. bxa4 bxa4 35. Rd7 Bf8 36. Rd8 Kf7 37. Ra8 a3\n38. Rxf8+ Kxf8 39. Bb4+ Kf7 40. Bxa3 Ra2 41. Bc5 g6 42. h4 Kf6 43. Be3 h5 44. Kg2\n1/2-1/2",
+    "summary": "Game 3 of the Kramnik–Deep Fritz match in 2006. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-fritz-vladimir-kramnik-2006-the-duel-4",
+    "title": "Kramnik–Deep Fritz — game 4 (2006)",
+    "era": "Human vs computer",
+    "white": "Deep Fritz",
+    "black": "Vladimir Kramnik",
+    "year": 2006,
+    "event": "Kramnik–Deep Fritz match",
+    "date": "2006.12.01",
+    "result": "1/2-1/2",
+    "expectedPlies": 108,
+    "finalFen": "8/p3n3/2p1k2p/P1P5/3K2P1/5B2/8/8 w - - 9 55",
+    "pgn": "[Event \"Kramnik–Deep Fritz match\"]\n[Site \"Bonne GER\"]\n[Date \"2006.12.01\"]\n[Round \"4\"]\n[White \"Deep Fritz\"]\n[Black \"Vladimir Kramnik\"]\n[Result \"1/2-1/2\"]\n\n1. e4 e5 2. Nf3 Nf6 3. d4 Nxe4 4. Bd3 d5 5. Nxe5 Nd7 6. Nxd7 Bxd7 7. O-O Bd6\n8. Qh5 Qf6 9. Nc3 Qxd4 10. Nxd5 Bc6 11. Ne3 g6 12. Qh3 Ng5 13. Qg4 Qf4\n14. Qxf4 Bxf4 15. Nc4 Ne6 16. Bxf4 Nxf4 17. Rfe1+ Kf8 18. Bf1 Bb5 19. a4 Ba6\n20. b4 Bxc4 21. Bxc4 Rd8 22. Re4 Nh5 23. Rae1 Rd7 24. h3 Ng7 25. Re5 Nf5\n26. Bb5 c6 27. Bd3 Nd6 28. g4 Kg7 29. f4 Rhd8 30. Kg2 Nc8 31. a5 Rd4 32. R5e4 Kf8\n33. Kf3 h6 34. Rxd4 Rxd4 35. Re4 Rd6 36. Ke3 g5 37. Rd4 Ke7 38. c4 Rxd4\n39. Kxd4 gxf4 40. Ke4 Kf6 41. Kxf4 Ne7 42. Be4 b6 43. c5 bxc5 44. bxc5 Ng6+\n45. Ke3 Ne7 46. Kd4 Ke6 47. Bf3 f5 48. Bd1 Kf6 49. Bc2 fxg4 50. hxg4 Ke6\n51. Bb1 Kf6 52. Be4 Ke6 53. Bh1 Kf6 54. Bf3 Ke6 1/2-1/2",
+    "summary": "Game 4 of the Kramnik–Deep Fritz match in 2006. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "vladimir-kramnik-deep-fritz-2006-the-duel-5",
+    "title": "Kramnik–Deep Fritz — game 5 (2006)",
+    "era": "Human vs computer",
+    "white": "Vladimir Kramnik",
+    "black": "Deep Fritz",
+    "year": 2006,
+    "event": "Kramnik–Deep Fritz match",
+    "date": "2006.12.03",
+    "result": "1/2-1/2",
+    "expectedPlies": 69,
+    "finalFen": "5rk1/p7/6Pp/2p5/7R/4P2n/r5P1/BR2K3 b - - 9 35",
+    "pgn": "[Event \"Kramnik–Deep Fritz match\"]\n[Site \"Bonne GER\"]\n[Date \"2006.12.03\"]\n[Round \"5\"]\n[White \"Vladimir Kramnik\"]\n[Black \"Deep Fritz\"]\n[Result \"1/2-1/2\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. e3 O-O 6. a3 Bxc3+ 7. bxc3 c5\n8. Bb2 Nc6 9. Rc1 Re8 10. Bd3 dxc4 11. Bxc4 e5 12. dxe5 Qxd1+ 13. Rxd1 Nxe5\n14. Nxe5 Rxe5 15. Be2 Bd7 16. c4 Re7 17. h4 Ne4 18. h5 Ba4 19. Rd3 b5\n20. cxb5 Bxb5 21. Rd1 Bxe2 22. Kxe2 Rb8 23. Ba1 f5 24. Rd5 Rb3 25. Rxf5 Rxa3\n26. Rb1 Re8 27. Rf4 Ra2+ 28. Ke1 h6 29. Rg4 g5 30. hxg6 Nxf2 31. Rh4 Rf8\n32. Kf1 Nh3+ 33. Ke1 Nf2 34. Kf1 Nh3+ 35. Ke1 1/2-1/2",
+    "summary": "Game 5 of the Kramnik–Deep Fritz match in 2006. The game ends in a draw.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "deep-fritz-vladimir-kramnik-2006-the-duel-6",
+    "title": "Kramnik–Deep Fritz — game 6 (2006)",
+    "era": "Human vs computer",
+    "white": "Deep Fritz",
+    "black": "Vladimir Kramnik",
+    "year": 2006,
+    "event": "Kramnik–Deep Fritz match",
+    "date": "2006.12.05",
+    "result": "1-0",
+    "expectedPlies": 93,
+    "finalFen": "1r3n2/1br3k1/1N1R1p2/1Bp1p1pp/P1P5/1P6/3R1PPP/6K1 b - - 0 47",
+    "pgn": "[Event \"Kramnik–Deep Fritz match\"]\n[Site \"Bonne GER\"]\n[Date \"2006.12.05\"]\n[Round \"6\"]\n[White \"Deep Fritz\"]\n[Black \"Vladimir Kramnik\"]\n[Result \"1-0\"]\n\n1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bc4 e6 7. O-O Be7\n8. Bb3 Qc7 9. Re1 Nc6 10. Re3 O-O 11. Rg3 Kh8 12. Nxc6 bxc6 13. Qe2 a5\n14. Bg5 Ba6 15. Qf3 Rab8 16. Re1 c5 17. Bf4 Qb7 18. Bc1 Ng8 19. Nb1 Bf6 20. c3 g6\n21. Na3 Qc6 22. Rh3 Bg7 23. Qg3 a4 24. Bc2 Rb6 25. e5 dxe5 26. Rxe5 Nf6\n27. Qh4 Qb7 28. Re1 h5 29. Rf3 Nh7 30. Qxa4 Qc6 31. Qxc6 Rxc6 32. Ba4 Rb6\n33. b3 Kg8 34. c4 Rd8 35. Nb5 Bb7 36. Rfe3 Bh6 37. Re5 Bxc1 38. Rxc1 Rc6\n39. Nc3 Rc7 40. Bb5 Nf8 41. Na4 Rdc8 42. Rd1 Kg7 43. Rd6 f6 44. Re2 e5\n45. Red2 g5 46. Nb6 Rb8 47. a4 1-0",
+    "summary": "Game 6 of the Kramnik–Deep Fritz match in 2006. Deep Fritz wins.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/goatchess/goatchess.github.io/3d14b1986289e491916d350b6c4cbc472f3b6873/pgn/Kramnik.pgn"
+      },
+      {
+        "title": "PGN Mentor — player archive",
+        "url": "https://www.pgnmentor.com/players/Kramnik.zip"
+      }
+    ]
+  },
+  {
+    "id": "alphazero-stockfish-2018-11542767294934054345",
+    "title": "AlphaZero — Stockfish 8: research game 1 (2018)",
+    "era": "Engine vs engine",
+    "white": "AlphaZero",
+    "black": "Stockfish 8",
+    "year": 2018,
+    "event": "AlphaZero–Stockfish research match",
+    "date": "2018.01.18",
+    "result": "1-0",
+    "expectedPlies": 133,
+    "finalFen": "4k3/1p6/1Kb5/1pPpB3/p7/P2R4/5r2/3B4 b - - 36 67",
+    "pgn": "[Event \"AlphaZero–Stockfish research match\"]\n[Site \"London, UK\"]\n[Date \"2018.01.18\"]\n[Round \"11542767294934054345\"]\n[White \"AlphaZero\"]\n[Black \"Stockfish 8\"]\n[Result \"1-0\"]\n\n1. Nf3 Nf6 2. c4 e6 3. Nc3 Bb4 4. Qc2 O-O 5. a3 Bxc3 6. Qxc3 a5 7. b4 d6\n8. e3 Ne4 9. Qc2 Ng5 10. b5 Nxf3+ 11. gxf3 Qf6 12. d4 Qxf3 13. Rg1 Nd7\n14. Be2 Qf6 15. Bb2 Qh4 16. Rg4 Qxh2 17. Rg3 f5 18. O-O-O Rf7 19. Bf3 Qh4\n20. Rh1 Qf6 21. Kb1 g6 22. Rgg1 a4 23. Ka1 Rg7 24. e4 f4 25. c5 Qe7 26. Rc1 Nf6\n27. e5 dxe5 28. Rhe1 e4 29. Bxe4 Qf8 30. d5 exd5 31. Bd3 Bg4 32. f3 Bd7\n33. Qc3 Nh5 34. Re5 c6 35. Rce1 Nf6 36. Qd4 cxb5 37. Bb1 Bc6 38. Re6 Rf7\n39. Rg1 Qg7 40. Qxf4 Re8 41. Rd6 Nd7 42. Qc1 Rf6 43. f4 Qe7 44. Rxf6 Nxf6\n45. f5 Qe3 46. fxg6 Qxc1 47. gxh7+ Kf7 48. Rxc1 Nxh7 49. Bxh7 Re3 50. Rd1 Ke8\n51. Ka2 Bd7 52. Bd4 Rh3 53. Bc2 Be6 54. Re1 Kd7 55. Kb2 Rf3 56. Re5 Rg3\n57. Re3 Rg2 58. Kc3 Rg4 59. Rf3 Ke8 60. Rf2 Rg3+ 61. Kb4 Rg4 62. Rd2 Bd7\n63. Ka5 Rf4 64. Be5 Rf3 65. Rd3 Rf2 66. Bd1 Bc6 67. Kb6 1-0",
+    "summary": "A published AlphaZero–Stockfish 8 research game from 2018. AlphaZero wins; replay the complete score from the opening to the recorded finish.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/SDDNDan/IA-Sah-B3/29e3a7971e46d9d45f310e0a228e79566cbebb1b/pgns/engines/alphazero_vs_stockfish.pgn"
+      },
+      {
+        "title": "DeepMind — AlphaZero research publication",
+        "url": "https://deepmind.google/discover/blog/alphazero-shedding-new-light-on-chess-shogi-and-go/"
+      }
+    ]
+  },
+  {
+    "id": "alphazero-stockfish-2018-11882219725075081943",
+    "title": "AlphaZero — Stockfish 8: research game 2 (2018)",
+    "era": "Engine vs engine",
+    "white": "AlphaZero",
+    "black": "Stockfish 8",
+    "year": 2018,
+    "event": "AlphaZero–Stockfish research match",
+    "date": "2018.01.18",
+    "result": "1-0",
+    "expectedPlies": 137,
+    "finalFen": "rr3k2/3P2p1/4P2p/7P/2pN4/p1P2KP1/8/3R4 b - - 2 69",
+    "pgn": "[Event \"AlphaZero–Stockfish research match\"]\n[Site \"London, UK\"]\n[Date \"2018.01.18\"]\n[Round \"11882219725075081943\"]\n[White \"AlphaZero\"]\n[Black \"Stockfish 8\"]\n[Result \"1-0\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Be7 6. Nc3 O-O 7. O-O Ne4 8. Bd2 d5\n9. cxd5 exd5 10. Qb3 c5 11. Bf4 Na6 12. Rfd1 c4 13. Qc2 Nb4 14. Qc1 Qd7\n15. h4 Rac8 16. a3 Nxc3 17. bxc3 Nc6 18. Qb1 Rce8 19. Re1 Na5 20. Ng5 f5\n21. Nf3 Bf6 22. Ra2 h6 23. a4 Qe6 24. Kh2 Bc8 25. Rh1 Nc6 26. h5 Kh8 27. Ng1 Qf7\n28. Bf3 Rd8 29. Nh3 Kg8 30. Bc1 Rfe8 31. Qb5 Bb7 32. Rd1 Na5 33. Qb1 Bc8\n34. Nf4 Bg5 35. Ng6 Bxc1 36. Qxc1 Be6 37. Ne5 Qc7 38. Rb2 Nb7 39. Rb5 Na5\n40. Qf4 Nb3 41. Ng6 Qc6 42. Qe5 Qd7 43. e3 Na5 44. Bg2 Nb7 45. Ra1 Kh7\n46. Nf4 Bg8 47. Rxd5 Bxd5 48. Qxd5 Nd6 49. Bh3 Re7 50. Ng6 Rf7 51. Ne5 Qb7\n52. Bg2 Qxd5 53. Bxd5 Rc7 54. Kg2 Ne4 55. Bxe4 fxe4 56. f3 exf3+ 57. Kxf3 Re7\n58. Ng6 Rb7 59. e4 b5 60. axb5 Rxb5 61. Nf4 Rb3 62. Ne2 Ra8 63. e5 a5 64. d5 a4\n65. d6 a3 66. d7 Kg8 67. Rd1 Rbb8 68. e6 Kf8 69. Nd4 1-0",
+    "summary": "A published AlphaZero–Stockfish 8 research game from 2018. AlphaZero wins; replay the complete score from the opening to the recorded finish.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/SDDNDan/IA-Sah-B3/29e3a7971e46d9d45f310e0a228e79566cbebb1b/pgns/engines/alphazero_vs_stockfish.pgn"
+      },
+      {
+        "title": "DeepMind — AlphaZero research publication",
+        "url": "https://deepmind.google/discover/blog/alphazero-shedding-new-light-on-chess-shogi-and-go/"
+      }
+    ]
+  },
+  {
+    "id": "alphazero-stockfish-2018-6854337384941683259",
+    "title": "AlphaZero — Stockfish 8: research game 3 (2018)",
+    "era": "Engine vs engine",
+    "white": "AlphaZero",
+    "black": "Stockfish 8",
+    "year": 2018,
+    "event": "AlphaZero–Stockfish research match",
+    "date": "2018.01.18",
+    "result": "1-0",
+    "expectedPlies": 97,
+    "finalFen": "7r/p2P1bk1/R7/2p1P3/p7/3B4/1P1K4/8 b - - 0 49",
+    "pgn": "[Event \"AlphaZero–Stockfish research match\"]\n[Site \"London, UK\"]\n[Date \"2018.01.18\"]\n[Round \"6854337384941683259\"]\n[White \"AlphaZero\"]\n[Black \"Stockfish 8\"]\n[Result \"1-0\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Bb4+ 6. Bd2 Be7 7. Nc3 O-O\n8. Qc2 Na6 9. a3 c5 10. d5 exd5 11. Ng5 Nc7 12. h4 h6 13. Nxd5 Ncxd5 14. cxd5 d6\n15. a4 Qd7 16. Bc3 Rfe8 17. O-O-O Bd8 18. e4 Ng4 19. Bh3 hxg5 20. f3 f5\n21. fxg4 fxg4 22. Bf1 gxh4 23. Bb5 Qf7 24. gxh4 Bf6 25. Rhf1 Rf8 26. Bxf6 gxf6\n27. Rf4 Qg7 28. Be2 Qh6 29. Rf1 g3 30. Qd3 Kh8 31. Qxg3 Rae8 32. Bd3 Bc8\n33. Kb1 Rf7 34. Qf2 Bd7 35. h5 Ref8 36. Bc2 Be8 37. Rf3 Re7 38. Rxf6 Qxf6\n39. Qxf6+ Rxf6 40. Rxf6 Kg7 41. Rxd6 Bxh5 42. Kc1 Re5 43. a5 bxa5 44. Kd2 Be8\n45. Ra6 Rh5 46. Bd3 a4 47. d6 Bf7 48. d7 Rh8 49. e5 1-0",
+    "summary": "A published AlphaZero–Stockfish 8 research game from 2018. AlphaZero wins; replay the complete score from the opening to the recorded finish.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/SDDNDan/IA-Sah-B3/29e3a7971e46d9d45f310e0a228e79566cbebb1b/pgns/engines/alphazero_vs_stockfish.pgn"
+      },
+      {
+        "title": "DeepMind — AlphaZero research publication",
+        "url": "https://deepmind.google/discover/blog/alphazero-shedding-new-light-on-chess-shogi-and-go/"
+      }
+    ]
+  },
+  {
+    "id": "alphazero-stockfish-2018-5361299757472136882",
+    "title": "Stockfish 8 — AlphaZero: research game 8 (2018)",
+    "era": "Engine vs engine",
+    "white": "Stockfish 8",
+    "black": "AlphaZero",
+    "year": 2018,
+    "event": "AlphaZero–Stockfish research match",
+    "date": "2018.01.18",
+    "result": "0-1",
+    "expectedPlies": 114,
+    "finalFen": "3k4/8/5N2/1rb1Pp2/2pB1P1p/3b2pP/6P1/3R3K w - - 10 58",
+    "pgn": "[Event \"AlphaZero–Stockfish research match\"]\n[Site \"London, UK\"]\n[Date \"2018.01.18\"]\n[Round \"5361299757472136882\"]\n[White \"Stockfish 8\"]\n[Black \"AlphaZero\"]\n[Result \"0-1\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. O-O Nxe4 5. d4 Nd6 6. Bxc6 dxc6 7. dxe5 Nf5\n8. Qxd8+ Kxd8 9. Rd1+ Ke8 10. Nc3 Be7 11. b3 Nh4 12. Nxh4 Bxh4 13. Be3 Be7\n14. Ne2 h5 15. c3 h4 16. Rd2 Rh5 17. h3 a5 18. Re1 Be6 19. f4 a4 20. Nd4 Bd7\n21. b4 c5 22. bxc5 Bxc5 23. Nc2 Be7 24. Rb1 b6 25. Nb4 Be6 26. Nc6 a3 27. Kh2 f6\n28. Re1 f5 29. Nd4 Bd7 30. Bf2 Rd8 31. Ree2 c5 32. Nc2 g5 33. Nxa3 g4 34. Kg1 g3\n35. Be3 Ra8 36. Nc4 Rh6 37. Rb2 Ra6 38. Bc1 b5 39. Ne3 Ra4 40. c4 bxc4 41. Nd5 c3\n42. Nxc3 Rc4 43. Bd2 Rc6 44. Kf1 Be6 45. Rb1 Rb4 46. Ree1 Bc4+ 47. Kg1 Rc8\n48. Rbc1 Bd3 49. Nd5 Rb2 50. Bc3 Rxa2 51. Ra1 Rxa1 52. Bxa1 c4 53. Nf6+ Kd8\n54. Bc3 Rb8 55. Bd4 Bb4 56. Rd1 Rb5 57. Kh1 Bc5 0-1",
+    "summary": "A published AlphaZero–Stockfish 8 research game from 2018. AlphaZero wins; replay the complete score from the opening to the recorded finish.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/SDDNDan/IA-Sah-B3/29e3a7971e46d9d45f310e0a228e79566cbebb1b/pgns/engines/alphazero_vs_stockfish.pgn"
+      },
+      {
+        "title": "DeepMind — AlphaZero research publication",
+        "url": "https://deepmind.google/discover/blog/alphazero-shedding-new-light-on-chess-shogi-and-go/"
+      }
+    ]
+  },
+  {
+    "id": "alphazero-stockfish-2018-14385736216385115953",
+    "title": "Stockfish 8 — AlphaZero: research game 10 (2018)",
+    "era": "Engine vs engine",
+    "white": "Stockfish 8",
+    "black": "AlphaZero",
+    "year": 2018,
+    "event": "AlphaZero–Stockfish research match",
+    "date": "2018.01.18",
+    "result": "1-0",
+    "expectedPlies": 297,
+    "finalFen": "7r/5p1P/4b1p1/1k2P1P1/5KP1/B6R/8/8 b - - 14 149",
+    "pgn": "[Event \"AlphaZero–Stockfish research match\"]\n[Site \"London, UK\"]\n[Date \"2018.01.18\"]\n[Round \"14385736216385115953\"]\n[White \"Stockfish 8\"]\n[Black \"AlphaZero\"]\n[Result \"1-0\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. O-O Nxe4 5. d4 Nd6 6. Bxc6 dxc6 7. dxe5 Nf5\n8. Qxd8+ Kxd8 9. Nc3 Be7 10. Rd1+ Ke8 11. Ne4 Be6 12. b3 b6 13. h3 Rd8 14. Bb2 h5\n15. Rxd8+ Bxd8 16. Rd1 h4 17. Nh2 c5 18. c4 a5 19. Nc3 Nd4 20. Ng4 Rh5\n21. Kf1 Bd7 22. f3 Ne6 23. Nd5 Bg5 24. Nf2 Bd8 25. Nd3 Rf5 26. Ne3 Rg5\n27. Bc3 Rh5 28. Kf2 Bc8 29. Nd5 Bg5 30. f4 Bd8 31. Ne3 Bd7 32. Nd5 Bc8 33. Ne3 g6\n34. Bd2 Bb7 35. Nd5 Kd7 36. Nc1 Kc8 37. Ne2 Bc6 38. Be3 Ng7 39. Nec3 Rh8\n40. Ne4 a4 41. Kf3 Nf5 42. Rd2 Re8 43. Bf2 Rg8 44. b4 cxb4 45. Nxb4 Bb7\n46. Nd5 Re8 47. Kg4 Nh6+ 48. Kf3 Nf5 49. Kg4 Nh6+ 50. Kf3 Re6 51. Rd3 Nf5\n52. Rd2 a3 53. Kg4 Nh6+ 54. Kf3 Nf5 55. Kg4 Nh6+ 56. Kf3 Rc6 57. Ke3 Nf5+\n58. Kd3 Re6 59. Re2 Ne7 60. Ndf6 Nf5 61. Nd5 Re8 62. Kc3 b5 63. Nc5 Bc6\n64. Ne4 Bb7 65. Nc5 Bc6 66. Ne4 bxc4 67. Kxc4 Bb7 68. Re1 Ba6+ 69. Kb3 Bb7\n70. Kc4 Ba8 71. Bc5 Re6 72. Ng5 Bxg5 73. fxg5 Re8 74. Nf4 Ng7 75. Bxa3 Rd8\n76. Re2 Rd1 77. Rf2 Ne6 78. Nxe6 Bd5+ 79. Kb5 Bxe6 80. Bc5 Rb1+ 81. Kc6 Rd1\n82. Kb5 Ra1 83. a3 Re1 84. Bd4 Rb1+ 85. Kc5 Rc1+ 86. Kb5 Bd7+ 87. Kb4 Be6\n88. Kb5 Rb1+ 89. Kc5 Rd1 90. a4 Rc1+ 91. Kb5 Kb7 92. Rd2 Bb3 93. Rb2 Bc4+\n94. Kb4 Be6 95. Be3 Re1 96. Bd4 Rc1 97. Kb5 Bd7+ 98. Kb4 Ka6 99. Rb3 Rc2\n100. g4 Rd2 101. Kc5 Be6 102. Rf3 Kb7 103. a5 Ra2 104. Bc3 Ra3 105. Kb5 Rb3+\n106. Kc5 Ra3 107. Re3 Ra2 108. Be1 Ra1 109. Bd2 Kc8 110. Rd3 Rd1 111. Kb5 Bd7+\n112. Kb4 Be6 113. Kc5 Ra1 114. Kd4 Ra4+ 115. Kc5 Ra1 116. a6 Rxa6 117. Be1 Kb7\n118. Bxh4 Ra5+ 119. Kd4 c5+ 120. Ke4 Kc6 121. Be1 Ra2 122. Rd6+ Kb5 123. Rd3 Rh2\n124. Re3 Rg2 125. Kf3 Rc2 126. Rc3 Rh2 127. Kg3 Re2 128. Bf2 Kb4 129. Rc1 c4\n130. Re1 Rc2 131. Be3 c3 132. h4 Ra2 133. h5 Kb3 134. h6 Ra8 135. Rc1 c2\n136. h7 Rh8 137. Rh1 Kc3 138. Kf4 Kd3 139. Rh2 Kc3 140. Ke4 Kb4 141. Kd3 Bc4+\n142. Kxc2 Be6 143. Bc1 Rc8+ 144. Kd3 Rh8 145. Ke4 Ka4 146. Kf4 Kb3 147. Rh3+ Ka4\n148. Bb2 Kb5 149. Ba3 1-0",
+    "summary": "Stockfish 8 wins this long research game against AlphaZero from 2018. The archived score runs to move 149.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/SDDNDan/IA-Sah-B3/29e3a7971e46d9d45f310e0a228e79566cbebb1b/pgns/engines/alphazero_vs_stockfish.pgn"
+      },
+      {
+        "title": "DeepMind — AlphaZero research publication",
+        "url": "https://deepmind.google/discover/blog/alphazero-shedding-new-light-on-chess-shogi-and-go/"
+      }
+    ]
+  },
+  {
+    "id": "alphazero-stockfish-2018-17293012532641473451",
+    "title": "Stockfish 8 — AlphaZero: research game 12 (2018)",
+    "era": "Engine vs engine",
+    "white": "Stockfish 8",
+    "black": "AlphaZero",
+    "year": 2018,
+    "event": "AlphaZero–Stockfish research match",
+    "date": "2018.01.18",
+    "result": "0-1",
+    "expectedPlies": 96,
+    "finalFen": "3B4/6p1/k2b1p2/5b1p/2Pp3P/3P4/4KPP1/8 w - - 7 49",
+    "pgn": "[Event \"AlphaZero–Stockfish research match\"]\n[Site \"London, UK\"]\n[Date \"2018.01.18\"]\n[Round \"17293012532641473451\"]\n[White \"Stockfish 8\"]\n[Black \"AlphaZero\"]\n[Result \"0-1\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. Ng5 d5 5. exd5 Na5 6. Bb5+ c6 7. dxc6 bxc6\n8. Bd3 Nd5 9. Nf3 Bd6 10. O-O Nf4 11. Re1 Nxd3 12. cxd3 O-O 13. Nxe5 c5\n14. Nc3 Bb7 15. b3 Re8 16. Nc4 Nxc4 17. Rxe8+ Qxe8 18. bxc4 Qe6 19. Bb2 Rb8\n20. Nb5 Qg6 21. Qf1 Bf4 22. Nxa7 h6 23. Bc3 Qh5 24. h3 Ra8 25. Qd1 Qxd1+\n26. Rxd1 Rxa7 27. Ra1 Bc6 28. a4 Rxa4 29. Rxa4 Bxa4 30. Kf1 Bb3 31. Ke2 Bd6\n32. Ke3 Be7 33. Be5 f6 34. Bc7 Kf7 35. Bb6 Ke6 36. Ke2 Kd7 37. Ke1 Kc6 38. Ba5 h5\n39. Kf1 Kd7 40. Bb6 Bc2 41. Ke2 Kc6 42. Ba5 Bd6 43. d4 cxd4 44. d3 Ba4 45. h4 Kb7\n46. Kf1 Bd7 47. Ke2 Ka6 48. Bd8 Bf5 0-1",
+    "summary": "A published AlphaZero–Stockfish 8 research game from 2018. AlphaZero wins; replay the complete score from the opening to the recorded finish.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/SDDNDan/IA-Sah-B3/29e3a7971e46d9d45f310e0a228e79566cbebb1b/pgns/engines/alphazero_vs_stockfish.pgn"
+      },
+      {
+        "title": "DeepMind — AlphaZero research publication",
+        "url": "https://deepmind.google/discover/blog/alphazero-shedding-new-light-on-chess-shogi-and-go/"
+      }
+    ]
+  },
+  {
+    "id": "yag-z-kaan-erdogmus-aleksandra-goryachkina-2025-fide-grand-swiss-2025-1-52",
+    "title": "Yağız Kaan Erdoğmuş — Aleksandra Goryachkina: Grand Swiss 2025, round 1",
+    "era": "Champions",
+    "white": "Yağız Kaan Erdoğmuş",
+    "black": "Aleksandra Goryachkina",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.04",
+    "result": "1-0",
+    "expectedPlies": 93,
+    "finalFen": "5r2/R4Ppk/8/2QP3P/5K2/4P1N1/1P5q/8 b - - 4 47",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.04\"]\n[Round \"1.52\"]\n[White \"Yağız Kaan Erdoğmuş\"]\n[Black \"Aleksandra Goryachkina\"]\n[Result \"1-0\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. d3 Bc5 5. Nc3 h6 6. Be3 Bxe3 7. fxe3 d6\n8. a3 O-O 9. Qe2 a6 10. Rg1 b5 11. Bb3 Be6 12. g4 Bxb3 13. cxb3 b4 14. axb4 Nh7\n15. b5 Nb4 16. bxa6 Rxa6 17. Ra4 Rxa4 18. bxa4 c6 19. h4 Qb6 20. Kf2 Re8\n21. g5 h5 22. Ra1 Nxd3+ 23. Kf1 Nb4 24. a5 Qc5 25. Ra4 Nf8 26. Nd2 Rb8 27. a6 Qa7\n28. Nc4 Nxa6 29. Kf2 Qb7 30. Na5 Qc8 31. Nxc6 Qxc6 32. Rxa6 Qb7 33. Ra2 Nd7\n34. Qxh5 Nc5 35. Qf3 Qb3 36. Kg3 Qc4 37. Ra7 Rf8 38. h5 d5 39. exd5 e4\n40. Qf4 Qb4 41. Qd6 Qc4 42. g6 Qd3 43. gxf7+ Kh7 44. Qxc5 Qf1 45. Nxe4 Qg1+\n46. Kf4 Qh2+ 47. Ng3 1-0",
+    "summary": "Yağız Kaan Erdoğmuş wins this round-1 encounter at FIDE Grand Swiss 2025. The recorded opening is Giuoco Pianissimo.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "r-praggnanandhaa-ivan-zemlyanskii-2025-fide-grand-swiss-2025-2-9",
+    "title": "R Praggnanandhaa — Ivan Zemlyanskii: Grand Swiss 2025, round 2",
+    "era": "Champions",
+    "white": "R Praggnanandhaa",
+    "black": "Ivan Zemlyanskii",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.05",
+    "result": "1-0",
+    "expectedPlies": 65,
+    "finalFen": "3rk3/p3pp1p/1p4p1/n1r5/RP2BP2/3R2P1/4PK1P/8 b - - 0 33",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.05\"]\n[Round \"2.9\"]\n[White \"R Praggnanandhaa\"]\n[Black \"Ivan Zemlyanskii\"]\n[Result \"1-0\"]\n\n1. c4 Nf6 2. Nc3 d5 3. cxd5 Nxd5 4. Nf3 c5 5. g3 g6 6. Qb3 Nb4 7. Ne4 Bg7\n8. Nxc5 N8c6 9. Bg2 Qa5 10. Qc4 b6 11. Nb3 Qa6 12. Ne5 Qxc4 13. Nxc4 Be6\n14. d3 Rc8 15. O-O O-O 16. Bd2 Nc2 17. Rad1 Bg4 18. f3 Be6 19. Rc1 Bxc4\n20. dxc4 N2d4 21. Kf2 Nxb3 22. axb3 Bxb2 23. Rb1 Ba3 24. f4 Rfd8 25. Rfd1 Bb4\n26. Be3 Na5 27. Rd3 Kf8 28. Ra1 Ke8 29. Ra4 Bd6 30. Be4 Rc7 31. c5 Bxc5\n32. Bxc5 Rxc5 33. b4 1-0",
+    "summary": "R Praggnanandhaa wins this round-2 encounter at FIDE Grand Swiss 2025. The recorded opening is English.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "haik-m-martirosyan-arjun-erigaisi-2025-fide-grand-swiss-2025-2-10",
+    "title": "Haik M. Martirosyan — Arjun Erigaisi: Grand Swiss 2025, round 2",
+    "era": "Champions",
+    "white": "Haik M. Martirosyan",
+    "black": "Arjun Erigaisi",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.05",
+    "result": "0-1",
+    "expectedPlies": 108,
+    "finalFen": "4k1r1/7R/1p6/1bn5/1R5P/8/4r1BK/8 w - - 17 55",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.05\"]\n[Round \"2.10\"]\n[White \"Haik M. Martirosyan\"]\n[Black \"Arjun Erigaisi\"]\n[Result \"0-1\"]\n\n1. d4 Nf6 2. c4 g6 3. Nf3 Bg7 4. g3 O-O 5. Bg2 d6 6. O-O Nbd7 7. Nc3 e5 8. h3 Re8\n9. e4 exd4 10. Nxd4 Nc5 11. Re1 h6 12. Nb3 Ne6 13. f4 a5 14. a4 h5 15. Be3 h4\n16. g4 g5 17. fxg5 Nd7 18. Nd4 Ne5 19. Nf5 Nxc4 20. Bc1 c6 21. Nxg7 Kxg7\n22. e5 d5 23. b3 Nb6 24. Kh1 Nd7 25. Qf3 Ndc5 26. Rb1 b6 27. b4 axb4 28. Rxb4 Ba6\n29. Qf6+ Kg8 30. Qh6 Nd3 31. g6 fxg6 32. Rf1 Nxe5 33. Rd1 Ra7 34. Nxd5 cxd5\n35. Rxd5 Qb8 36. Bb2 Rh7 37. Bxe5 Rxh6 38. Bxb8 Rxb8 39. Rd6 Nc5 40. g5 Rh5\n41. Rxg6+ Kh7 42. Rc6 Rxg5 43. Rxh4+ Kg8 44. Rb4 Nxa4 45. Rd6 Bb5 46. h4 Re5\n47. Rg4+ Kf7 48. Rh6 Rg8 49. Rh7+ Kf8 50. Rf4+ Ke8 51. Bf3 Nc5 52. Rb4 Re3\n53. Bg2 Re1+ 54. Kh2 Re2 0-1",
+    "summary": "Arjun Erigaisi wins this round-2 encounter at FIDE Grand Swiss 2025. The recorded opening is King's Indian.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "vincent-keymer-jeffery-xiong-2025-fide-grand-swiss-2025-2-11",
+    "title": "Vincent Keymer — Jeffery Xiong: Grand Swiss 2025, round 2",
+    "era": "Champions",
+    "white": "Vincent Keymer",
+    "black": "Jeffery Xiong",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.05",
+    "result": "1-0",
+    "expectedPlies": 108,
+    "finalFen": "4R3/P5r1/8/3k1p1K/7P/8/8/8 w - - 5 55",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.05\"]\n[Round \"2.11\"]\n[White \"Vincent Keymer\"]\n[Black \"Jeffery Xiong\"]\n[Result \"1-0\"]\n\n1. c4 e6 2. Nc3 d5 3. d4 c5 4. cxd5 exd5 5. Nf3 Nc6 6. g3 Nf6 7. a3 cxd4\n8. Nxd4 Bc5 9. Be3 Bb6 10. Bg2 O-O 11. O-O Re8 12. h3 Rxe3 13. fxe3 Qd6\n14. Rf3 Bd7 15. Kh2 Ne5 16. Rf4 Re8 17. Qf1 Nh5 18. Nxd5 Nxf4 19. Qxf4 Bd8\n20. Rd1 Qg6 21. Nf3 Nxf3+ 22. exf3 Bxh3 23. Qa4 Qc6 24. Qxc6 bxc6 25. Kxh3 cxd5\n26. Rxd5 Bb6 27. e4 Rd8 28. Rb5 Rd2 29. a4 g6 30. a5 Bg1 31. f4 h5 32. e5 h4\n33. gxh4 Rd3+ 34. Kg4 Bh2 35. Bf3 Rd4 36. Rb8+ Kg7 37. Rb7 Rxf4+ 38. Kh3 Rxf3+\n39. Kxh2 Re3 40. b4 Rxe5 41. a6 Re4 42. Kg3 Kf6 43. b5 Rb4 44. Kf3 Ke6 45. Ke3 f5\n46. Rxa7 Rb3+ 47. Kf4 Rb4+ 48. Kg5 Rxb5 49. Ra8 Rb4 50. a7 Rg4+ 51. Kh6 Ra4\n52. Kxg6 Rg4+ 53. Kh5 Rg7 54. Re8+ Kd5 1-0",
+    "summary": "Vincent Keymer wins this round-2 encounter at FIDE Grand Swiss 2025. The recorded opening is QGD.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "matthias-bluebaum-r-praggnanandhaa-2025-fide-grand-swiss-2025-5-2",
+    "title": "Matthias Bluebaum — R Praggnanandhaa: Grand Swiss 2025, round 5",
+    "era": "Champions",
+    "white": "Matthias Bluebaum",
+    "black": "R Praggnanandhaa",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.08",
+    "result": "1-0",
+    "expectedPlies": 109,
+    "finalFen": "6n1/5K2/6p1/8/6pP/k7/6P1/8 b - - 1 55",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.08\"]\n[Round \"5.2\"]\n[White \"Matthias Bluebaum\"]\n[Black \"R Praggnanandhaa\"]\n[Result \"1-0\"]\n\n1. d4 e6 2. c4 Bb4+ 3. Nc3 Bxc3+ 4. bxc3 f5 5. e4 fxe4 6. Qg4 Qe7 7. Qxe4 Nf6\n8. Qc2 b6 9. Nf3 Bb7 10. Be2 d6 11. O-O Nbd7 12. Be3 O-O 13. Nd2 e5 14. Rae1 Kh8\n15. Bd1 Rae8 16. f4 exf4 17. Rxf4 Qf7 18. Rff1 Re7 19. Qd3 Rfe8 20. Bf2 Rxe1\n21. Rxe1 Rxe1+ 22. Bxe1 Nf8 23. Qe3 Ng6 24. Bg3 Qd7 25. h3 Qf5 26. d5 Ba6\n27. a3 Kg8 28. Be2 Ne5 29. Bxe5 dxe5 30. Nf3 Qe4 31. Qxe4 Nxe4 32. Nxe5 Nxc3\n33. Bd3 b5 34. c5 Nxd5 35. Nc6 Bb7 36. Nxa7 c6 37. Be4 Nc3 38. Bxc6 Bxc6\n39. Nxc6 Kf7 40. Nd4 Kf6 41. c6 Ke7 42. Kf2 Kd6 43. Kf3 g6 44. h4 h6 45. Kg4 Nd5\n46. Nxb5+ Kxc6 47. Nd4+ Kc5 48. Nc2 Kc4 49. Kf3 Kb3 50. Ne3 Nf6 51. Ng4 Ng8\n52. Ke4 Kxa3 53. Ke5 h5 54. Ke6 hxg4 55. Kf7 1-0",
+    "summary": "Matthias Bluebaum wins this round-5 encounter at FIDE Grand Swiss 2025. The recorded opening is Queen's pawn.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "arjun-erigaisi-matthias-bluebaum-2025-fide-grand-swiss-2025-7-2",
+    "title": "Arjun Erigaisi — Matthias Bluebaum: Grand Swiss 2025, round 7",
+    "era": "Champions",
+    "white": "Arjun Erigaisi",
+    "black": "Matthias Bluebaum",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.11",
+    "result": "0-1",
+    "expectedPlies": 102,
+    "finalFen": "8/8/4p1p1/6k1/1p2Pq1b/5Q1K/1P2P3/8 w - - 11 52",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.11\"]\n[Round \"7.2\"]\n[White \"Arjun Erigaisi\"]\n[Black \"Matthias Bluebaum\"]\n[Result \"0-1\"]\n\n1. c4 e6 2. g3 d5 3. Bg2 Nf6 4. d4 Be7 5. Nf3 O-O 6. O-O dxc4 7. Qc2 c6\n8. Qxc4 b5 9. Qd3 Nbd7 10. Be3 Nd5 11. Bd2 Bb7 12. Nc3 b4 13. Ne4 Qb6 14. Qc2 c5\n15. Nfg5 g6 16. dxc5 Nxc5 17. Nxc5 Qxc5 18. Qb3 Rac8 19. Rac1 Qb5 20. Rxc8 Rxc8\n21. Qf3 Qe8 22. Qe4 Rc7 23. Qh4 h5 24. Qd4 Qd8 25. h4 Rd7 26. Qxa7 Ba8\n27. Nxe6 fxe6 28. Qa4 Nb6 29. Qc2 Kf7 30. Bh6 Bxg2 31. Kxg2 Qa8+ 32. Kg1 Qxa2\n33. Qc6 Qa5 34. Bg5 Qc5 35. Qf3+ Qf5 36. Qc6 Qc5 37. Qf3+ Kg7 38. Be3 Qd6\n39. g4 Nc4 40. gxh5 Nxe3 41. fxe3 Bxh4 42. Kg2 Qd5 43. e4 Qxh5 44. Qf8+ Kh7\n45. Rf7+ Rxf7 46. Qxf7+ Kh6 47. Qf8+ Kg5 48. Qc5+ Kg4 49. Qe3 Qe5 50. Qf3+ Kg5\n51. Kh3 Qf4 0-1",
+    "summary": "Matthias Bluebaum wins this round-7 encounter at FIDE Grand Swiss 2025. The recorded opening is Catalan.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "yag-z-kaan-erdogmus-levon-aronian-2025-fide-grand-swiss-2025-8-11",
+    "title": "Yağız Kaan Erdoğmuş — Levon Aronian: Grand Swiss 2025, round 8",
+    "era": "Champions",
+    "white": "Yağız Kaan Erdoğmuş",
+    "black": "Levon Aronian",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.12",
+    "result": "1-0",
+    "expectedPlies": 97,
+    "finalFen": "8/2r2k2/1R1R2pp/1p6/6P1/2nP4/5P2/5K2 b - - 1 49",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.12\"]\n[Round \"8.11\"]\n[White \"Yağız Kaan Erdoğmuş\"]\n[Black \"Levon Aronian\"]\n[Result \"1-0\"]\n\n1. e4 e6 2. d4 d5 3. Nc3 Bb4 4. e5 c5 5. Bd2 Ne7 6. a3 Bxc3 7. Bxc3 b6 8. h4 Ba6\n9. Bxa6 Nxa6 10. h5 h6 11. Nf3 Rc8 12. Qe2 Nb8 13. g4 Qd7 14. Bd2 cxd4\n15. Bb4 Rc4 16. Rg1 Na6 17. b3 d3 18. cxd3 Rc8 19. Bd6 Nc5 20. b4 Na4 21. Qd2 f6\n22. Nh4 O-O 23. Bxe7 Qxe7 24. Ng6 Qc7 25. Kf1 Rf7 26. Re1 Qc2 27. Re2 Qxd2\n28. Rxd2 Rc3 29. Kg2 Rxa3 30. Re1 Nc3 31. Rc2 d4 32. exf6 Rxf6 33. Re4 e5\n34. Rxe5 a5 35. Re8+ Kf7 36. Re7+ Kg8 37. bxa5 Rxa5 38. Re8+ Kf7 39. Re7+ Kg8\n40. Rd7 b5 41. Rxd4 Ra3 42. Rc1 Kh7 43. Rd8 Rxg6 44. hxg6+ Kxg6 45. Re1 Ra7\n46. Re6+ Kf7 47. Rb6 Rc7 48. Kf1 g6 49. Rdd6 1-0",
+    "summary": "Yağız Kaan Erdoğmuş wins this round-8 encounter at FIDE Grand Swiss 2025. The recorded opening is French.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "anish-giri-jorden-van-foreest-2025-fide-grand-swiss-2025-9-4",
+    "title": "Anish Giri — Jorden Van Foreest: Grand Swiss 2025, round 9",
+    "era": "Champions",
+    "white": "Anish Giri",
+    "black": "Jorden Van Foreest",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.13",
+    "result": "1-0",
+    "expectedPlies": 105,
+    "finalFen": "8/8/2k5/K2nP1Bp/P6P/8/8/8 b - - 4 53",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.13\"]\n[Round \"9.4\"]\n[White \"Anish Giri\"]\n[Black \"Jorden Van Foreest\"]\n[Result \"1-0\"]\n\n1. Nf3 d5 2. d4 Nf6 3. c4 e6 4. g3 Be7 5. Bg2 O-O 6. Nc3 dxc4 7. Ne5 c5\n8. dxc5 Qxd1+ 9. Nxd1 Bxc5 10. O-O Nd5 11. Nxc4 Nc6 12. Nc3 Rd8 13. Re1 b6\n14. Ne3 Bxe3 15. Bxe3 Nce7 16. Nxd5 Nxd5 17. Bd2 Bb7 18. e4 Nf6 19. Bf4 Nd7\n20. b4 Nf8 21. Be3 Rac8 22. Rec1 e5 23. Rxc8 Rxc8 24. Rc1 Rxc1+ 25. Bxc1 Bc6\n26. f3 Bb5 27. Kf2 f6 28. f4 Ne6 29. fxe5 fxe5 30. Bb2 Nd4 31. Bf1 Bxf1\n32. Kxf1 Nc2 33. b5 Ne3+ 34. Ke2 Nc4 35. Bc3 Na3 36. Bxe5 Nxb5 37. Kd3 a6\n38. Bd4 Kf7 39. Bxb6 Ke6 40. a4 Nd6 41. Kd4 Nf7 42. Bc7 h5 43. h4 Kd7 44. Be5 g5\n45. Kd5 gxh4 46. gxh4 Nd8 47. Kc5 Nc6 48. Bf4 Na5 49. Kb6 Nc4+ 50. Kxa6 Kc6\n51. e5 Nb6 52. Ka5 Nd5 53. Bg5 1-0",
+    "summary": "Anish Giri wins this round-9 encounter at FIDE Grand Swiss 2025. The recorded opening is Catalan.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "anish-giri-hans-moke-niemann-2025-fide-grand-swiss-2025-11-2",
+    "title": "Anish Giri — Hans Moke Niemann: Grand Swiss 2025, round 11",
+    "era": "Champions",
+    "white": "Anish Giri",
+    "black": "Hans Moke Niemann",
+    "year": 2025,
+    "event": "FIDE Grand Swiss 2025",
+    "date": "2025.09.15",
+    "result": "1-0",
+    "expectedPlies": 91,
+    "finalFen": "8/p2b1k2/7p/P3K3/7P/5P2/4B3/8 b - - 1 46",
+    "pgn": "[Event \"FIDE Grand Swiss 2025\"]\n[Site \"Samarkand UZB\"]\n[Date \"2025.09.15\"]\n[Round \"11.2\"]\n[White \"Anish Giri\"]\n[Black \"Hans Moke Niemann\"]\n[Result \"1-0\"]\n\n1. c4 Nf6 2. Nc3 e5 3. Nf3 Nc6 4. e3 Bb4 5. Qc2 Bxc3 6. Qxc3 Qe7 7. a3 d5\n8. d4 exd4 9. Nxd4 Nxd4 10. Qxd4 c5 11. Qh4 Be6 12. cxd5 Nxd5 13. Bb5+ Bd7\n14. Qxe7+ Nxe7 15. Be2 Rc8 16. f3 f6 17. Kf2 Kf7 18. Rd1 Be6 19. h4 b6 20. e4 Nc6\n21. Be3 Na5 22. Rd6 Rhe8 23. g4 Nb7 24. Rd2 Na5 25. Rd6 Nb7 26. Rdd1 Na5\n27. Rac1 Ke7 28. Ba6 Rcd8 29. Rxd8 Rxd8 30. b4 Nb3 31. Rc3 Rd6 32. bxc5 bxc5\n33. Rxb3 Bxb3 34. Bxc5 Kd7 35. Bxd6 Kxd6 36. g5 Be6 37. Ke3 Kc5 38. Kf4 Kd4\n39. gxf6 gxf6 40. a4 h6 41. a5 Bd7 42. Be2 Kc5 43. e5 Kd5 44. exf6 Ke6\n45. f7 Kxf7 46. Ke5 1-0",
+    "summary": "Anish Giri wins this round-11 encounter at FIDE Grand Swiss 2025. The recorded opening is English.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/fidegrandsw25.pgn"
+      },
+      {
+        "title": "The Week in Chess — FIDE Grand Swiss 2025",
+        "url": "https://theweekinchess.com/chessnews/events/fide-grand-swiss-2025"
+      }
+    ]
+  },
+  {
+    "id": "alireza-firouzja-magnus-carlsen-2026-14th-norway-chess-2026-1-2",
+    "title": "Alireza Firouzja — Magnus Carlsen: Norway Chess 2026, round 1",
+    "era": "Champions",
+    "white": "Alireza Firouzja",
+    "black": "Magnus Carlsen",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.25",
+    "result": "1-0",
+    "expectedPlies": 75,
+    "finalFen": "4r1k1/3q2p1/5p1p/1n2PP2/2pP4/2P2QB1/6PP/2R3K1 b - - 0 38",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.25\"]\n[Round \"1.2\"]\n[White \"Alireza Firouzja\"]\n[Black \"Magnus Carlsen\"]\n[Result \"1-0\"]\n\n1. d4 d5 2. c4 e6 3. Nf3 Nf6 4. Nc3 h6 5. a3 c5 6. cxd5 exd5 7. Bf4 Nc6 8. e3 a6\n9. Be2 c4 10. Ne5 Bd6 11. O-O O-O 12. Bg3 Bf5 13. f4 Be7 14. Bf3 Rc8 15. Rc1 b5\n16. Be1 b4 17. axb4 Bxb4 18. Bh4 Bxc3 19. bxc3 Qd6 20. Ra1 Ne4 21. Rxa6 f6\n22. Bxe4 Bxe4 23. Ng4 Qd7 24. Nf2 Ne7 25. Qe2 Rc6 26. Rxc6 Qxc6 27. Nxe4 dxe4\n28. Ra1 Nd5 29. Be1 Rb8 30. f5 Kh7 31. Qg4 Qd7 32. Qxe4 Re8 33. Qg4 Kg8\n34. e4 Ne3 35. Qf3 Nc2 36. Rc1 Na3 37. Bg3 Nb5 38. e5 1-0",
+    "summary": "Alireza Firouzja wins this round-1 encounter at 14th Norway Chess 2026. The recorded opening is QGD.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "alireza-firouzja-r-praggnanandhaa-2026-14th-norway-chess-2026-2-1",
+    "title": "Alireza Firouzja — R Praggnanandhaa: Norway Chess 2026, round 2",
+    "era": "Champions",
+    "white": "Alireza Firouzja",
+    "black": "R Praggnanandhaa",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.26",
+    "result": "1-0",
+    "expectedPlies": 119,
+    "finalFen": "5b2/8/p7/P5p1/2R2P1r/kP2P3/2KN4/8 b - - 0 60",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.26\"]\n[Round \"2.1\"]\n[White \"Alireza Firouzja\"]\n[Black \"R Praggnanandhaa\"]\n[Result \"1-0\"]\n\n1. d4 d5 2. c4 e6 3. Nf3 Nf6 4. Nc3 c6 5. Bg5 Nbd7 6. cxd5 exd5 7. e3 h6\n8. Bh4 g5 9. Bg3 Nh5 10. Bd3 Nxg3 11. hxg3 Bg7 12. Qc2 Nb6 13. O-O-O Be6\n14. Kb1 Qe7 15. Rc1 O-O-O 16. Na4 Kb8 17. Nc5 Rc8 18. Qb3 Rc7 19. Rc3 Ka8\n20. Rhc1 Nd7 21. Nxd7 Bxd7 22. a4 h5 23. Qc2 h4 24. gxh4 gxh4 25. Bf5 Bf6\n26. Bxd7 Rxd7 27. Ne1 Qe4 28. Qxe4 dxe4 29. Rc5 h3 30. gxh3 Rxh3 31. Rf5 Rd6\n32. Nc2 a6 33. Rg1 Ka7 34. Rg4 Re6 35. Nb4 Rh6 36. Na2 Rg6 37. Rxg6 fxg6\n38. Rf4 c5 39. dxc5 b6 40. Nb4 bxc5 41. Nd5 Bg5 42. Rg4 Bd8 43. Nc3 g5\n44. Nxe4 Re5 45. Kc2 Kb6 46. Kd3 Kc6 47. b3 Be7 48. Rg1 Rd5+ 49. Ke2 Kb6\n50. Nd2 Ka5 51. Rg4 Rd8 52. Re4 Bf8 53. Kd1 Rd6 54. Kc2 Rf6 55. Nc4+ Kb4\n56. f3 Rh6 57. Nd2+ Ka3 58. a5 Rh4 59. f4 c4 60. Rxc4 1-0",
+    "summary": "Alireza Firouzja wins this round-2 encounter at 14th Norway Chess 2026. The recorded opening is QGD semi-Slav.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "r-praggnanandhaa-magnus-carlsen-2026-14th-norway-chess-2026-3-2",
+    "title": "R Praggnanandhaa — Magnus Carlsen: Norway Chess 2026, round 3",
+    "era": "Champions",
+    "white": "R Praggnanandhaa",
+    "black": "Magnus Carlsen",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.27",
+    "result": "1-0",
+    "expectedPlies": 92,
+    "finalFen": "1R6/1bP2pk1/p3p3/4n2p/7P/8/BKP1n1p1/5R2 w - - 0 47",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.27\"]\n[Round \"3.2\"]\n[White \"R Praggnanandhaa\"]\n[Black \"Magnus Carlsen\"]\n[Result \"1-0\"]\n\n1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. h4 h6 7. Bc4 e6 8. a3 Nc6\n9. Be3 Bd7 10. Ba2 Be7 11. Qe2 h5 12. f3 Ne5 13. O-O-O Rc8 14. Bg5 Rxc3\n15. bxc3 Qa5 16. Kb1 Qxa3 17. f4 Neg4 18. e5 dxe5 19. fxe5 Nh7 20. Qd2 Nf8\n21. Nf3 Qc5 22. Bxe7 Qxe7 23. Ng5 Ng6 24. Ne4 N6xe5 25. Nd6+ Kf8 26. Rhf1 Nf6\n27. Qd4 Neg4 28. Nxb7 Bb5 29. Qd8+ Ne8 30. Qxe7+ Kxe7 31. c4 Ba4 32. Rd8 Bc6\n33. Rb8 Bxg2 34. Rg1 Bf3 35. Rg3 Ne5 36. c5 g5 37. Nd6 g4 38. Nc8+ Kf6\n39. Nd6 Nxd6 40. Rxh8 Ne4 41. Rg1 Nc3+ 42. Kb2 Ne2 43. Rf1 g3 44. c6 Kg7\n45. c7 Bb7 46. Rb8 g2 1-0",
+    "summary": "R Praggnanandhaa wins this round-3 encounter at 14th Norway Chess 2026. The recorded opening is Sicilian.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "d-gukesh-magnus-carlsen-2026-14th-norway-chess-2026-4-2",
+    "title": "D Gukesh — Magnus Carlsen: Norway Chess 2026, round 4",
+    "era": "Champions",
+    "white": "D Gukesh",
+    "black": "Magnus Carlsen",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.28",
+    "result": "0-1",
+    "expectedPlies": 84,
+    "finalFen": "5k2/1R6/4bp1p/8/p3B1P1/q4P2/7P/5N1K w - - 0 43",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.28\"]\n[Round \"4.2\"]\n[White \"D Gukesh\"]\n[Black \"Magnus Carlsen\"]\n[Result \"0-1\"]\n\n1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. cxd5 exd5 5. Bg5 Bb4 6. Nf3 Qd6 7. Nd2 c6\n8. Qc2 h6 9. Nb5 Qe7 10. Bxf6 gxf6 11. Nc3 Nd7 12. e3 Nb6 13. Bd3 Rg8 14. g3 Bh3\n15. a3 Bxc3 16. bxc3 Nc8 17. c4 dxc4 18. Qxc4 Nd6 19. Qb4 a5 20. Qc3 Rg5\n21. Be2 Rc8 22. f3 c5 23. Kf2 Rd5 24. Qb2 cxd4 25. exd4 Kf8 26. Rhe1 Be6\n27. Rad1 f5 28. Nf1 f4 29. Bd3 Qf6 30. Be4 Rb5 31. Qd2 Bb3 32. Rc1 Rxc1\n33. Qxc1 Qxd4+ 34. Kg2 Be6 35. Qxf4 Rb2+ 36. Kh1 Qf2 37. Qxd6+ Kg7 38. Qe5+ f6\n39. Qxb2 Qxb2 40. Rb1 Qxa3 41. Rxb7+ Kf8 42. g4 a4 0-1",
+    "summary": "Magnus Carlsen wins this round-4 encounter at 14th Norway Chess 2026. The recorded opening is QGD.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "magnus-carlsen-wesley-so-2026-14th-norway-chess-2026-5-2",
+    "title": "Magnus Carlsen — Wesley So: Norway Chess 2026, round 5",
+    "era": "Champions",
+    "white": "Magnus Carlsen",
+    "black": "Wesley So",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.30",
+    "result": "0-1",
+    "expectedPlies": 116,
+    "finalFen": "8/2p5/1p1p4/4k1P1/P1n5/1N6/2Kp4/8 w - - 1 59",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.30\"]\n[Round \"5.2\"]\n[White \"Magnus Carlsen\"]\n[Black \"Wesley So\"]\n[Result \"0-1\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. d3 Bc5 5. Bg5 h6 6. Bh4 d6 7. c3 a5 8. O-O O-O\n9. Nbd2 Ba7 10. a4 g5 11. Bg3 Kg7 12. Re1 g4 13. Nh4 Nh5 14. Nf1 Qg5 15. Ne3 Bxe3\n16. Rxe3 Nf4 17. Qe1 Be6 18. f3 h5 19. Bb5 Ne7 20. d4 f6 21. Rd1 Neg6 22. Rd2 Rf7\n23. Kh1 Kh7 24. d5 Bd7 25. Bxd7 Rxd7 26. Nf5 Ne7 27. Bh4 Qg6 28. Ng3 Qh6\n29. c4 Rf8 30. Rb3 Nfg6 31. Nf1 Nxh4 32. Qxh4 f5 33. Qe1 fxe4 34. Qxe4+ Ng6\n35. g3 Rdf7 36. Rf2 Qc1 37. Kg2 Rxf3 38. Rbxf3 gxf3+ 39. Rxf3 Qxb2+ 40. Kh3 Qd4\n41. Qxd4 exd4 42. Rxf8 Nxf8 43. Kg2 Nd7 44. Nd2 Ne5 45. h3 Kg6 46. Kf2 Kg5\n47. Kf1 Kf6 48. Kf2 Nd3+ 49. Ke2 Nb2 50. Nb3 Ke5 51. Nxa5 Ke4 52. g4 hxg4\n53. hxg4 d3+ 54. Kd2 b6 55. Nb3 Nxc4+ 56. Kc3 d2 57. Kc2 Kxd5 58. g5 Ke5 0-1",
+    "summary": "Wesley So wins this round-5 encounter at 14th Norway Chess 2026. The recorded opening is Giuoco Pianissimo.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "r-praggnanandhaa-d-gukesh-2026-14th-norway-chess-2026-5-3",
+    "title": "R Praggnanandhaa — D Gukesh: Norway Chess 2026, round 5",
+    "era": "Champions",
+    "white": "R Praggnanandhaa",
+    "black": "D Gukesh",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.30",
+    "result": "0-1",
+    "expectedPlies": 94,
+    "finalFen": "6r1/7k/2PR1p1p/1P5b/p7/P1N3q1/3Q1K2/2R5 w - - 3 48",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.30\"]\n[Round \"5.3\"]\n[White \"R Praggnanandhaa\"]\n[Black \"D Gukesh\"]\n[Result \"0-1\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. Qa4+ Nc6 6. Qc2 Bd6 7. Bg5 h6\n8. Bxf6 Qxf6 9. e3 O-O 10. c5 Be7 11. Bb5 Bd7 12. O-O Rfd8 13. h3 g6 14. a3 a6\n15. Bxc6 Bxc6 16. Ne5 Be8 17. f4 b6 18. b4 a5 19. Rfb1 Qg7 20. Qe2 Rdb8\n21. e4 dxe4 22. Nxe4 Ra7 23. Qe3 Qf8 24. Kh2 Kh7 25. b5 a4 26. c6 Rd8 27. Rd1 f6\n28. Nc4 Bf7 29. Qe2 Qg8 30. Rac1 Raa8 31. Rd2 Re8 32. Nc3 e5 33. d5 exf4\n34. Qf2 g5 35. Nxb6 cxb6 36. d6 Bf8 37. Qxb6 g4 38. hxg4 Qxg4 39. Qf2 Re3\n40. Rd4 Qh5+ 41. Kg1 Qe5 42. Qd2 f3 43. Kf2 Bxd6 44. Rxd6 Rg8 45. gxf3 Rxf3+\n46. Kxf3 Bh5+ 47. Kf2 Qg3+ 0-1",
+    "summary": "D Gukesh wins this round-5 encounter at 14th Norway Chess 2026. The recorded opening is QGD.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "vincent-keymer-d-gukesh-2026-14th-norway-chess-2026-6-1",
+    "title": "Vincent Keymer — D Gukesh: Norway Chess 2026, round 6",
+    "era": "Champions",
+    "white": "Vincent Keymer",
+    "black": "D Gukesh",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.31",
+    "result": "1-0",
+    "expectedPlies": 103,
+    "finalFen": "5k2/5pR1/5P1r/2bNP2p/8/5K1P/P7/8 b - - 0 52",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.31\"]\n[Round \"6.1\"]\n[White \"Vincent Keymer\"]\n[Black \"D Gukesh\"]\n[Result \"1-0\"]\n\n1. d4 Nf6 2. Nf3 d5 3. c3 e6 4. Bf4 c5 5. e3 Nc6 6. Nbd2 Be7 7. h3 Bd6\n8. dxc5 Bxc5 9. Bd3 O-O 10. O-O Re8 11. e4 e5 12. Bg5 d4 13. Nb3 Bd6\n14. cxd4 exd4 15. Nbxd4 Nxd4 16. Nxd4 h6 17. Be3 Be5 18. Nf3 Bxb2 19. Rb1 Ba3\n20. Qb3 Bf8 21. Bc4 Be6 22. Rfd1 Qc8 23. Bxe6 Rxe6 24. e5 Ne4 25. Rdc1 Nc5\n26. Bxc5 Bxc5 27. Qxb7 Qxb7 28. Rxb7 Rc8 29. Rc2 Rec6 30. Rd2 Rb6 31. Rbd7 Rb1+\n32. Kh2 Rf1 33. Kg3 Bb6 34. R7d3 Rc6 35. Nd4 Rg6+ 36. Kh2 Rg5 37. Re2 Rg6\n38. g3 Rc1 39. Kg2 Rc4 40. Nf5 Re6 41. f4 h5 42. Rd7 Rc3 43. Ne7+ Kf8 44. Nd5 Ke8\n45. Rxa7 Rxg3+ 46. Kxg3 Rg6+ 47. Kf3 Bxa7 48. Rc2 Bg1 49. f5 Rh6 50. Rg2 Bc5\n51. Rxg7 Kf8 52. f6 1-0",
+    "summary": "Vincent Keymer wins this round-6 encounter at 14th Norway Chess 2026. The recorded opening is Queen's pawn game.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "magnus-carlsen-alireza-firouzja-2026-14th-norway-chess-2026-6-2",
+    "title": "Magnus Carlsen — Alireza Firouzja: Norway Chess 2026, round 6",
+    "era": "Champions",
+    "white": "Magnus Carlsen",
+    "black": "Alireza Firouzja",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.31",
+    "result": "1-0",
+    "expectedPlies": 109,
+    "finalFen": "8/5k2/4pQ2/2P1P2K/8/6P1/2q5/8 b - - 2 55",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.31\"]\n[Round \"6.2\"]\n[White \"Magnus Carlsen\"]\n[Black \"Alireza Firouzja\"]\n[Result \"1-0\"]\n\n1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. Nc3 Be7 6. O-O b5 7. Bb3 O-O 8. d3 d6\n9. a3 Na5 10. Ba2 Be6 11. Bxe6 fxe6 12. b4 Nc6 13. Bd2 Qe8 14. Ne2 Nh5 15. c3 Qg6\n16. Ng3 Nf4 17. a4 Qf7 18. d4 g5 19. axb5 axb5 20. Rxa8 Rxa8 21. dxe5 dxe5\n22. Bxf4 exf4 23. Qd7 fxg3 24. Qxc6 gxf2+ 25. Kxf2 Rf8 26. Kg1 Bd6 27. Qxb5 g4\n28. Nd2 Bf4 29. g3 Be3+ 30. Kg2 Qg7 31. Qd3 Bb6 32. Rxf8+ Qxf8 33. Qe2 h5\n34. h3 Qg7 35. hxg4 hxg4 36. c4 c6 37. Nf1 Kf8 38. Nh2 Qc3 39. Nxg4 Qxb4\n40. Ne5 Qd6 41. Qh5 Ke7 42. Qh7+ Ke8 43. Qg8+ Ke7 44. Qg7+ Ke8 45. Kh3 Bd4\n46. Qh8+ Ke7 47. Nxc6+ Qxc6 48. Qxd4 Kf7 49. c5 Qb5 50. Kh4 Kg6 51. Qe5 Qc4\n52. Qg5+ Kf7 53. Kh5 Qc3 54. e5 Qc2 55. Qf6+ 1-0",
+    "summary": "Magnus Carlsen wins this round-6 encounter at 14th Norway Chess 2026. The recorded opening is Ruy Lopez.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "wesley-so-r-praggnanandhaa-2026-14th-norway-chess-2026-6-3",
+    "title": "Wesley So — R Praggnanandhaa: Norway Chess 2026, round 6",
+    "era": "Champions",
+    "white": "Wesley So",
+    "black": "R Praggnanandhaa",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.05.31",
+    "result": "1-0",
+    "expectedPlies": 125,
+    "finalFen": "8/8/2r5/2Pk4/3R2P1/3K4/8/8 b - - 4 63",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.05.31\"]\n[Round \"6.3\"]\n[White \"Wesley So\"]\n[Black \"R Praggnanandhaa\"]\n[Result \"1-0\"]\n\n1. d4 d5 2. c4 e6 3. Nc3 c6 4. e3 Nf6 5. Nf3 Nbd7 6. Be2 Bd6 7. O-O O-O 8. b3 Ne4\n9. Bb2 f5 10. g3 Qf6 11. a4 a5 12. Qc2 g5 13. Nxe4 fxe4 14. Nd2 Qh6 15. f3 exf3\n16. Rxf3 Rxf3 17. Bxf3 g4 18. Bxg4 Nf6 19. Bf3 Qxe3+ 20. Kg2 e5 21. cxd5 cxd5\n22. dxe5 Bxe5 23. Bxe5 Qxe5 24. Rc1 Bg4 25. Qc3 d4 26. Qc4+ Kh8 27. Qd3 Re8\n28. Nc4 Qh5 29. Bxg4 Qxg4 30. h3 Qh5 31. Rf1 Qd5+ 32. Qf3 d3 33. Qxd5 Nxd5\n34. Rd1 Nb4 35. Nxa5 b5 36. axb5 Rb8 37. Nc4 Rxb5 38. Kf2 Kg7 39. Ke3 Rg5\n40. Rg1 Rb5 41. Kd4 Rd5+ 42. Kc3 Na2+ 43. Kd2 Nb4 44. Ra1 Nc6 45. Ne3 Rd7\n46. Nf5+ Kf7 47. Ne3 Ne5 48. Rf1+ Ke6 49. Nc4 Nxc4+ 50. bxc4 Ke5 51. Rf3 Rd4\n52. Rf4 Rd7 53. Rf3 Rd4 54. Rf7 h6 55. Rf4 Rd6 56. c5 Rg6 57. Rg4 Rc6 58. Rc4 h5\n59. Kxd3 Rg6 60. g4 hxg4 61. hxg4 Rc6 62. Re4+ Kd5 63. Rd4+ 1-0",
+    "summary": "Wesley So wins this round-6 encounter at 14th Norway Chess 2026. The recorded opening is QGD semi-Slav.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "alireza-firouzja-d-gukesh-2026-14th-norway-chess-2026-8-1",
+    "title": "Alireza Firouzja — D Gukesh: Norway Chess 2026, round 8",
+    "era": "Champions",
+    "white": "Alireza Firouzja",
+    "black": "D Gukesh",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.06.02",
+    "result": "1-0",
+    "expectedPlies": 121,
+    "finalFen": "8/3r4/6P1/5R2/4k1Pp/8/6PK/8 b - - 2 61",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.06.02\"]\n[Round \"8.1\"]\n[White \"Alireza Firouzja\"]\n[Black \"D Gukesh\"]\n[Result \"1-0\"]\n\n1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 Bb4 5. cxd5 exd5 6. Bf4 Ne4 7. Rc1 Bf5\n8. e3 g5 9. Bg3 Bxc3+ 10. bxc3 h5 11. Qb3 O-O 12. Qxb7 c6 13. Qc7 Nd7\n14. Qxd8 Raxd8 15. Nd2 Nxg3 16. hxg3 Nf6 17. Nb3 Rb8 18. Be2 Kg7 19. Bd1 Rfc8\n20. O-O a5 21. Bc2 Bxc2 22. Rxc2 a4 23. Nc5 a3 24. Nb3 Ne4 25. c4 c5\n26. Rfc1 cxd4 27. exd4 dxc4 28. Rxc4 Rxc4 29. Rxc4 Kf6 30. Rc6+ Ke7 31. Kf1 Kd7\n32. Ra6 Rc8 33. Rxa3 Rc2 34. Nc5+ Nxc5 35. dxc5 Rxc5 36. Rd3+ Ke6 37. Re3+ Kd6\n38. a4 Kc6 39. Rf3 f5 40. Re3 Ra5 41. Ra3 Kc5 42. Ke2 Kb4 43. Ra1 Re5+\n44. Kd3 Rd5+ 45. Ke2 Re5+ 46. Kf1 Kb3 47. a5 Kb2 48. Ra4 Kb3 49. f4 Rd5\n50. Ra1 Kb2 51. Re1 Rxa5 52. Re5 Ra1+ 53. Kf2 Kc3 54. fxg5 Kd4 55. Rxf5 Ke4\n56. Rb5 Rd1 57. g4 h4 58. Rf5 Rd2+ 59. Kg1 Rd3 60. g6 Rd7 61. Kh2 1-0",
+    "summary": "Alireza Firouzja wins this round-8 encounter at 14th Norway Chess 2026. The recorded opening is QGD.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+  {
+    "id": "magnus-carlsen-d-gukesh-2026-14th-norway-chess-2026-10-2",
+    "title": "Magnus Carlsen — D Gukesh: Norway Chess 2026, round 10",
+    "era": "Champions",
+    "white": "Magnus Carlsen",
+    "black": "D Gukesh",
+    "year": 2026,
+    "event": "14th Norway Chess 2026",
+    "date": "2026.06.05",
+    "result": "1-0",
+    "expectedPlies": 129,
+    "finalFen": "8/2k5/6P1/4K2n/8/5B2/8/8 b - - 2 65",
+    "pgn": "[Event \"14th Norway Chess 2026\"]\n[Site \"Oslo NOR\"]\n[Date \"2026.06.05\"]\n[Round \"10.2\"]\n[White \"Magnus Carlsen\"]\n[Black \"D Gukesh\"]\n[Result \"1-0\"]\n\n1. e4 c6 2. c4 d5 3. exd5 cxd5 4. cxd5 Nf6 5. Nc3 Nxd5 6. Nf3 Nc6 7. Bb5 e6\n8. O-O Be7 9. d4 O-O 10. Re1 Bd7 11. Bd3 Rc8 12. Nxd5 exd5 13. Ne5 Bf6 14. Bf4 g6\n15. Qb3 Na5 16. Qb4 Be6 17. Rad1 Re8 18. h3 Be7 19. Qa4 Qb6 20. Nd7 Bxd7\n21. Qxd7 Nc6 22. Qxd5 Red8 23. Qb5 Bf6 24. Qxb6 axb6 25. Be4 Rxd4 26. Rxd4 Nxd4\n27. Bxb7 Rc2 28. Bh6 Ne6 29. Rc1 Rxc1+ 30. Bxc1 Nc5 31. Bd5 Na4 32. Kf1 Nxb2\n33. Ke2 Kf8 34. Be3 Ke7 35. Kd2 Na4 36. Kd3 Be5 37. Bb3 Nc5+ 38. Kc4 f5\n39. Kb5 f4 40. Bd2 Kd7 41. Kxb6 Ne4 42. Bc1 Nxf2 43. Bd5 Bd4+ 44. Kb5 g5\n45. Kc4 Bb6 46. Bf3 Nh1 47. Bd2 Ng3 48. a4 Kc7 49. a5 Bf2 50. Kd5 h5 51. Bc3 Kb7\n52. Bf6 g4 53. hxg4 hxg4 54. Bxg4 Nf1 55. a6+ Ka7 56. Be2 Nd2 57. Bd4+ Bxd4\n58. Kxd4 f3 59. Bxf3 Kxa6 60. Bd5 Kb6 61. g4 Nf1 62. g5 Ng3 63. Ke5 Kc7\n64. g6 Nh5 65. Bf3 1-0",
+    "summary": "Magnus Carlsen wins this round-10 encounter at 14th Norway Chess 2026. The recorded opening is Caro-Kann.",
+    "sources": [
+      {
+        "title": "Archived PGN score (pinned source)",
+        "url": "https://raw.githubusercontent.com/sundarm710/chess/7ac638fa420a42d6ab7e73caa027220c33a9b32f/data/raw/norway26.pgn"
+      },
+      {
+        "title": "The Week in Chess — Norway Chess 2026",
+        "url": "https://theweekinchess.com/chessnews/events/norway-chess-2026"
+      }
+    ]
+  },
+].sort((a,b)=>a.year-b.year);

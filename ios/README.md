@@ -66,20 +66,21 @@ The project generator now preserves existing build/signing settings rather than 
 
 ## Classical & Legendary Games
 
-Options → Study → Classical & Legendary Games opens an offline collection of 45
-historical games spanning 1475–2023, including the Immortal Game, the Opera Game,
+Options → Study → Classical & Legendary Games opens an offline collection of 150
+historical games spanning 1475–2026, including the Immortal Game, the Opera Game,
 both landmark Deep Blue–Kasparov games, and games by Kasparov, Karpov, Tal,
 Carlsen, Fischer, Anand, Capablanca and other legends. Search by player,
 title or year, or filter by era. Each entry has its complete move score, a short
 historical introduction and source links. See `../docs/HISTORICAL-GAMES-SOURCES.md`
-for provenance and qualifications on the older records.
+for provenance and qualifications. Version 1.8 adds 24 human–computer games,
+20 tournament games from 2025–2026, and six AlphaZero–Stockfish 8 research games
+from 2018. The Human vs computer and Engine vs engine filters keep those match
+types separately accessible.
 
-The collection has an independent replay board. Analyze This Position opens the
-full game in the existing Analysis screen at the selected move, saving the
+Analyze this game opens the full game in the existing Analysis screen, saving the
 previous game's notation and clock snapshot first. An active tournament must be
 finished or stopped before switching its main board to historical analysis;
-independent replay remains available. This feature was introduced in development build 8,
-and is not part of the submitted App Store version 1.1 build 7.
+the collection can still be browsed while a tournament is paused.
 
 ## Engine matches
 

@@ -1,0 +1,20 @@
+{
+  "validatedOn": "2026-10-14",
+  "node": "v24.19.0",
+  "totalGames": 150,
+  "addedGames": 50,
+  "originalGamesPreserved": true,
+  "duplicateMainlines": 0,
+  "strictPGNsPassed": 150,
+  "totalLegalPlies": 13183,
+  "addedLegalPlies": 4714,
+  "replayPositionsChecked": 13333,
+  "chronologicalOrder": true,
+  "categoryAdditions": {
+    "humanVsComputer": 24,
+    "engineVsEngine": 6,
+    "recentTournamentGames": 20
+  },
+  "catalogSHA256": "38d5c45e7f7a5db6af21fb14975eba5e39e194cdca51f037b3bea557abb2deaa",
+  "notes": "Every PGN parses strictly, matches its stored final FEN and ply count, and preserves the full score at every replay cursor. This validates representation and preservation, not independent historical adjudication or native iOS execution."
+}
