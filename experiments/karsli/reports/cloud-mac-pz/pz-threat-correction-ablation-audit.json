@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "createdAt": "2026-10-14T01:22:37.315Z",
+  "games": 16,
+  "pairedOpenings": 8,
+  "legalPliesReplayed": 1927,
+  "onlyProfileDifference": "Karsli PZ Threat Correction Weight",
+  "profileHash": "6907987d6689d78b5aae8c9adce0ce57d320a5747a226f8033dfea8b276e9d7a",
+  "binaryHash": "ff4a5de8402fcf0bb39472c1f55d574b6b527191199f39e5102db81f09165040",
+  "summary": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 1,
+    "referenceWins": 1,
+    "draws": 14,
+    "timeForfeits": 0
+  },
+  "strengthProven": false
+}

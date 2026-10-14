@@ -35,8 +35,8 @@
   "integrationCommit": "d16ec78",
   "pushedToDevelop": true,
   "activeCandidate": {
-    "path": "experiments/karsli/candidates/pz-threat-correction",
-    "status": "compiled; bounds sanitizer and 9 normal UCI checks passed; full ASAN/UBSAN build/validation and paired matches pending",
+    "path": "experiments/karsli/candidates/tarnished-interactions",
+    "status": "PZ completed on Mac: bounds, nine optimized checks, nine ASan/UBSan checks and independently audited sixteen paired games; Linux/cloud validation next",
     "promotedToPhone": false
   },
   "completedCandidates": {
@@ -66,6 +66,17 @@
       "gameAuditPassed": true,
       "promotedToPhone": false,
       "scope": "normalized RFP disagreement only; TMv2 and TRANN1 remain pending"
+    },
+    "pz-threat-correction": {
+      "technicalChecks": 9,
+      "sanitizedChecks": 9,
+      "boundsPassed": true,
+      "pairedGames": 16,
+      "result": "1W 1L 14D",
+      "gameAuditPassed": true,
+      "promotedToPhone": false,
+      "platform": "Apple Silicon Mac",
+      "reports": "experiments/karsli/reports/cloud-mac-pz"
     }
   },
   "laterCandidate": {
@@ -74,11 +85,11 @@
   },
   "pausedByUser": false,
   "resumeSteps": [
-    "PZ: build sanitized source, run same nine checks; then paired on/off matches and independent legal/clock audit.",
-    "Tarnished: build normal and sanitizer engines; run nine activation/compatibility tests, paired on/off games and audit.",
-    "Review combined effects before promoting validated candidates to the native iOS profile; current installed phone build49 has existing14-option revision9 profile only.",
-    "Keep remaining scope explicit: Trium TC-gated time management and TRANN1; Karsli-specific factorized LMR tuning; Raphael full fractional depth architecture. No claim that all best features integrated.",
-    "Preserve current phone games/settings; previous three games recovered and final installation verified."
+    "Read this checkpoint; fetch the research branch before editing.",
+    "Check GitHub Actions/Linux validation and fix concrete portability failures.",
+    "Tarnished: complete optimized and sanitizer checks, paired on/off games and independent replay/clock audit.",
+    "Review combined effects before native promotion; the installed/native engine still has revision9 fourteen-option profile.",
+    "Remaining scope: Trium time management/TRANN1; Karsli-specific LMR tuning; Raphael full fractional depth."
   ],
   "cloudBranch": "codex/karsli-cloud-research"
 }

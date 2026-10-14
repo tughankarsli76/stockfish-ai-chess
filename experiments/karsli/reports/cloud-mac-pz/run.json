@@ -1,0 +1,82 @@
+{
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "architecture": "apple-silicon",
+  "networkSHA256": "1a298aa575a085434d29027978dc36867fe9c5bcea9376654b7a8eba1e52dfc2",
+  "builds": [
+    {
+      "name": "berserk-nmp",
+      "sha256": "965833e204994eff04a5923d7e0c2acccad9b8579e841e76262eb3d767c4c6de",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-berserk-nmp"
+      ]
+    },
+    {
+      "name": "caissa-node-cache",
+      "sha256": "1e2d7657bd9fef6e32e38e171a21184e4fcca3a161ef61fca2616270907595ae",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-caissa-node-cache"
+      ]
+    },
+    {
+      "name": "trium-disagreement",
+      "sha256": "b767ae9086aed749460a30dab2dd894a979a93768a2c2fe5aa6df04e12fb37ef",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-trium-disagreement"
+      ]
+    },
+    {
+      "name": "pz-threat-correction",
+      "sha256": "ff4a5de8402fcf0bb39472c1f55d574b6b527191199f39e5102db81f09165040",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-pz-threat-correction"
+      ]
+    },
+    {
+      "name": "pz-threat-correction-sanitized",
+      "sha256": "2db25c0c2cee174e60ad9208d2c24af40098f565b65cab9b6afe3e5a4a6a4bb0",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=apple-silicon",
+        "COMP=clang",
+        "EXE=/Users/meganfaust/Documents/Codex/2026-10-13/whe/work/karsli-cloud/experiments/karsli/build/cloud/karsli-pz-threat-correction-sanitized",
+        "debug=yes",
+        "optimize=no",
+        "sanitize=address undefined",
+        "EXTRACXXFLAGS=-O1 -fno-omit-frame-pointer"
+      ]
+    }
+  ],
+  "validation": {
+    "pz-threat-correction": {
+      "passed": true,
+      "checks": 9
+    },
+    "pz-threat-correction-sanitized": {
+      "passed": true,
+      "checks": 9
+    }
+  },
+  "passed": true
+}

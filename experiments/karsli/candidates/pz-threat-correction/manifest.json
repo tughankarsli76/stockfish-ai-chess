@@ -2,7 +2,11 @@
   "base": "trium-disagreement candidate",
   "option": "Karsli PZ Threat Correction Weight",
   "default": 0,
-  "status": "PAUSED after bounds sanitizer and 9 normal checks passed; full sanitizer and paired comparison pending",
+  "status": "Mac normal and sanitizer9/9, bounds and audited16-game on/off comparison complete; Linux evidence pending",
   "promotedToPhone": false,
-  "technicalChecks": 9
+  "technicalChecks": 9,
+  "sanitizedChecks": 9,
+  "pairedGames": 16,
+  "result": "1W 1L 14D",
+  "gameAuditPassed": true
 }
