@@ -718,7 +718,7 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 .game-review-table th{text-align:left;font-weight:500}
 .game-review-table td,.game-review-table thead th:not(:first-child){text-align:center;font-variant-numeric:tabular-nums;min-width:48px}
 .game-review-table thead th{font-weight:700}
-.game-review-table small{display:block;font-size:11px;font-weight:400;color:#666;max-width:95px;overflow-wrap:anywhere;margin:4px auto 0}
+.game-review-table small{display:block;font-size:13.2px;font-weight:400;color:#666;max-width:95px;overflow-wrap:anywhere;margin:4px auto 0}
 .game-review-table .move-rating-label{font-size:14px;color:#171717;margin-left:8px}
 .game-review-note{font-size:12px!important;color:#666;margin-bottom:0}
 
