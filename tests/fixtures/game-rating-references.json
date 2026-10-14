@@ -1,5 +1,5 @@
 {
-  "notes": "Reference ratings are reported by the user, not independently verified. Screenshots contain 81 and 104 plies but no final result or player ratings. Do not hard-code these ratings in the app or fit a validated strength model from these two games.",
+  "notes": "Chess.com review screenshots transcribed from user submissions; final game results and player ratings are unknown. Reference totals describe only the supplied moves. Samples 1 and 2 were used to fit the provisional rating curve; sample 3 is held out. Do not substitute screenshot scores for engine calculations or describe a training fit as independent validation.",
   "samples": [
     {
       "id": "user-reference-1",
@@ -385,7 +385,8 @@
             "blunder": 0
           }
         }
-      }
+      },
+      "calibrationRole": "training"
     },
     {
       "id": "user-reference-2",
@@ -861,6 +862,302 @@
             "mistake": 1,
             "miss": 2,
             "blunder": 1
+          }
+        }
+      },
+      "calibrationRole": "training"
+    },
+    {
+      "id": "user-reference-3",
+      "source": "User-provided Chess.com iOS Game Review and move sequence; legally validated",
+      "calibrationRole": "holdout",
+      "pgn": "[Event \"User-provided Chess.com comparison sample 3\"]\n[Result \"*\"]\n\n1. d4 d5 2. Bg5 Nc6 3. e3 f6 4. Bh4 g5 5. Bg3 e5 6. dxe5 fxe5 7. Nc3 Bb4 8. a3 Bxc3+ 9. bxc3 Nge7 10. c4 Bf5 11. cxd5 Nxd5 12. Bc4 Be6 13. Nf3 e4 14. Nd2 Nc3 15. Qh5+ *\n",
+      "reference": {
+        "white": 350,
+        "black": 100
+      },
+      "completeResult": false,
+      "moveMetrics": [
+        {
+          "version": 2,
+          "score": 96.31944177208219,
+          "loss": 0.75,
+          "cpLoss": 7,
+          "beforeDepth": 19,
+          "afterDepth": 19
+        },
+        {
+          "version": 2,
+          "score": 99.75031223974604,
+          "loss": 0.04999999999999716,
+          "cpLoss": 0,
+          "beforeDepth": 19,
+          "afterDepth": 19
+        },
+        {
+          "version": 2,
+          "score": 86.50222931107413,
+          "loss": 2.25,
+          "cpLoss": 29,
+          "beforeDepth": 19,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 96.56054162575664,
+          "loss": 0.5499999999999972,
+          "cpLoss": 7,
+          "beforeDepth": 17,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 17,
+          "afterDepth": 19
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 19,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 17,
+          "afterDepth": 19
+        },
+        {
+          "version": 2,
+          "score": 8.066100741233864,
+          "loss": 50.349999999999994,
+          "cpLoss": 229,
+          "beforeDepth": 19,
+          "afterDepth": 15
+        },
+        {
+          "version": 2,
+          "score": 15.645294267495476,
+          "loss": 37.099999999999994,
+          "cpLoss": 146,
+          "beforeDepth": 15,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 15.412366181513148,
+          "loss": 37.39999999999999,
+          "cpLoss": 176,
+          "beforeDepth": 17,
+          "afterDepth": 18
+        },
+        {
+          "version": 2,
+          "score": 58.56692901447937,
+          "loss": 7.75,
+          "cpLoss": 107,
+          "beforeDepth": 18,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 64.08242760323188,
+          "loss": 7.65,
+          "cpLoss": 89,
+          "beforeDepth": 17,
+          "afterDepth": 20
+        },
+        {
+          "version": 2,
+          "score": 42.52831910822742,
+          "loss": 17.099999999999994,
+          "cpLoss": 115,
+          "beforeDepth": 20,
+          "afterDepth": 15
+        },
+        {
+          "version": 2,
+          "score": 65.37697851298469,
+          "loss": 8.500000000000007,
+          "cpLoss": 22,
+          "beforeDepth": 15,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 13.332040336594936,
+          "loss": 40.300000000000004,
+          "cpLoss": 124,
+          "beforeDepth": 17,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 17,
+          "afterDepth": 18
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 18,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 12.97040451025465,
+          "loss": 40.849999999999994,
+          "cpLoss": 111,
+          "beforeDepth": 17,
+          "afterDepth": 15
+        },
+        {
+          "version": 2,
+          "score": 21.707768372250506,
+          "loss": 30.549999999999997,
+          "cpLoss": 65,
+          "beforeDepth": 15,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 17,
+          "afterDepth": 15
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 15,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 17,
+          "afterDepth": 16
+        },
+        {
+          "version": 2,
+          "score": 29.67100142940453,
+          "loss": 24.299999999999997,
+          "cpLoss": 66,
+          "beforeDepth": 16,
+          "afterDepth": 18
+        },
+        {
+          "version": 2,
+          "score": 11.275927977443688,
+          "loss": 43.650000000000006,
+          "cpLoss": 117,
+          "beforeDepth": 18,
+          "afterDepth": 16
+        },
+        {
+          "version": 2,
+          "score": 9.632763823049299,
+          "loss": 46.800000000000004,
+          "cpLoss": 167,
+          "beforeDepth": 16,
+          "afterDepth": 18
+        },
+        {
+          "version": 2,
+          "score": 8.106532239453328,
+          "loss": 50.24999999999999,
+          "cpLoss": 219,
+          "beforeDepth": 18,
+          "afterDepth": 17
+        },
+        {
+          "version": 2,
+          "score": 22.706930493819335,
+          "loss": 29.64999999999999,
+          "cpLoss": 115,
+          "beforeDepth": 17,
+          "afterDepth": 18
+        },
+        {
+          "version": 2,
+          "score": 11.706803704412637,
+          "loss": 30.05,
+          "cpLoss": 429,
+          "beforeDepth": 18,
+          "afterDepth": 18
+        },
+        {
+          "version": 2,
+          "score": 100,
+          "loss": 0,
+          "cpLoss": 0,
+          "beforeDepth": 18,
+          "afterDepth": 16
+        }
+      ],
+      "measured": {
+        "w": {
+          "total": 15,
+          "analyzed": 15,
+          "accuracy": 45.54222084170095,
+          "averageCentipawnLoss": 62.733333333333334
+        },
+        "b": {
+          "total": 14,
+          "analyzed": 14,
+          "accuracy": 39.02433890780448,
+          "averageCentipawnLoss": 99.92857142857143
+        }
+      },
+      "referenceReview": {
+        "accuracy": {
+          "white": 60.7,
+          "black": 45.9
+        },
+        "totalMoves": {
+          "white": 15,
+          "black": 14
+        },
+        "counts": {
+          "white": {
+            "brilliant": 0,
+            "great": 1,
+            "book": 2,
+            "best": 3,
+            "excellent": 1,
+            "good": 2,
+            "inaccuracy": 2,
+            "mistake": 1,
+            "miss": 3,
+            "blunder": 0
+          },
+          "black": {
+            "brilliant": 0,
+            "great": 1,
+            "book": 1,
+            "best": 4,
+            "excellent": 0,
+            "good": 0,
+            "inaccuracy": 3,
+            "mistake": 4,
+            "miss": 1,
+            "blunder": 0
           }
         }
       }
