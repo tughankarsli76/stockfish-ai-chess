@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-10-12T10:08:15.519329+00:00",
+  "updatedAt": "2026-10-14T01:54:54.484614+00:00",
   "userIntent": "Continue developing Karsli from the user's own device without Megan's Mac: use the existing durable cloud coding chat, GitHub source and Apple Xcode Cloud native builds/tests. Confirmed October 13, 2026.",
   "completedResearch": "Revision9 focused reviews and selected adaptations only, NOT all requested feature integrations. Five new adaptations plus earlier groups; 96 exploratory games, strength unproven.",
-  "activePhase": "remote Karsli development with Xcode Cloud native validation",
+  "activePhase": "Independent Mac/Linux standalone candidate validation complete; combined review recorded; native opt-in promotion decision and remaining engine research pending.",
   "workspace": "repository root",
   "changes": "engine/karsli-1.0 exact imported source with UCI command/stop adapter + node heartbeat; namespace isolation; full14-option profile; backend, native bridge/catalogue and source/license bundling",
   "webTests": {
@@ -36,7 +36,7 @@
   "pushedToDevelop": true,
   "activeCandidate": {
     "path": "experiments/karsli/candidates/tarnished-interactions",
-    "status": "Mac PZ and Tarnished validation complete; Linux/GitHub/cloud checks running; combined-effects review and native promotion decision pending",
+    "status": "PZ/Tarnished Mac and Linux normal9/9, sanitizer9/9 and paired audits complete; Linux combined bundle sixteen draws; no proven strength gain; native promotion pending.",
     "promotedToPhone": false
   },
   "completedCandidates": {
@@ -92,15 +92,15 @@
   },
   "laterCandidate": {
     "path": "experiments/karsli/candidates/tarnished-interactions",
-    "status": "Mac optimized9/9 and sanitizer9/9; bounds passed; audited16-game comparison all draws; Linux checks and Karsli-specific retuning pending"
+    "status": "Mac and Linux optimized9/9, sanitizer9/9 and bounds passed; independently audited paired and combined comparisons saved; Karsli-specific retuning and native promotion pending."
   },
   "pausedByUser": false,
   "resumeSteps": [
-    "Read this checkpoint; fetch the research branch before editing.",
-    "Check GitHub Actions/Linux validation and fix concrete portability failures.",
-    "Both Mac candidate suites and paired-game audits are complete. Inspect Linux and Xcode Cloud results, then review combined effects before native promotion.",
-    "Review combined effects before native promotion; the installed/native engine still has revision9 fourteen-option profile.",
-    "Remaining scope: Trium time management/TRANN1; Karsli-specific LMR tuning; Raphael full fractional depth."
+    "Fetch the research branch and read this checkpoint, COMBINED-REVIEW.md and independently labeled Mac/Linux reports.",
+    "Use this durable cloud coding workspace for source and standalone tests, and Apple Karsli Validation for native integration. The standalone GitHub Actions workflow remains removed.",
+    "Review the selected default-off/opt-in native promotion draft and extend its native fixtures before changing source/profile or archiving. Current phone/native source remains revision9 current14.",
+    "Keep the interrupted six-game sample separate from the completed sixteen-game comparisons. Do not infer an Elo or strength gain from small samples.",
+    "Remaining scope: Trium time management/TRANN1, Karsli-specific LMR retuning, Raphael full fractional-depth architecture."
   ],
   "cloudBranch": "codex/karsli-cloud-research",
   "cloudSetup": {
@@ -108,7 +108,7 @@
     "branch": "codex/karsli-cloud-research",
     "pullRequest": "https://github.com/tughankarsli76/stockfish-ai-chess/pull/2",
     "codingChat": "01a12832-000f-7517-bdd9-ca18ec9b80e6",
-    "codingChatStatus": "resumed after purpose clarified and user confirmed",
+    "codingChatStatus": "active; independent Linux validation and combined review completed; code/checkpoint saved to research PR; native promotion and further research remain open.",
     "githubRun": "https://github.com/tughankarsli76/stockfish-ai-chess/actions/runs/38495772685",
     "githubStatus": "standalone Actions workflow removed; engine tests run in the durable coding workspace",
     "xcodeValidationWorkflow": "621457fb-9e51-4068-9d70-619d5e83ede9",
@@ -117,5 +117,87 @@
     "xcodeValidationStatus": "started; test action waiting for available environment",
     "xcodeTestFlightWorkflow": "6e41bfff-56aa-4c56-93eb-fbea05097d9f",
     "testFlightStatus": "configured manual-only for research branch and existing Owner Testing group; no archive started yet"
+  },
+  "platformEvidence": {
+    "linux": {
+      "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+      "architecture": "x86-64",
+      "reports": "experiments/karsli/reports/cloud-linux",
+      "networkSHA256": "1a298aa575a085434d29027978dc36867fe9c5bcea9376654b7a8eba1e52dfc2",
+      "validation": {
+        "pz-threat-correction": {
+          "passed": true,
+          "checks": 9
+        },
+        "pz-threat-correction-sanitized": {
+          "passed": true,
+          "checks": 9
+        },
+        "tarnished-interactions": {
+          "passed": true,
+          "checks": 9
+        },
+        "tarnished-interactions-sanitized": {
+          "passed": true,
+          "checks": 9
+        }
+      },
+      "comparisons": {
+        "pz-threat-correction": {
+          "technicalChecks": 9,
+          "sanitizedChecks": 9,
+          "boundsPassed": true,
+          "pairedGames": 16,
+          "result": "2W 1L 13D",
+          "gameAuditPassed": true,
+          "legalPliesReplayed": 2143,
+          "binarySHA256": "0ae97e4af42e7b3f9e3ccb93553dca01ce2b9cebcf2ad9ff60da9017fb5d48e6",
+          "profileSHA256": "6907987d6689d78b5aae8c9adce0ce57d320a5747a226f8033dfea8b276e9d7a",
+          "promotedToPhone": false
+        },
+        "tarnished-interactions": {
+          "technicalChecks": 9,
+          "sanitizedChecks": 9,
+          "boundsPassed": true,
+          "pairedGames": 16,
+          "result": "2W 0L 14D",
+          "gameAuditPassed": true,
+          "legalPliesReplayed": 1977,
+          "binarySHA256": "a20ea3acbf30dda9d6e602de0a97d7780d57e871a598527138282839b4101c68",
+          "profileSHA256": "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9",
+          "promotedToPhone": false
+        },
+        "combined-current14-control": {
+          "pairedGames": 16,
+          "result": "0W 0L 16D",
+          "gameAuditPassed": true,
+          "legalPliesReplayed": 2508,
+          "profileDifferences": [
+            "Karsli Berserk Threat NMP Guard",
+            "Karsli Caissa Node Cache Weight",
+            "Karsli PZ Threat Correction Weight",
+            "Karsli Tarnished Interaction LMR Weight",
+            "Karsli Trium Disagreement RFP Weight"
+          ],
+          "binarySHA256": "a20ea3acbf30dda9d6e602de0a97d7780d57e871a598527138282839b4101c68",
+          "strengthProven": false
+        }
+      },
+      "sourceManifestSHA256": "5976719d813c6bcb815a22e1daf94d634aa711effbfa297082ce29e02a53532e",
+      "interruptedCombinedSample": {
+        "gamesSaved": 6,
+        "includedInFinalResults": false,
+        "records": "experiments/karsli/reports/cloud-linux/interrupted-combined"
+      },
+      "networkRestoreRegressionChecks": 4,
+      "auditNegativeControlsRejected": 4
+    }
+  },
+  "combinedReview": "experiments/karsli/COMBINED-REVIEW.md",
+  "nativePromotion": {
+    "applied": false,
+    "sourceRevision": 9,
+    "profileOptions": 14,
+    "nextWork": "Prepare separately reviewed opt-in source/profile integration; do not enable all five by default based on sixteen-game samples. Apple candidate integration validation is still required."
   }
 }

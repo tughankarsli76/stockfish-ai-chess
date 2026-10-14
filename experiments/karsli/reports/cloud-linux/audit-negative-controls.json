@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "purpose": "Expected auditor rejections, not engine failures",
+  "checks": [
+    {
+      "name": "extra-profile-change",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "clock-overrun",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "illegal-move",
+      "rejected": true,
+      "exitCode": 1
+    },
+    {
+      "name": "truncated-game",
+      "rejected": true,
+      "exitCode": 1
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "base": "pz-threat-correction candidate",
   "option": "Karsli Tarnished Interaction LMR Weight",
   "default": 0,
-  "status": "implemented; build pending",
+  "status": "Mac and Linux normal/sanitizer9/9 plus bounds and independently audited paired games passed; combined bundle sample all draws; no proven strength gain; native promotion pending.",
   "promotedToPhone": false,
   "seedCoefficients": {
     "LMR_TWO_PAIR": [
@@ -94,5 +94,18 @@
       -34
     ]
   },
-  "calibration": "Karsli retuning pending; bounded ablation required"
+  "calibration": "Karsli retuning pending; bounded ablation required",
+  "linuxValidation": {
+    "technicalChecks": 9,
+    "sanitizedChecks": 9,
+    "boundsPassed": true,
+    "pairedGames": 16,
+    "result": "2W 0L 14D",
+    "gameAuditPassed": true,
+    "legalPliesReplayed": 1977,
+    "binarySHA256": "a20ea3acbf30dda9d6e602de0a97d7780d57e871a598527138282839b4101c68",
+    "profileSHA256": "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9",
+    "promotedToPhone": false,
+    "reports": "experiments/karsli/reports/cloud-linux"
+  }
 }

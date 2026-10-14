@@ -1,0 +1,55 @@
+{
+  "status": "stopped-by-user",
+  "stoppedAtUTC": "2026-10-14T01:44:36.185059+00:00",
+  "reason": "User narrowed Karsli development to Apple Xcode Cloud only; stop extra Codex Cloud work.",
+  "localCheckout": "/workspace/karsli-cloud-research",
+  "completedLinuxEvidence": {
+    "pz-threat-correction": {
+      "passed": true,
+      "games": 16,
+      "legalPliesReplayed": 2143,
+      "summary": {
+        "completed": 16,
+        "truncated": 0,
+        "candidateWins": 2,
+        "referenceWins": 1,
+        "draws": 13,
+        "timeForfeits": 0
+      },
+      "strengthProven": false
+    },
+    "tarnished-interactions": {
+      "passed": true,
+      "games": 16,
+      "legalPliesReplayed": 1977,
+      "summary": {
+        "completed": 16,
+        "truncated": 0,
+        "candidateWins": 2,
+        "referenceWins": 0,
+        "draws": 14,
+        "timeForfeits": 0
+      },
+      "strengthProven": false
+    }
+  },
+  "combinedComparison": {
+    "status": "interrupted; no completed independent audit",
+    "savedGames": 6,
+    "summary": {
+      "completed": 6,
+      "truncated": 0,
+      "candidateWins": 1,
+      "referenceWins": 0,
+      "draws": 5,
+      "timeForfeits": 0
+    },
+    "passed": false
+  },
+  "remainingResearchEngineProcesses": [],
+  "linuxChangesCommitted": false,
+  "linuxChangesPushed": false,
+  "candidatesPromoted": false,
+  "nativeAppChanged": false,
+  "localChanges": "Uncommitted portability helpers, experimental profiles, audit tools and workflow edits retained locally only."
+}

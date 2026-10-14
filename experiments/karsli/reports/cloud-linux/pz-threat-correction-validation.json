@@ -1,0 +1,170 @@
+{
+  "createdAt": "2026-10-14T01:34:16.498Z",
+  "purpose": "PZ side-control learned correction activation, compatibility and material checks; no Elo claim",
+  "checks": [
+    {
+      "name": "disabled threat correction preserves complete revision9 deterministic bench",
+      "passed": true,
+      "elapsedMs": 1453,
+      "evidence": {
+        "candidate": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 722,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {
+            "Karsli PZ Threat Correction Weight": 0
+          }
+        },
+        "baseline": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 731,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {}
+        }
+      }
+    },
+    {
+      "name": "threat correction default off and ready",
+      "passed": true,
+      "elapsedMs": 353,
+      "evidence": "Karsli 1.0-dev"
+    },
+    {
+      "name": "active threat correction preserves legal move generation",
+      "passed": true,
+      "elapsedMs": 29,
+      "evidence": 97862
+    },
+    {
+      "name": "side-control table learns nonzero evaluation correction",
+      "passed": true,
+      "elapsedMs": 259,
+      "evidence": {
+        "hits": 10872,
+        "evidence": [
+          {
+            "bestmove": "e2a6",
+            "checkedPv": 14,
+            "ranks": [
+              1
+            ],
+            "events": [
+              "info string Karsli PZ correction-read=10872 correction-update=1798"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "threat correction off reports zero blocks",
+      "passed": true,
+      "elapsedMs": 83,
+      "evidence": {
+        "bestmove": "e2a6",
+        "checkedPv": 10,
+        "ranks": [
+          1
+        ],
+        "events": [
+          "info string Karsli PZ correction-read=0 correction-update=0"
+        ]
+      }
+    },
+    {
+      "name": "threat correction on with complete current14-option profile and MultiPV",
+      "passed": true,
+      "elapsedMs": 167,
+      "evidence": {
+        "bestmove": "e2a6",
+        "checkedPv": 30,
+        "ranks": [
+          1,
+          2,
+          3
+        ],
+        "events": [
+          "info string Karsli PZ correction-read=6726 correction-update=1112"
+        ]
+      }
+    },
+    {
+      "name": "threat correction on four workers stop and reuse",
+      "passed": true,
+      "elapsedMs": 242,
+      "evidence": {
+        "stopped": {
+          "bestmove": "e2a6",
+          "checkedPv": 12,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli PZ correction-read=32887 correction-update=6988"
+          ]
+        },
+        "reused": {
+          "bestmove": "e2a6",
+          "checkedPv": 8,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli PZ correction-read=259 correction-update=61"
+          ]
+        }
+      }
+    },
+    {
+      "name": "threat correction on free queen captures both colors",
+      "passed": true,
+      "elapsedMs": 68,
+      "evidence": [
+        {
+          "bestmove": "d4e5",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli PZ correction-read=0 correction-update=166"
+          ]
+        },
+        {
+          "bestmove": "d5e4",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli PZ correction-read=11 correction-update=117"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clean process exit",
+      "passed": true,
+      "elapsedMs": 6,
+      "evidence": true
+    }
+  ],
+  "passed": true,
+  "binaries": {
+    "candidate": {
+      "path": "/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-pz-threat-correction",
+      "sha256": "0ae97e4af42e7b3f9e3ccb93553dca01ce2b9cebcf2ad9ff60da9017fb5d48e6"
+    },
+    "baseline": {
+      "path": "/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-trium-disagreement",
+      "sha256": "6533ac40c625747452081ed6d5b81e924b54da4bcaff9d93f8a6c8e1f53c5a08"
+    }
+  }
+}

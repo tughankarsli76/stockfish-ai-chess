@@ -1,0 +1,449 @@
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "1"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Open game"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "1"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d3 d6 6. O-O a5 7. Re1 h6 8. Nbd2 O-O
+9. Nf1 Be6 10. Bb5 Ne7 11. d4 exd4 12. cxd4 Bb6 13. Ba4 d5 14. e5 Ne4 15. Ng3 c5
+16. Be3 cxd4 17. Nxd4 Nxg3 18. hxg3 Nf5 19. Nxf5 Bxf5 20. Bd4 Rc8 21. Bb3 Be6
+22. Re2 Bc5 23. Rd2 b5 24. a3 a4 25. Ba2 Qg5 26. Bxc5 Rxc5 27. Qe1 Qf5
+28. Bb1 Qh5 29. Bd3 Rfc8 30. Rad1 d4 31. f4 Bb3 32. Ra1 Qg4 33. Kh2 Qh5+
+34. Kg1 Qg4 35. Kh2 Qh5+ 36. Kg1 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "2"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Open game"]
+[TimeControl "5+0.05"]
+[Termination "insufficient material"]
+[OpeningPair "1"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 exd4 6. cxd4 Bb4+ 7. Bd2 Nxe4
+8. Bxb4 Nxb4 9. Bxf7+ Kxf7 10. Qb3+ Ke8 11. O-O a5 12. a3 Nc6 13. Re1 d5
+14. Nc3 Kf8 15. Nxe4 a4 16. Qa2 dxe4 17. Rxe4 Bf5 18. Rf4 g6 19. g4 Qd6
+20. Ng5 Nd8 21. Rf3 Qf6 22. Nh3 Ne6 23. gxf5 Nxd4 24. Rd3 Nb3 25. Re1 Qxf5
+26. Qb1 Nc5 27. Rd4 Qxb1 28. Rxb1 Kg7 29. Nf4 b6 30. Rbd1 Rhf8 31. Nd3 Ne6
+32. Rd7+ Kg8 33. Ne5 Rad8 34. h3 Rfe8 35. Nc6 Rxd7 36. Rxd7 Rf8 37. Ne5 Rf5
+38. Ng4 Kf8 39. Rxh7 Rh5 40. Rd7 Rxh3 41. Kg2 Rh5 42. Kg3 Rb5 43. f3 Rf5
+44. Ne3 Rg5+ 45. Ng4 Ke8 46. Rd2 Ke7 47. f4 Rf5 48. Ne3 Rf7 49. Nd5+ Ke8
+50. Rd1 b5 51. Nc3 Rf5 52. Nd5 c6 53. Nb4 c5 54. Nd5 Nd4 55. Nc3 Rh5 56. Rd2 Rh1
+57. Ne4 Nf5+ 58. Kf3 Rf1+ 59. Kg4 Rg1+ 60. Kh3 Rf1 61. Kg4 Rc1 62. Nc3 b4
+63. Nxa4 bxa3 64. bxa3 c4 65. Kg5 Kf7 66. Rd7+ Ne7 67. Rc7 Ke6 68. Kg4 Kd6
+69. Rc5 Nd5 70. Rc8 Ke6 71. Nc5+ Ke7 72. Kf3 Re1 73. Kf2 Ra1 74. Kf3 Re1
+75. Kf2 Ra1 76. Kf3 Rf1+ 77. Ke4 Nxf4 78. a4 c3 79. Nb3 Ne6 80. Kd3 g5 81. a5 Rf8
+82. Rxf8 Kxf8 83. a6 Nc7 84. a7 g4 85. Nd4 Ke7 86. Ne2 c2 87. Kxc2 Kd8
+88. Kd3 Kc8 89. Ke4 Kb7 90. a8=Q+ Nxa8 91. Kf4 Nb6 92. Kxg4 Nd5 93. Nd4 Ne3+
+94. Kh5 Ng4 95. Kg6 Nh6 96. Kf6 Kb6 97. Ke7 Nf5+ 98. Ke6 Nxd4+ 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "3"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Queen pawn"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "2"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 O-O 6. cxd5 Nxd5 7. Bxe7 Qxe7
+8. Nxd5 exd5 9. Rc1 Bf5 10. Ne2 c6 11. Ng3 Bg6 12. h4 h6 13. h5 Bh7 14. Bd3 Bxd3
+15. Qxd3 Nd7 16. Nf5 Qf6 17. Rh3 Kh8 18. Rg3 Rg8 19. Rf3 Qe6 20. Qa3 Nf6
+21. Qd6 Kh7 22. Qxe6 fxe6 23. Nd6 Rab8 24. Nf7 Rgf8 25. Ne5 Nxh5 26. Rh3 Nf6
+27. g4 Ne4 28. Rh2 Rbc8 29. f3 Ng5 30. f4 Nf7 31. Nd7 Rfe8 32. Nc5 Re7 33. Ke2 b6
+34. Nd3 Rec7 35. b4 a5 36. bxa5 Ra7 37. Kf3 Rxa5 38. Rb2 Ra6 39. Rcb1 Ra3
+40. Rb3 Rca8 41. Rc1 Nd6 42. Rxa3 Rxa3 43. Rxc6 Nc4 44. Ke2 Rxa2+ 45. Kf3 Nd2+
+46. Kf2 Ne4+ 47. Ke1 Rg2 48. Ne5 Ng3 49. g5 hxg5 50. fxg5 b5 51. Rxe6 Ne4
+52. Nf7 b4 53. Rb6 b3 54. Rxb3 Rg1+ 55. Ke2 Rg2+ 56. Ke1 Kg6 57. Rb7 Kf5
+58. Re7 Ra2 59. Ne5 g6 60. Nd3 Ra1+ 61. Ke2 Ra2+ 62. Ke1 Ra3 63. Ke2 Ra2+ 64. Ke1
+1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "4"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Queen pawn"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "2"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. d4 d5 2. c4 e6 3. Nc3 Nf6 4. Bg5 Be7 5. e3 h6 6. Bh4 O-O 7. Nf3 Nbd7 8. Rc1 c5
+9. cxd5 Nxd5 10. Bxe7 Nxe7 11. Be2 b6 12. dxc5 Nxc5 13. b4 Nd7 14. O-O Nf6
+15. Ne5 Bb7 16. Nb5 Ned5 17. Qd4 Qe7 18. Rfd1 Rfd8 19. a3 a6 20. Nc3 Nxc3
+21. Qxc3 Rac8 22. Qe1 Rc7 23. Rxc7 Qxc7 24. Rxd8+ Qxd8 25. Qc3 Ne4 26. Qb2 Qc7
+27. Nd3 a5 28. bxa5 bxa5 29. Bf3 Bd5 30. Be2 Nc3 31. Bf1 Be4 32. h3 g6
+33. Qb3 Bxd3 34. Bxd3 Nd5 35. Bc4 Nb6 36. Bd3 Qc5 37. Qb2 Na4 38. Qb3 Nb6
+39. g3 Kf8 40. Be4 Nd7 41. Kg2 Ke7 42. Bf3 Ne5 43. Qb7+ Kd6 44. Be4 Nd7
+45. Qb3 Ke7 46. Bf3 Ne5 47. Qb7+ Kf8 48. Qb8+ Kg7 49. Qb2 Kg8 50. Be4 Nd7
+51. h4 g5 52. hxg5 hxg5 53. Bf3 Kf8 54. Qh8+ Ke7 55. Qb2 Ne5 56. Qb7+ Kd6
+57. Qa8 Nxf3 58. Qxf3 Qxa3 59. Qxf7 Qd3 60. Qf8+ Kd7 61. Qf7+ Kd6 62. Qf8+ Kd7
+63. Qf7+ Kd6 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "5"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Sicilian"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "3"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Be2 e5 7. Nb3 Be6
+8. Qd3 Be7 9. Nd5 a5 10. a4 O-O 11. O-O Na6 12. c3 Nxd5 13. exd5 Bd7 14. Be3 f5
+15. f4 exf4 16. Bxf4 Bf6 17. Be3 Re8 18. Bf2 b6 19. Qc2 Nc5 20. Nd4 Ne4
+21. Bd3 Nxf2 22. Qxf2 Bxd4 23. Qxd4 g6 24. Rab1 Qc7 25. b4 axb4 26. Rxb4 Qc5
+27. Rxb6 Qxd4+ 28. cxd4 Rxa4 29. Rxd6 Re7 30. Rc1 Rxd4 31. Bf1 Kf8 32. h3 f4
+33. Rc7 Bf5 34. Rd8+ Re8 35. Rd6 Re7 36. Rd8+ Re8 37. Rd6 Re7 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "6"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Sicilian"]
+[TimeControl "5+0.05"]
+[Termination "fifty-move rule"]
+[OpeningPair "3"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5 e6 7. f4 h6 8. Bh4 Qb6
+9. a3 Be7 10. Bf2 Qc7 11. Qf3 Nbd7 12. O-O-O b5 13. g4 d5 14. e5 Ne4 15. Be1 Bb7
+16. h4 O-O-O 17. Rh3 Nb6 18. Qe2 Nc4 19. a4 Qb6 20. b3 Ba3+ 21. Kb1 Bc5
+22. axb5 Bxd4 23. Nxe4 axb5 24. Nd6+ Nxd6 25. exd6 Bc6 26. g5 Kb7 27. Rxd4 Qxd4
+28. Bc3 Qxf4 29. Rf3 Qxd6 30. Bxg7 f5 31. gxf6 Rhg8 32. Bxh6 Ra8 33. Bc1 d4
+34. f7 Rg1 35. h5 Bxf3 36. Qxf3+ Kb6 37. Qf6 Rc8 38. Qf2 Rh1 39. Bh6 Rh2
+40. Bg2 Qd5 41. Bxd5 Rxf2 42. Bxe6 Rd8 43. b4 Kc6 44. Bb3 Rf1+ 45. Kb2 Kd6
+46. Ba2 Kd7 47. Bb3 Kd6 48. Ba2 Rf2 49. Kc1 Rc8 50. Bb3 d3 51. f8=R Rcxf8
+52. Bxf8+ Rxf8 53. Kd2 dxc2 54. Bxc2 Rf4 55. Kc3 Rh4 56. Bg6 Rh3+ 57. Kc2 Kd5
+58. Bd3 Rxh5 59. Bxb5 Rh4 60. Kc3 Rh3+ 61. Bd3 Rf3 62. b5 Rf6 63. Be2 Kc5
+64. Kd3 Rf7 65. Ke3 Ra7 66. Bf3 Ra3+ 67. Ke4 Rc3 68. Be2 Ra3 69. Bf3 Rb3
+70. Be2 Rc3 71. Bd3 Ra3 72. Be2 Ra2 73. Ke3 Rb2 74. Bd3 Rb4 75. Bf1 Rb3+
+76. Ke4 Rb2 77. Bd3 Rg2 78. Ke3 Rg3+ 79. Ke4 Rg7 80. Be2 Re7+ 81. Kf3 Kd4
+82. Kf2 Kc5 83. Ke1 Ra7 84. Kd2 Kd4 85. Bh5 Ra2+ 86. Kd1 Kd3 87. Bg6+ Kd4
+88. Be8 Kd3 89. Bg6+ Ke3 90. Be8 Re2 91. Bc6 Kd3 92. Bd7 Re7 93. Bc6 Re2
+94. Bd7 Rg2 95. Ke1 Ke3 96. Kf1 Rg8 97. Bc6 Rf8+ 98. Kg2 Rg8+ 99. Kf1 Rd8
+100. Kg2 Rd2+ 101. Kg3 Rd4 102. Kg2 Rg4+ 103. Kf1 Rg5 104. Bd7 Rd5 105. Bc6 Rd2
+106. Be8 Rf2+ 107. Ke1 Ra2 108. Kd1 Rf2 109. Kc1 Kd3 110. Kb1 Kc3 111. Bh5 Rf1+
+112. Bd1 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "7"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Indian"]
+[TimeControl "5+0.05"]
+[Termination "fifty-move rule"]
+[OpeningPair "4"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. O-O exd4
+8. Nxd4 Nc6 9. Be3 Nxd4 10. Bxd4 Bd7 11. Qd2 a5 12. f4 c5 13. Bf2 Re8 14. Bf3 Ng4
+15. Bxg4 Bxg4 16. Rfe1 Bd7 17. Qxd6 Bxc3 18. bxc3 Rc8 19. f5 Qe7 20. Qd2 Bc6
+21. Qh6 Qf8 22. Qf4 f6 23. Rad1 Re5 24. Bh4 gxf5 25. exf5 Qg7 26. g4 Rxe1+
+27. Rxe1 Re8 28. Rxe8+ Bxe8 29. Qe4 Kf8 30. Bf2 b6 31. Bg3 Qd7 32. Qd5 Ke7
+33. Qe4+ Kf8 34. h4 a4 35. h5 Qe7 36. Qd3 Kf7 37. a3 Bc6 38. Kf2 Qd7 39. Qe3 Bb7
+40. Qe2 Qc6 41. Bb8 Qg2+ 42. Ke1 Qxe2+ 43. Kxe2 Ba6 44. Kd3 b5 45. cxb5 Bxb5+
+46. c4 Bc6 47. Ke2 Bg2 48. Ba7 Bh3 49. Kf3 Bf1 50. Bxc5 Bxc4 51. h6 Bd5+
+52. Kf4 Bc4 53. Bd4 Bf1 54. Bxf6 Kxf6 55. g5+ Kf7 56. Ke3 Bh3 57. Ke4 Bg4
+58. Ke5 Bd1 59. Kd6 Bb3 60. Ke5 Bc2 61. Kf4 Bb1 62. Ke5 Bd3 63. Kf4 Bb1
+64. Ke5 Bc2 65. Kf4 Bd3 66. Ke5 Bb1 67. Kf4 Bd3 68. Kg4 Kg8 69. Kf4 Bb1
+70. Ke5 Kf7 71. Kf4 Kg8 72. Ke5 Kh8 73. Kf6 Bc2 74. g6 hxg6 75. fxg6 Kg8
+76. g7 Kh7 77. Kg5 Bb3 78. Kh5 Bf7+ 79. Kg5 Bc4 80. Kh5 Bb3 81. Kg5 Bf7
+82. Kf6 Ba2 83. Kg5 Bf7 84. Kf6 Bg8 85. Kg5 Bb3 86. Kh5 Bg8 87. Kg5 Ba2
+88. Kh5 Bf7+ 89. Kg5 Ba2 90. Kh5 Bc4 91. Kg5 Bg8 92. Kh5 Bb3 93. Kg5 Bc4
+94. Kh5 Bd5 95. Kg5 Bg8 96. Kh5 Bc4 97. Kg5 Bd5 98. Kf4 Kxh6 99. Kf5 Kxg7
+100. Ke5 Bg8 101. Kf5 Kf7 102. Ke5 Ke7 103. Ke4 Ke6 104. Kd4 Bf7 105. Kc3 Kf5
+106. Kd3 Bb3 107. Kd4 Kf4 108. Kd3 Ke5 109. Ke3 Bc4 110. Kd2 Kd4 111. Kc2 Bg8
+112. Kb1 Kc3 113. Ka1 Bc4 114. Kb1 Kb3 115. Ka1 Kxa3 116. Kb1 Bd3+ 117. Ka1 Be2
+118. Kb1 Kb3 119. Ka1 Bf3 120. Kb1 Ba8 121. Ka1 a3 122. Kb1 Ka4 123. Ka2 Be4
+124. Ka1 Bd5 125. Kb1 Kb5 126. Ka1 Kb4 127. Kb1 Ka4 128. Ka1 Ka5 129. Kb1 Ka4
+130. Ka1 Bb3 131. Kb1 Ka5 132. Ka1 Ka4 133. Kb1 Bc4 134. Ka1 Kb4 135. Kb1 Kc5
+136. Ka1 Kd6 137. Kb1 Kc6 138. Ka1 Kc5 139. Kb1 Kb4 140. Ka1 Ka4 141. Kb1 Be6
+142. Ka1 Kb5 143. Kb1 Bf7 144. Ka1 Bd5 145. Kb1 Ka5 146. Ka1 Ka4 147. Kb1 Bc4
+148. Ka1 a2 149. Kb2 Bd5 150. Ka1 Kb4 151. Kb2 Bc4 152. Ka1 Kc5 153. Kb2 Be6
+154. Ka1 Kc6 155. Kb2 Bb3 156. Ka1 Kc5 157. Kb2 Kd4 158. Ka1 Ke4 159. Kb2 Kf4
+160. Ka1 Be6 161. Kb2 Ke3 162. Ka1 Bd5 163. Kb2 Kd4 164. Ka1 Kc5 165. Kb2 Bc4
+166. Ka1 Kb5 167. Kb2 Kc5 168. Ka1 Be6 169. Kb2 Bb3 170. Ka1 Kd6 171. Kb2 Kd5
+172. Ka1 Kd6 173. Kb2 Be6 174. Ka1 Bd5 175. Kb2 Be6 176. Ka1 Bd5 177. Kb2 Ke6
+178. Ka1 Ke5 179. Kb2 Kf6 180. Ka1 Bg8 181. Kb2 Bf7 182. Ka1 Bb3 183. Kb2 Bc4
+184. Ka1 Kg7 185. Kb2 Bb3 186. Ka1 Kf6 187. Kb2 Ke5 188. Ka1 Kf5 189. Kb2 Ke6
+190. Ka1 Bc4 191. Kb2 Ke5 192. Ka1 Bd5 193. Kb2 Kd4 194. Ka1 Be6 195. Kb2 Ke3
+196. Ka1 Kf4 197. Kb2 Kg4 198. Ka1 Bb3 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "8"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Indian"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "4"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Be2 e5 7. Be3 Ng4 8. Bg5 f6
+9. Bh4 g5 10. Bg3 Nh6 11. h3 Nc6 12. d5 Ne7 13. Bh2 Ng6 14. g4 Bd7 15. Bg3 Nf4
+16. Qc2 Qe7 17. Bxf4 exf4 18. O-O-O Nf7 19. Nd4 Ne5 20. f3 c5 21. Nf5 Bxf5
+22. exf5 Rfe8 23. h4 h6 24. Kb1 a6 25. Rh2 Nf7 26. Bd3 Rab8 27. Rdh1 Kf8
+28. a4 Ne5 29. Qe2 Kf7 30. a5 Qc7 31. Ne4 b6 32. Bc2 bxa5 33. Ba4 Rh8 34. b3 Qb6
+35. Kc2 Ke7 36. Nf2 Kf7 37. Nd3 Qc7 38. Qe4 Qe7 39. Kd1 Kg8 40. Nxe5 Qxe5
+41. Qxe5 fxe5 42. hxg5 hxg5 43. Rxh8+ Bxh8 44. Rh6 e4 45. Rxd6 exf3 46. Rg6+ Kf7
+47. d6 Bd4 48. Rh6 f2 49. Ke2 Rh8 50. Rxh8 Bxh8 51. Kxf2 Kf6 52. d7 Ke7
+53. Kf3 Bf6 54. Bc6 Kd6 55. Bb7 Kxd7 56. Ke4 Kc7 57. Bxa6 Bg7 58. Bb5 Kd6
+59. Be8 Ke7 60. Bb5 Kf6 61. Ba6 Bh6 62. Bb7 Bf8 63. Ba8 Bd6 64. Bc6 Bf8
+65. Bd5 Bd6 66. Bb7 Bf8 67. Bc6 Bd6 68. Bd5 Be7 69. Ba8 Bd6 70. Bc6 Be7
+71. Bd5 Bd6 72. Ba8 Bf8 73. Bc6 Bd6 74. Bb7 Bf8 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "9"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "French"]
+[TimeControl "5+0.05"]
+[Termination "insufficient material"]
+[OpeningPair "5"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 e6 2. d4 d5 3. Nc3 Nf6 4. Bg5 Be7 5. e5 Nfd7 6. h4 Bxg5 7. hxg5 Qxg5
+8. Nh3 Qh4 9. g3 Qe7 10. Qg4 Kf8 11. Ng5 h6 12. f4 a6 13. Bd3 c5 14. Nxf7 Kxf7
+15. f5 Ke8 16. fxe6 Nf8 17. Nxd5 Bxe6 18. Qh5+ Bf7 19. Nxe7 Bxh5 20. Nc8 Bg6
+21. Nb6 Ra7 22. Nc8 Nc6 23. d5 Nxe5 24. Nxa7 Kd7 25. b4 Bxd3 26. cxd3 Nxd3+
+27. Kd2 Nxb4 28. Rab1 Ng6 29. a3 Nxd5 30. Rxb7+ Kd6 31. Rxg7 Ne5 32. Rh5 c4
+33. Kc2 Rf8 34. Rxh6+ Kc5 35. Rg5 Rf2+ 36. Kd1 Nf3 37. Rf5 c3 38. Nc6 c2+
+39. Kc1 Rf1+ 40. Kxc2 Ne1+ 41. Kd2 Rxf5 42. Kxe1 Rf3 43. a4 Rf6 44. Rxf6 Nxf6
+45. Ne5 Kb4 46. Nd3+ Kxa4 47. Nc5+ Kb4 48. Nxa6+ Kc4 49. Ke2 Ne4 50. g4 Kd4
+51. Kf3 Ke5 52. Nc7 Nf2 53. Kxf2 Kf4 54. Ne6+ Kxg4 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "10"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "French"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "5"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 e6 2. d4 d5 3. Nc3 Nf6 4. Bg5 Be7 5. e5 Ne4 6. Nxe4 dxe4 7. h4 c5
+8. dxc5 Qa5+ 9. c3 Qxc5 10. Qa4+ Bd7 11. Qxe4 Bc6 12. Bxe7 Kxe7 13. Qd4 Qxd4
+14. cxd4 Rd8 15. Rd1 Be4 16. Ne2 Nc6 17. f3 Bd5 18. Nc3 Nb4 19. Bd3 Bxa2
+20. Nxa2 Nxa2 21. Bxh7 Nb4 22. Kf2 g6 23. h5 gxh5 24. Be4 Nc6 25. Ke3 a5
+26. Rxh5 Ra6 27. b3 Rb6 28. Rd3 Nb4 29. Rc3 Na2 30. Rc7+ Rd7 31. Rxd7+ Kxd7
+32. Rh7 Rxb3+ 33. Kf4 Ke8 34. d5 a4 35. dxe6 fxe6 36. Bxb7 a3 37. Bc8 Rb6
+38. Ra7 Nb4 39. Rxa3 Kd8 40. Bxe6 Rxe6 41. Kf5 Rh6 42. g4 Nc6 43. f4 Kd7
+44. Rb3 Ke8 45. Kg5 Rh8 46. Rb5 Rg8+ 47. Kh4 Rh8+ 48. Kg5 Rg8+ 49. Kh4 Nd4
+50. Rb8+ Kf7 51. Rxg8 Kxg8 52. Kg3 Kf7 53. f5 Ne2+ 54. Kh4 Ng1 55. Kg3 Ne2+
+56. Kh4 Ng1 57. Kg5 Ke7 58. Kf4 Nh3+ 59. Ke3 Ng5 60. Kf4 Nh3+ 61. Kf3 Kf7
+62. Ke2 Ke7 63. Ke3 Ng5 64. Kd4 Nf3+ 65. Ke4 Ng5+ 66. Kd5 Nh7 67. Kd4 Ng5
+68. Ke3 Kf7 69. Kf4 Nh3+ 70. Kf3 Ng5+ 71. Ke2 Kf8 72. Kd3 Ke8 73. Kd4 Kf7
+74. Kc5 Ke7 75. Kd5 Nh7 76. Kd4 Ng5 77. Ke3 Kf7 78. Kf4 Nh3+ 79. Kg3 Ng5
+80. e6+ Kf6 81. Kf4 Nh7 82. e7 Kxe7 83. g5 Kf8 84. Kg4 Kg8 85. Kh5 Kg7
+86. Kg4 Kf8 87. Kh5 Kg7 88. Kg4 Kf8 89. Kh4 Nxg5 90. Kxg5 Kg7 91. f6+ Kf7
+92. Kf5 Kf8 93. Ke6 Ke8 94. Kd5 Kf8 95. Ke6 Ke8 96. Kd5 Kf8 97. Ke4 Kg8
+98. Kf4 Kf8 99. Kf5 Kf7 100. Ke5 Kf8 101. Kf5 Kf7 102. Kg5 Kf8 103. Kg4 Kf7
+104. Kf5 Kf8 105. Kf4 Ke8 106. Kg4 Kf8 107. Kh5 Kf7 108. Kg5 Kf8 109. Kf4 Ke8
+110. Ke4 Kf8 111. Kd5 Kf7 112. Ke5 Kf8 113. Ke4 Kf7 114. Ke5 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "11"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "English"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "6"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. c4 e5 2. Nc3 Nf6 3. g3 d5 4. cxd5 Nxd5 5. Bg2 Nb6 6. Nf3 Nc6 7. d3 Be7
+8. Be3 O-O 9. O-O Be6 10. a3 Nd5 11. Nxd5 Bxd5 12. Rc1 Re8 13. Qa4 Bf6
+14. Rc5 Ne7 15. Rfc1 c6 16. Bg5 Bxg5 17. Nxg5 h6 18. Nf3 f6 19. Nd2 Bxg2
+20. Kxg2 Qd7 21. b4 a6 22. Qc2 Nd5 23. Nf3 Rad8 24. e3 Nc7 25. d4 Ne6
+26. Rc4 exd4 27. Nxd4 Qd5+ 28. Nf3 Ng5 29. Qe2 Kf7 30. R1c2 Nxf3 31. Qxf3 Qxf3+
+32. Kxf3 Re5 33. Rc5 Rd3 34. Rxe5 fxe5 35. Ke4 Rxa3 36. Kxe5 Ra4 37. Rb2 a5
+38. bxa5 Rxa5+ 39. Kd6 Rd5+ 40. Kc7 Rb5 41. Rd2 Ke6 42. f4 Rb4 43. Rd6+ Kf5
+44. Rd7 Kf6 45. Rd6+ Kf5 46. Rd7 Kf6 47. Rd6+ Ke7 48. Rd7+ Kf6 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "12"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "English"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "6"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. c4 e5 2. Nc3 Nf6 3. g3 d5 4. cxd5 Nxd5 5. Bg2 Nb6 6. Nf3 Nc6 7. d3 Be7
+8. O-O Be6 9. Be3 O-O 10. Rc1 f5 11. b4 f4 12. Bc5 Bxc5 13. bxc5 Nd5 14. Qb3 Kh8
+15. Ne4 Qe8 16. Qb2 Bg8 17. Rfd1 Rb8 18. d4 exd4 19. Nxd4 Qg6 20. Nd2 Nxd4
+21. Qxd4 Rbe8 22. Bxd5 Rd8 23. Be4 Rxd4 24. Bxg6 hxg6 25. Nf3 Rxd1+ 26. Rxd1 Bxa2
+27. Ra1 Bd5 28. Rxa7 fxg3 29. hxg3 Bxf3 30. exf3 Rf5 31. c6 bxc6 32. f4 Kg8
+33. Rxc7 g5 34. fxg5 Rxg5 35. Rxc6 Rb5 36. Rc7 Kh7 37. f4 Rb2 38. f5 Kh6
+39. g4 Rb6 40. Re7 Rb4 41. Re6+ Kh7 42. Rg6 Rb2 43. Rc6 Rb4 44. Rg6 Rb2
+45. Kf1 Ra2 46. Rc6 Ra4 47. Rg6 Ra2 48. Rc6 Ra4 49. Rg6 Ra2 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "13"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Caro-Kann"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "7"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Bf5 5. Ng3 Bg6 6. Nf3 Nd7 7. Bd3 e6
+8. Bxg6 hxg6 9. O-O Ngf6 10. c4 Be7 11. Bf4 O-O 12. Qe2 Re8 13. Rfd1 Qc8
+14. Ne4 Nxe4 15. Qxe4 c5 16. Ne5 cxd4 17. Nxd7 Qxd7 18. Rxd4 Qc6 19. Qxc6 bxc6
+20. Rd7 Bf6 21. Rb1 Rad8 22. Rxd8 Rxd8 23. b3 Bd4 24. Kf1 c5 25. Bd2 e5 26. a3 f6
+27. Ke2 Kf7 28. f3 Rc8 29. Kd3 Rc6 30. b4 Ra6 31. Rb3 Ke6 32. Bc3 Bg1
+33. Kc2 Bxh2 34. bxc5 Bg1 35. Rb5 Rxa3 36. Bb4 Ra6 37. Rb7 Rc6 38. Rxa7 Bxc5
+39. Bxc5 Rxc5 40. Kc3 Kf5 41. Rxg7 Ra5 42. Rb7 Ra2 43. Rb2 Rxb2 44. Kxb2 Ke6
+45. Ka3 Kd7 46. Kb4 Kc6 47. c5 f5 48. g3 Kd7 49. Kc4 Kc6 50. Kb4 g5 51. Kc4 f4
+52. g4 e4 53. fxe4 f3 54. Kd3 Kxc5 55. Ke3 Kc4 56. Kf2 Kc5 57. Ke3 Kc4
+58. Kf2 Kc5 59. Kg3 Kc4 60. Kxf3 Kd4 61. e5 Kxe5 62. Ke3 Kd5 63. Kd3 Ke5
+64. Ke3 Kd5 65. Kd3 Ke5 66. Ke3 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "14"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Caro-Kann"]
+[TimeControl "5+0.05"]
+[Termination "insufficient material"]
+[OpeningPair "7"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. e4 c6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Bf5 5. Ng3 Bg6 6. Nf3 Nd7 7. h4 h6
+8. Bd3 Bxd3 9. Qxd3 e6 10. Bf4 Ngf6 11. O-O-O Be7 12. Kb1 O-O 13. Ne4 Nxe4
+14. Qxe4 Nf6 15. Qe1 Qd5 16. Ne5 Qe4 17. Qxe4 Nxe4 18. Rde1 Nf6 19. g4 Rad8
+20. g5 Nd5 21. Bc1 h5 22. g6 fxg6 23. Nxg6 Rxf2 24. c4 Rf6 25. Rhg1 Bb4
+26. Re4 Ne7 27. Nf4 Nf5 28. Nxe6 Rd7 29. Bg5 Rff7 30. c5 Ba5 31. Kc2 Bc7
+32. Kc3 Ne7 33. Nxc7 Rxc7 34. Bxe7 Rfxe7 35. Rxe7 Rxe7 36. Rg5 Re3+ 37. Kc4 Re2
+38. b4 Rc2+ 39. Kb3 Rd2 40. Kc3 Rxa2 41. d5 cxd5 42. Rxd5 Ra3+ 43. Kc4 Rh3
+44. Rxh5 g6 45. Rd5 Rxh4+ 46. Kb3 Rf4 47. b5 Kf8 48. Rd8+ Ke7 49. Rb8 b6
+50. Rb7+ Ke6 51. cxb6 axb6 52. Rxb6+ Kd5 53. Rxg6 Kc5 54. b6 Rf3+ 55. Ka4 Rf1
+56. Ka3 Rf7 57. Ka4 Rf1 58. Rh6 Ra1+ 59. Kb3 Rf1 60. Ka3 Rf3+ 61. Ka4 Rf1
+62. Ka3 Rb1 63. Rf6 Rxb6 64. Rxb6 Kxb6 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "15"]
+[White "Candidate: Karsli 1.0-dev"]
+[Black "Reference: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Reti"]
+[TimeControl "5+0.05"]
+[Termination "fifty-move rule"]
+[OpeningPair "8"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. Nf3 d5 2. g3 Nf6 3. Bg2 e6 4. O-O Be7 5. d3 O-O 6. Re1 Nc6 7. d4 Ne4
+8. c4 dxc4 9. Ne5 Nxe5 10. dxe5 f5 11. exf6 Qxd1 12. Rxd1 Nxf6 13. Nd2 Rd8
+14. Rf1 e5 15. Nxc4 e4 16. Bf4 c6 17. Rfd1 Rxd1+ 18. Rxd1 Bg4 19. Kf1 a5
+20. a3 Be6 21. Nd6 Nd5 22. Nxe4 Nxf4 23. gxf4 h6 24. e3 Ra6 25. Bf3 Rb6
+26. Rd2 g5 27. fxg5 hxg5 28. Be2 Bd5 29. Nc3 Bf7 30. Na4 Rb3 31. Bd1 Rb5
+32. Nc3 Rb6 33. Na4 Rb5 34. Nc3 Rb6 35. Kg2 Bf6 36. Kg3 Kf8 37. f4 gxf4+
+38. exf4 Bg7 39. h4 c5 40. h5 Bd4 41. Bf3 Kg7 42. a4 Bc4 43. Kg4 Kh6 44. Bd5 Bxc3
+45. bxc3 Rd6 46. Bxc4 Rxd2 47. f5 Kg7 48. Kg5 Rg2+ 49. Kf4 Rc2 50. Ke5 Rxc3
+51. f6+ Kf8 52. Kd5 Kf7 53. Kxc5+ Kxf6 54. h6 Rh3 55. Kb5 Rh5+ 56. Kb6 Rxh6
+57. Kxa5 Ke7 58. Kb5 Kd7 59. a5 Kc7 60. Bb3 Rh5+ 61. Kb4 Kc6 62. Ba4+ Kd6
+63. Bd1 Rh1 64. Bc2 Rh2 65. Bd3 Rd2 66. Kc3 Ra2 67. Be4 Kc7 68. Kb4 Re2
+69. Bd3 Rd2 70. Bg6 Rb2+ 71. Kc5 Ra2 72. Kb4 Kd6 73. Kb5 Rb2+ 74. Kc4 Re2
+75. Kb5 Kc7 76. Bh7 Rb2+ 77. Kc5 Re2 78. Kb4 Rb2+ 79. Kc5 Rh2 80. Bg6 Rh6
+81. Bf7 Rh2 82. Bg6 Rg2 83. Bh7 Rg5+ 84. Kb4 Kd6 85. Bd3 Rg3 86. Bf1 Rg5
+87. Bd3 Rh5 88. Bg6 Rh6 89. Be8 Rh2 90. Kb5 Rb2+ 91. Kc4 Rc2+ 92. Kb5 Rb2+
+93. Kc4 Rg2 94. Ba4 Rg5 95. Kb4 Rg2 96. Bd1 Rd2 97. Bb3 Kc6 98. Kc4 Rb2
+99. Ba4+ b5+ 100. axb6+ Kxb6 101. Bd1 Rf2 102. Bh5 Rf4+ 103. Kd3 Kc5 104. Ke3 Rf1
+105. Be2 Re1 106. Kd3 Rh1 107. Bg4 Kb4 108. Ke4 Rh4 109. Kf4 Kc3 110. Kg5 Rh7
+111. Kf5 Rg7 112. Bf3 Rf7+ 113. Ke4 Rd7 114. Ke5 Rd4 115. Bd5 Kd3 116. Kd6 Kc3
+117. Kc5 Rh4 118. Bf7 Re4 119. Kd5 Rf4 120. Be6 Rf2 121. Bh3 Rd2+ 122. Kc5 Kd3
+123. Bd7 Ke4 124. Kc6 Ke3 125. Kc7 Kd4 126. Kd6 Kc4+ 127. Ke7 Rd4 128. Be8 Re4+
+129. Kf7 Kb3 130. Bb5 Rb4 131. Bd7 Rb7 132. Ke6 Kb4 133. Kd6 Ka5 134. Bc6 Rb6
+135. Kc5 Rb1 136. Be4 Rg1 137. Bf3 Rg5+ 138. Kc4 Kb6 139. Be2 Ka5 140. Bf3 Rf5
+141. Be2 Rf4+ 142. Kc3 Kb6 143. Kd2 Kc5 144. Kd3 Rh4 145. Ke3 Kb4 146. Kf2 Kc3
+147. Ke3 Rh7 148. Bf3 Re7+ 149. Kf2 Kd2 150. Kg3 Re1 1/2-1/2
+
+[Event "Karsli paired exploratory comparison"]
+[Site "Local Mac"]
+[Date "2026.10.14"]
+[Round "16"]
+[White "Reference: Karsli 1.0-dev"]
+[Black "Candidate: Karsli 1.0-dev"]
+[Result "1/2-1/2"]
+[Opening "Reti"]
+[TimeControl "5+0.05"]
+[Termination "threefold repetition"]
+[OpeningPair "8"]
+[Cycle "1"]
+[CandidateProfileSHA256 "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9"]
+
+1. Nf3 d5 2. g3 Nf6 3. Bg2 e6 4. O-O Be7 5. d3 O-O 6. Nbd2 c5 7. e4 Nc6
+8. Re1 Qc7 9. c3 dxe4 10. dxe4 e5 11. Nh4 g6 12. Qe2 Be6 13. Nf1 Rad8
+14. Bh6 Rfe8 15. Nf3 Ng4 16. Bg5 h6 17. Bxe7 Qxe7 18. Bh3 Nf6 19. Bxe6 Qxe6
+20. Qe3 Kg7 21. Qxc5 Rd3 22. Kg2 Qg4 23. Nh4 Red8 24. Qb5 Qd7 25. a4 a6
+26. Qc4 Na5 27. Qb4 Nc6 28. Qc4 Na5 29. Qb4 Nc6 30. Qc4 1/2-1/2

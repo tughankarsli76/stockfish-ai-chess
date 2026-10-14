@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "createdAt": "2026-10-14T01:42:18.338Z",
+  "games": 16,
+  "pairedOpenings": 8,
+  "legalPliesReplayed": 1977,
+  "onlyProfileDifference": "Karsli Tarnished Interaction LMR Weight",
+  "profileHash": "b7dd82d7221a8844060243ba5ea348ff95f8c77377b704dcaff1761885f65ec9",
+  "binaryHash": "a20ea3acbf30dda9d6e602de0a97d7780d57e871a598527138282839b4101c68",
+  "summary": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 2,
+    "referenceWins": 0,
+    "draws": 14,
+    "timeForfeits": 0
+  },
+  "strengthProven": false
+}

@@ -1,0 +1,10 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 403
+Traceback (most recent call last):
+  File "/workspace/karsli-cloud-research/experiments/karsli/restore-network.py", line 27, in <module>
+    subprocess.run(['curl', '--fail', '--location', '--retry', '3', '--max-time', '300',
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['curl', '--fail', '--location', '--retry', '3', '--max-time', '300', '--output', '/workspace/karsli-cloud-research/engine/stockfish-progress/nn-1a298aa575a0.download', 'https://tests.stockfishchess.org/api/nn/nn-1a298aa575a0.nnue']' returned non-zero exit status 22.

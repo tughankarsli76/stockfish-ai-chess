@@ -1,0 +1,57 @@
+{
+  "recordedAtUTC": "2026-10-14T01:53:32.977809+00:00",
+  "scope": "Independent Linux cloud-workspace evidence; not Mac, GitHub Actions or native iOS evidence.",
+  "buildSourceCommit": "785d49d",
+  "coordinatorCheckpointCommit": "eca2ec807be55b9e454de3031ff8145ca9793115",
+  "sourceManifestSHA256": "5976719d813c6bcb815a22e1daf94d634aa711effbfa297082ce29e02a53532e",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "nodeVersion": "v24.19.0",
+  "pythonVersion": "3.12.14",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "appNativeRevision": 9,
+  "appNativeProfileOptions": 14,
+  "candidatesPromoted": false,
+  "strengthProven": false,
+  "setupFailures": [
+    {
+      "failure": "Primary pinned model URL returned HTTP 403 under default network policy",
+      "resolution": "Verified existing pinned GitHub release archive and exact model size/SHA-256; policy unchanged",
+      "retainedLog": "failures/initial-network-restore.log"
+    },
+    {
+      "failure": "GitHub Actions API query returned Forbidden during initial evidence check",
+      "resolution": "Local standalone Linux evidence; the separate Actions workflow was subsequently removed by coordinator"
+    }
+  ],
+  "interruptedRun": {
+    "gamesSaved": 6,
+    "includedInFinalResults": false,
+    "reason": "User temporarily paused extra cloud work, then explicitly resumed durable cloud coding.",
+    "records": "interrupted-combined"
+  },
+  "files": {
+    "pz-threat-correction-validation.json": "d19fe3ce57503fda5753f463e84663351012d1835c3e2d859f7d4075b3cc9353",
+    "tarnished-interactions-ablation.pgn": "cd3c8b92b31d4d629d88fe666f0abe3fab369e74923c189cee43dffc4a7804c2",
+    "combined-research.pgn": "61ab05650705266bbc06a3edbd802125fe097c70f54cc79bcbe274739c92d734",
+    "tarnished-interactions-ablation-audit.json": "14cbe14565c26fb48336741afcf10e4cdf25823795a04e28c2699b4f60f80c46",
+    "tarnished-interactions-sanitized-validation.json": "e1e6a31426003ea61b4726ee7512e854d3a579e5630b8d12c7ef9a608c3f61e6",
+    "restore-network-tests.log": "233963f943b21de5c264f49d2c880e6fe5865a20487eaab1ac20d9e3f1e7b48b",
+    "pz-threat-correction-sanitized-validation.json": "07f3d8ba2e0a21138cfce52dfacca212095d000cbe80b4e459394c6fce012dce",
+    "audit-negative-controls.json": "7644e994c17e1c13292387b79328df60ca3c21608c7db4f7e564422de617462a",
+    "tarnished-interactions-ablation.json": "e8b233aa0a33488ca74cee391bb9a5dd5e4681fc685a0ca79e3b8fbc0894e2cf",
+    "pz-threat-correction-ablation-audit.json": "45b5b73f7122030b9eb0d58dc43ad707a7f9807ad7ac6854bcbf57964daf9756",
+    "source-verification-after-sync.log": "592b4ac618819b4dc3b7b343e65824a2d04480a730e57214b50142e0865133ae",
+    "network-restore.log": "ac486e8b28e97ce253d89bb4eeb0908e0719cd8ba10d155918eca10e27bef661",
+    "run.json": "c76777d3998f63f264ec53999b8d5d9ec33ceb2ede33515ad75fd2b48e5e4654",
+    "pz-threat-correction-ablation.json": "9adb5603a8c8337ade460680fd657876cfef28d9803a136dd17fba7994aebfff",
+    "pz-threat-correction-ablation.pgn": "d0e49abb828c042c58fd7486c0562ccb7e385b8a389be62c0d043996232314b8",
+    "tarnished-interactions-validation.json": "4f9a963ae1c98109d92e3dce79cc4c89a522680079c4da48088ba1b380ec70da",
+    "resume-source-verification.log": "592b4ac618819b4dc3b7b343e65824a2d04480a730e57214b50142e0865133ae",
+    "combined-research-audit.json": "e644ae10c1c8cf716c3a2db632fa02c3e6a8059708d0a5da6ea8b24fbdbf89e7",
+    "combined-research.json": "23bd94e0f073e404cef92e1c034862b1db1caf19fb3c5feab35e9766f316c0b7",
+    "interrupted-combined/STOPPED.json": "c875303734dc3a843990d49fb2cca35dacb86a5a05225e6c79be1f0c0f61d0a1",
+    "interrupted-combined/combined-research.pgn": "d45de8308aeb57c6852bc157b75b7661a80813805c8a9c941a7437629c65b3af",
+    "interrupted-combined/combined-research.json": "fbbda0870bb3783a6cf211fc81f08a38665463a2e44eae522512675326c14afe",
+    "failures/initial-network-restore.log": "db4e80150abe872e8f12ca2ae5a86da00d29c29c6a54bb89ad82c78275af7919"
+  }
+}

@@ -2,11 +2,24 @@
   "base": "trium-disagreement candidate",
   "option": "Karsli PZ Threat Correction Weight",
   "default": 0,
-  "status": "Mac normal and sanitizer9/9, bounds and audited16-game on/off comparison complete; Linux evidence pending",
+  "status": "Mac and Linux normal/sanitizer9/9 plus bounds and independently audited paired games passed; combined bundle sample all draws; no proven strength gain; native promotion pending.",
   "promotedToPhone": false,
   "technicalChecks": 9,
   "sanitizedChecks": 9,
   "pairedGames": 16,
   "result": "1W 1L 14D",
-  "gameAuditPassed": true
+  "gameAuditPassed": true,
+  "linuxValidation": {
+    "technicalChecks": 9,
+    "sanitizedChecks": 9,
+    "boundsPassed": true,
+    "pairedGames": 16,
+    "result": "2W 1L 13D",
+    "gameAuditPassed": true,
+    "legalPliesReplayed": 2143,
+    "binarySHA256": "0ae97e4af42e7b3f9e3ccb93553dca01ce2b9cebcf2ad9ff60da9017fb5d48e6",
+    "profileSHA256": "6907987d6689d78b5aae8c9adce0ce57d320a5747a226f8033dfea8b276e9d7a",
+    "promotedToPhone": false,
+    "reports": "experiments/karsli/reports/cloud-linux"
+  }
 }

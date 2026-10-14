@@ -1,0 +1,125 @@
+{
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "architecture": "x86-64",
+  "networkSHA256": "1a298aa575a085434d29027978dc36867fe9c5bcea9376654b7a8eba1e52dfc2",
+  "builds": [
+    {
+      "name": "berserk-nmp",
+      "sha256": "826c8bde0c96c1579cfcf1ff8b98a48b97f26c6cc228568176f2d62a3d0b98db",
+      "sourceSHA256": "42c8c75a247ea165dfea3ab8c22bc1f335af9be027619f0147f3cb6cae505797",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=x86-64",
+        "COMP=gcc",
+        "EXE=/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-berserk-nmp"
+      ]
+    },
+    {
+      "name": "caissa-node-cache",
+      "sha256": "d763ad86620d65452be5f0a0de9c15bd28b81165e5a489afa809bfeb811c0976",
+      "sourceSHA256": "096e3403f6b0b0e4f77fe90f53483668b51ff01240322db1ae8c7d16e24f746c",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=x86-64",
+        "COMP=gcc",
+        "EXE=/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-caissa-node-cache"
+      ]
+    },
+    {
+      "name": "trium-disagreement",
+      "sha256": "6533ac40c625747452081ed6d5b81e924b54da4bcaff9d93f8a6c8e1f53c5a08",
+      "sourceSHA256": "dddcc92a2a3e92ad34d6dd5056f0cd5ac4a6c75b809fe24ed8a07ee30c73b48e",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=x86-64",
+        "COMP=gcc",
+        "EXE=/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-trium-disagreement"
+      ]
+    },
+    {
+      "name": "pz-threat-correction",
+      "sha256": "0ae97e4af42e7b3f9e3ccb93553dca01ce2b9cebcf2ad9ff60da9017fb5d48e6",
+      "sourceSHA256": "e13413aa065a2a9cf2837ce332899e6a29a4baa04566c87b90623541140cf0d0",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=x86-64",
+        "COMP=gcc",
+        "EXE=/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-pz-threat-correction"
+      ]
+    },
+    {
+      "name": "pz-threat-correction-sanitized",
+      "sha256": "8e90b82eab8e8bf6dac7228b81c95f5e4267c3d648ef7dbed5f298bb7e5e1175",
+      "sourceSHA256": "e13413aa065a2a9cf2837ce332899e6a29a4baa04566c87b90623541140cf0d0",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=x86-64",
+        "COMP=gcc",
+        "EXE=/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-pz-threat-correction-sanitized",
+        "debug=yes",
+        "optimize=no",
+        "sanitize=address undefined",
+        "EXTRACXXFLAGS=-O1 -fno-omit-frame-pointer"
+      ]
+    },
+    {
+      "name": "tarnished-interactions",
+      "sha256": "a20ea3acbf30dda9d6e602de0a97d7780d57e871a598527138282839b4101c68",
+      "sourceSHA256": "4fe311b9da9165814a3dc7a43e6e47efb6df405217b73df043a8759ff529d471",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=x86-64",
+        "COMP=gcc",
+        "EXE=/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-tarnished-interactions"
+      ]
+    },
+    {
+      "name": "tarnished-interactions-sanitized",
+      "sha256": "db721c7d86b748eb275aa6d057b371f7517d3f6670a59d5db3c17e74a5df9ca0",
+      "sourceSHA256": "4fe311b9da9165814a3dc7a43e6e47efb6df405217b73df043a8759ff529d471",
+      "command": [
+        "make",
+        "-j2",
+        "build",
+        "ARCH=x86-64",
+        "COMP=gcc",
+        "EXE=/workspace/karsli-cloud-research/experiments/karsli/build/cloud/karsli-tarnished-interactions-sanitized",
+        "debug=yes",
+        "optimize=no",
+        "sanitize=address undefined",
+        "EXTRACXXFLAGS=-O1 -fno-omit-frame-pointer"
+      ]
+    }
+  ],
+  "validation": {
+    "pz-threat-correction": {
+      "passed": true,
+      "checks": 9
+    },
+    "pz-threat-correction-sanitized": {
+      "passed": true,
+      "checks": 9
+    },
+    "tarnished-interactions": {
+      "passed": true,
+      "checks": 9
+    },
+    "tarnished-interactions-sanitized": {
+      "passed": true,
+      "checks": 9
+    }
+  },
+  "passed": true
+}
