@@ -23,6 +23,7 @@
 #include <limits>
 
 #include "misc.h"
+#include "types.h"
 
 namespace Stockfish {
 
@@ -45,6 +46,13 @@ class TimeManagement {
 
     TimePoint optimum() const;
     TimePoint maximum() const;
+    bool trium_active() const { return triumActive; }
+    void apply_trium_prediction(Key position, bool enabled);
+    void set_trium_prediction(Key position, bool valid) {
+        triumExpectedPosition = position;
+        triumPredictionKnown = valid;
+    }
+    int trium_prediction() const { return triumPredictionResult; }
     template<typename FUNC>
     TimePoint elapsed(FUNC nodes) const {
         return useNodesTime ? TimePoint(nodes()) : elapsed_time();
@@ -63,6 +71,11 @@ class TimeManagement {
 
     i64  availableNodes = -1;     // When in 'nodes as time' mode
     bool useNodesTime   = false;  // True if we are in 'nodes as time' mode
+    TimePoint triumInitialClock = -1;
+    bool triumActive = false;
+    Key triumExpectedPosition = 0;
+    bool triumPredictionKnown = false;
+    int triumPredictionResult = 0; // 0 = none, 1 = matched, -1 = unexpected
 };
 
 }  // namespace Stockfish

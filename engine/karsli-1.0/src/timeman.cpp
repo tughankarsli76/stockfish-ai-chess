@@ -23,6 +23,7 @@
 #include <cmath>
 
 #include "search.h"
+#include "karsli_trium_time.h"
 #include "ucioption.h"
 
 namespace Stockfish {
@@ -32,6 +33,20 @@ TimePoint TimeManagement::maximum() const { return maximumTime; }
 
 void TimeManagement::clear() {
     availableNodes = -1;  // When in 'nodes as time' mode
+    triumInitialClock = -1;
+    triumActive = false;
+    triumPredictionKnown = false;
+    triumPredictionResult = 0;
+}
+
+void TimeManagement::apply_trium_prediction(Key position, bool enabled) {
+    triumPredictionResult = 0;
+    if (triumActive && enabled && triumPredictionKnown)
+    {
+        const bool matched = position == triumExpectedPosition;
+        optimumTime = Karsli::trium_prediction_budget(optimumTime, maximumTime, matched);
+        triumPredictionResult = matched ? 1 : -1;
+    }
 }
 
 void TimeManagement::advance_nodes_time(i64 nodes) {
@@ -54,6 +69,16 @@ void TimeManagement::init(Search::LimitsType& limits,
     // startTime is used by movetime and useNodesTime is used in elapsed calls.
     startTime    = limits.startTime;
     useNodesTime = npmsec != 0;
+    // Capture the first genuine game clock, even if the option is currently off.
+    // Fixed movetime, nodestime, nodes/depth/mate limits and infinite analysis
+    // must not seed a game gate or opt in to the alternate time allocation.
+    const bool restricted = useNodesTime || limits.movetime || limits.nodes
+                         || limits.depth || limits.mate || limits.infinite;
+    if (!restricted && limits.time[us] > 0 && triumInitialClock < 0)
+        triumInitialClock = limits.time[us];
+    triumActive = limits.time[us] > 0 && Karsli::trium_time_gate(
+      options["Karsli Trium Time Management"], triumInitialClock, limits.inc[us],
+      int(options["Karsli Trium Time Min Base Ms"]), restricted);
 
     if (useNodesTime)
         limits.movetime *= npmsec;
@@ -139,6 +164,14 @@ void TimeManagement::init(Search::LimitsType& limits,
 
     if (options["Ponder"])
         optimumTime += optimumTime / 4;
+
+    if (triumActive)
+        optimumTime = Karsli::trium_time_optimum(limits.time[us], limits.inc[us],
+          moveOverhead, ply, limits.movestogo, maximumTime);
+    if (options["Karsli Trium Time Diagnostics"])
+        sync_cout << "info string Karsli Trium Time active=" << int(triumActive)
+                  << " initial=" << triumInitialClock << " optimum=" << optimumTime
+                  << " maximum=" << maximumTime << sync_endl;
 }
 
 }  // namespace Stockfish

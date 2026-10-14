@@ -700,6 +700,7 @@
     [self waitForBoard:web expectation:loaded attempts:200];[self waitForExpectations:@[loaded] timeout:25];
     NSDictionary *result=[self javascript:@"const tests=await import('./ios-integration-tests.js');return await tests.karsliMaterial();" web:web];
     XCTAssertEqualObjects(result[@"identity"],@"Karsli 1.0-dev");XCTAssertEqual([result[@"material"] count],7u);
+    XCTAssertEqual([result[@"controls"] count],8u);
     NSLog(@"KARSLI_COMBINED_MATERIAL: %@",result);
 }
 - (void)testStockfish19BackgroundSearch {[self checkBackgroundSearchForEngine:@"stockfish19"];}

@@ -173,7 +173,10 @@ MovePicker::MovePicker(const Position&              p,
                        u64* pawnOrderEvents,
                        const KarsliCaptureRouteHistory* captureRoute,
                        int captureRouteWeight,
-                       u64* captureRouteEvents) :
+                       u64* captureRouteEvents,
+                       const Karsli::CaissaNodeCache::Entry* caissaEntry,
+                       int caissaWeight,
+                       u64* caissaEvents) :
     pos(p),
     mainHistory(mh),
     lowPlyHistory(lph),
@@ -190,6 +193,10 @@ MovePicker::MovePicker(const Position&              p,
     karsliCaptureRoute(captureRoute),
     karsliCaptureRouteWeight(captureRouteWeight),
     karsliCaptureRouteEvents(captureRouteEvents),
+    karsliCaissaEntry(caissaEntry),
+    karsliCaissaKey(p.key()),
+    karsliCaissaWeight(caissaWeight),
+    karsliCaissaOrderEvents(caissaEvents),
     ttMove(ttm),
     depth(d),
     ply(pl) {
@@ -279,6 +286,13 @@ ExtMove* MovePicker::score(const MoveList<Type>& ml) {
             m.value += (*continuationHistory[2])[pc][to];
             m.value += (*continuationHistory[3])[pc][to];
             m.value += (*continuationHistory[5])[pc][to];
+
+            if (karsliCaissaEntry)
+            {
+                const int bonus = karsliCaissaEntry->score(karsliCaissaKey, m, karsliCaissaWeight);
+                m.value += bonus;
+                if (bonus && karsliCaissaOrderEvents) ++*karsliCaissaOrderEvents;
+            }
 
             // bonus for checks
             m.value += ((pos.check_squares(pt) & to) && pos.see_ge(m, -75)) * 16384;

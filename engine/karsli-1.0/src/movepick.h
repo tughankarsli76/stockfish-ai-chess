@@ -23,6 +23,7 @@
 #define MOVEPICK_H_INCLUDED
 
 #include "history.h"
+#include "karsli_caissa.h"
 #include "movegen.h"
 #include "types.h"
 
@@ -59,6 +60,9 @@ class MovePicker {
                u64* = nullptr,
                const KarsliCaptureRouteHistory* = nullptr,
                int = 0,
+               u64* = nullptr,
+               const Karsli::CaissaNodeCache::Entry* = nullptr,
+               int = 0,
                u64* = nullptr);
     MovePicker(const Position&, Move, int, const CapturePieceToHistory*);
     Move next_move();
@@ -86,6 +90,10 @@ class MovePicker {
     const KarsliCaptureRouteHistory* karsliCaptureRoute = nullptr;
     int karsliCaptureRouteWeight = 0;
     u64* karsliCaptureRouteEvents = nullptr;
+    const Karsli::CaissaNodeCache::Entry* karsliCaissaEntry = nullptr;
+    Key karsliCaissaKey = 0;
+    int karsliCaissaWeight = 0;
+    u64* karsliCaissaOrderEvents = nullptr;
     Move                         ttMove;
     ExtMove *                    cur, *endCur, *endBadCaptures, *endCaptures, *endGenerated;
     int                          stage;

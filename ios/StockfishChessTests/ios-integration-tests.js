@@ -627,6 +627,20 @@ export async function karsliMaterial(){
   const actual=lines.find(l=>l.startsWith('info string Karsli profile '));
   if(!actual)throw Error('Missing applied profile');
   for(const [name,value] of Object.entries(profile))if(!actual.split(' | ').includes(name+'='+Number(value)))throw Error('Inactive combined option: '+name);
+  // This transport follows the app's own engine session. Every session must
+  // advertise its options, even after other engines and temporary combo maps.
+  const controls={
+   'Karsli Plenty Major Correction':'spin default 0 min 0 max 256',
+   'Karsli Alexandria Eval Complexity':'spin default 0 min 0 max 512',
+   'Karsli Stormphrax Shallow Extension':'check default false',
+   'Karsli Berserk Threat NMP Guard':'check default false',
+   'Karsli Caissa Node Cache Weight':'spin default 0 min 0 max 4096',
+   'Karsli Trium Disagreement RFP Weight':'spin default 0 min 0 max 128',
+   'Karsli PZ Threat Correction Weight':'spin default 0 min 0 max 256',
+   'Karsli Tarnished Interaction LMR Weight':'spin default 0 min 0 max 256'
+  };
+  for(const name of Object.keys(profile))if(!lines.some(l=>l.startsWith('option name '+name+' type ')))throw Error('Missing advertised profile option: '+name);
+  for(const [name,type] of Object.entries(controls))if(!lines.includes('option name '+name+' type '+type))throw Error('Missing or altered revision-10 control: '+name);
   send('setoption name Threads value 1');send('setoption name Hash value 16');send('setoption name MultiPV value 1');
   const fixtures=[
    ['white queen capture','7k/8/8/4q3/3P4/8/8/K7 w - - 0 1','d4e5'],
@@ -646,6 +660,6 @@ export async function karsliMaterial(){
    if(expected&&uci!==expected||avoid&&uci===avoid)throw Error('Material regression '+name+': '+uci);
    results.push({name,uci});
   }
-  return {identity:'Karsli 1.0-dev',profile:actual,material:results};
+  return {identity:'Karsli 1.0-dev',profile:actual,controls:Object.keys(controls),material:results};
  }finally{transport.terminate();api.patch({engine:'stockfish19',opponent:'local',showAnalysis:false});api.reset();}
 }

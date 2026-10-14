@@ -20,6 +20,8 @@
 
 
 #include "search.h"
+#include "karsli_trium_time.h"
+#include "karsli_focus10.h"
 
 #include <algorithm>
 #include <array>
@@ -86,7 +88,13 @@ using SearchedList                  = ValueList<Move, SEARCHEDLIST_CAPACITY>;
 // (*Scaler) All tuned parameters at time controls shorter than
 // optimized for require verifications at longer time controls.
 
-int correction_value(Worker& w, const Position& pos, const Stack* const ss) {
+unsigned major_pattern(const Position& pos) {
+    return Karsli::major_pattern_index({pos.pieces(WHITE, ROOK), pos.pieces(WHITE, QUEEN),
+      pos.pieces(WHITE, KING), pos.pieces(BLACK, ROOK), pos.pieces(BLACK, QUEEN), pos.pieces(BLACK, KING)});
+}
+
+int correction_value(Worker& w, const Position& pos, const Stack* const ss,
+                     int* disagreement = nullptr) {
     const Color us     = pos.side_to_move();
     const auto  m      = (ss - 1)->currentMove;
     const auto& shared = w.sharedHistory;
@@ -101,6 +109,12 @@ int correction_value(Worker& w, const Position& pos, const Stack* const ss) {
                + (*(ss - 4)->continuationCorrectionHistory)[pos.piece_on(m.to_sq())][m.to_sq()])
           : 64049;
 
+    if (disagreement && w.karsliTriumDisagreementWeight)
+    {
+        *disagreement = Karsli::trium_disagreement(pcv, micv, wnpcv, bnpcv);
+        if (w.karsliTriumDiagnostics && *disagreement) ++w.karsliTriumEvents[0];
+    }
+
     int transition = 0;
     if (w.karsliCinderTransitionWeight && ss->ply > 0 && m.is_ok() && !ss->excludedMove)
     {
@@ -109,8 +123,22 @@ int correction_value(Worker& w, const Position& pos, const Stack* const ss) {
         transition = Karsli::transition_delta(entry, w.karsliCinderTransitionWeight);
         if (transition) w.note_first10(0);
     }
+    int threatCorrection = 0;
+    if (w.karsliPzCorrectionWeight)
+    {
+        threatCorrection = Karsli::pz_correction_delta(
+          w.karsliPzCorrection[us][ss->karsliPzThreatIndex], w.karsliPzCorrectionWeight);
+        if (w.karsliPzDiagnostics && threatCorrection) ++w.karsliPzEvents[0];
+    }
+    int majorCorrection = 0;
+    if (w.karsliPlentyMajorWeight)
+    {
+        majorCorrection = Karsli::major_pattern_delta(
+          w.karsliMajorCorrection[us][major_pattern(pos)], w.karsliPlentyMajorWeight);
+        if (majorCorrection && w.karsliFocusDiagnostics) ++w.karsliFocusEvents[0];
+    }
     return 15341 * pcv + 10569 * micv + 12906 * (wnpcv + bnpcv) + cntcv
-         + transition * 131072;
+         + (transition + threatCorrection + majorCorrection) * 131072;
 }
 
 // Add correctionHistory value to raw staticEval and guarantee evaluation
@@ -129,12 +157,24 @@ void update_correction_history(const Position& pos,
     constexpr int nonPawnWeight = 186;
     auto&         shared        = workerThread.sharedHistory;
 
+    if (workerThread.karsliPlentyMajorWeight && !ss->excludedMove)
+    {
+        workerThread.karsliMajorCorrection[us][major_pattern(pos)] << std::clamp(bonus, -256, 256);
+        if (workerThread.karsliFocusDiagnostics) ++workerThread.karsliFocusEvents[1];
+    }
+
     if (workerThread.karsliCinderTransitionWeight && ss->ply > 0 && m.is_ok()
         && !ss->excludedMove)
     {
         workerThread.karsliTransitionCorrection[us][Karsli::transition_index(
             ss->karsliPositionKey, (ss - 1)->karsliPositionKey)] << std::clamp(bonus, -256, 256);
         workerThread.note_first10(1);
+    }
+    if (workerThread.karsliPzCorrectionWeight)
+    {
+        workerThread.karsliPzCorrection[us][ss->karsliPzThreatIndex]
+          << std::clamp(bonus, -256, 256);
+        if (workerThread.karsliPzDiagnostics) ++workerThread.karsliPzEvents[1];
     }
     shared.pawn_correction_entry(pos)[us].pawn << bonus;
     shared.minor_piece_correction_entry(pos)[us].minor << bonus * 150 / 128;
@@ -211,6 +251,24 @@ void Search::Worker::ensure_network_replicated() {
 void Search::Worker::start_searching() {
 
     accumulatorStack.reset();
+    karsliPlentyMajorWeight = int(options["Karsli Plenty Major Correction"]);
+    karsliAlexandriaComplexity = int(options["Karsli Alexandria Eval Complexity"]);
+    karsliStormShallowExtension = options["Karsli Stormphrax Shallow Extension"];
+    karsliFocusDiagnostics = options["Karsli Focus10 Diagnostics"];
+    karsliFocusEvents.fill(0);
+    karsliCaissaWeight = int(options["Karsli Caissa Node Cache Weight"]);
+    karsliCaissaDiagnostics = options["Karsli Caissa Diagnostics"];
+    karsliCaissaNodeCache.clear();
+    karsliCaissaEvents.fill(0);
+    karsliTriumDisagreementWeight = int(options["Karsli Trium Disagreement RFP Weight"]);
+    karsliTriumDiagnostics = options["Karsli Trium Diagnostics"];
+    karsliTriumEvents.fill(0);
+    karsliPzCorrectionWeight = int(options["Karsli PZ Threat Correction Weight"]);
+    karsliPzDiagnostics = options["Karsli PZ Diagnostics"];
+    karsliPzEvents.fill(0);
+    karsliTarnishedWeight = int(options["Karsli Tarnished Interaction LMR Weight"]);
+    karsliTarnishedDiagnostics = options["Karsli Tarnished Diagnostics"];
+    karsliTarnishedEvents = 0;
     karsliCheckBonus = int(options["Karsli Check Bonus"]);
     karsliDepthSlope = int(options["Karsli Depth Slope"]);
     karsliAlphaBonus = int(options["Karsli Alpha Bonus"]);
@@ -232,6 +290,7 @@ void Search::Worker::start_searching() {
     karsliFirst10Events.fill(0);
     karsliHobbesCaptureRoute = int(options["Karsli Hobbes Capture Route"]);
     karsliHalogenMaterialMargin = int(options["Karsli Halogen Material Margin"]);
+    karsliBerserkThreatNmpGuard = options["Karsli Berserk Threat NMP Guard"];
     karsliOrangeDiagnostics = options["Karsli Orange Diagnostics"];
     karsliOrangeEvents.fill(0);
     karsliReckless = {};
@@ -270,11 +329,16 @@ void Search::Worker::start_searching() {
 
     main_manager()->tm.init(limits, rootPos.side_to_move(), rootPos.game_ply(), options,
                             main_manager()->originalTimeAdjust);
+    main_manager()->tm.apply_trium_prediction(rootPos.key(), options["Karsli Trium Predicted Reply"]);
+    if (options["Karsli Trium Time Diagnostics"])
+        sync_cout << "info string Karsli Trium Prediction result="
+                  << main_manager()->tm.trium_prediction() << sync_endl;
     tt.new_search();
     main_manager()->updates.onStart();
 
     if (rootMoves.empty())
     {
+        main_manager()->tm.set_trium_prediction(0, false);
         main_manager()->updates.onUpdateNoMoves(
           {0, {rootPos.checkers() ? -VALUE_MATE : VALUE_DRAW, rootPos}});
         main_manager()->updates.onBestmove(UCIEngine::move(Move::none()), "");
@@ -329,16 +393,78 @@ void Search::Worker::start_searching() {
     if (bestThread->rootMoves[0].pv.size() > 1)
         ponder = UCIEngine::move(bestThread->rootMoves[0].pv[1], rootPos.is_chess960());
 
+    // Use the selected worker's actual PV, including when thread voting picks
+    // another worker. Recheck both legal moves and restore the root exactly.
+    main_manager()->tm.set_trium_prediction(0, false);
+    const auto& predictedPv = bestThread->rootMoves[0].pv;
+    if (main_manager()->tm.trium_active() && options["Karsli Trium Predicted Reply"]
+        && !skill.enabled() && predictedPv.size() >= 2
+        && MoveList<LEGAL>(rootPos).contains(predictedPv[0]))
+    {
+        StateInfo first, second;
+        rootPos.do_move(predictedPv[0], first);
+        if (MoveList<LEGAL>(rootPos).contains(predictedPv[1]))
+        {
+            rootPos.do_move(predictedPv[1], second);
+            main_manager()->tm.set_trium_prediction(rootPos.key(), true);
+            rootPos.undo_move(predictedPv[1]);
+        }
+        rootPos.undo_move(predictedPv[0]);
+    }
+
     auto bestmove = UCIEngine::move(bestThread->rootMoves[0].pv[0], rootPos.is_chess960());
-    if (karsliOrangeDiagnostics)
+    if (karsliFocusDiagnostics)
     {
         std::array<u64, 4> totals{};
+        for (auto&& thread : threads)
+            for (int i = 0; i < 4; ++i) totals[i] += thread->worker->karsliFocusEvents[i];
+        sync_cout << "info string Karsli Focus10 major-read=" << totals[0]
+                  << " major-update=" << totals[1] << " eval-complexity=" << totals[2]
+                  << " shallow-extension=" << totals[3] << sync_endl;
+    }
+    if (karsliTarnishedDiagnostics)
+    {
+        u64 total = 0;
+        for (auto&& thread : threads) total += thread->worker->karsliTarnishedEvents;
+        sync_cout << "info string Karsli Tarnished interaction-use=" << total << sync_endl;
+    }
+    if (karsliPzDiagnostics)
+    {
+        std::array<u64, 2> totals{};
+        for (auto&& thread : threads)
+            for (usize i = 0; i < totals.size(); ++i)
+                totals[i] += thread->worker->karsliPzEvents[i];
+        sync_cout << "info string Karsli PZ correction-read=" << totals[0]
+                  << " correction-update=" << totals[1] << sync_endl;
+    }
+    if (karsliTriumDiagnostics)
+    {
+        std::array<u64, 3> totals{};
+        for (auto&& thread : threads)
+            for (usize i = 0; i < totals.size(); ++i)
+                totals[i] += thread->worker->karsliTriumEvents[i];
+        sync_cout << "info string Karsli Trium disagreement-read=" << totals[0]
+                  << " rfp-margin=" << totals[1] << " rfp-saved=" << totals[2] << sync_endl;
+    }
+    if (karsliCaissaDiagnostics)
+    {
+        std::array<u64, 2> totals{};
+        for (auto&& thread : threads)
+            for (usize i = 0; i < totals.size(); ++i)
+                totals[i] += thread->worker->karsliCaissaEvents[i];
+        sync_cout << "info string Karsli Caissa order-use=" << totals[0]
+                  << " cache-record=" << totals[1] << sync_endl;
+    }
+    if (karsliOrangeDiagnostics)
+    {
+        std::array<u64, 5> totals{};
         for (auto&& thread : threads)
             for (usize i = 0; i < totals.size(); ++i)
                 totals[i] += thread->worker->karsliOrangeEvents[i];
         sync_cout << "info string Karsli Orange capture-route-read=" << totals[0]
                   << " capture-route-update=" << totals[1] << " material-threat=" << totals[2]
-                  << " rfp-saved=" << totals[3] << sync_endl;
+                  << " rfp-saved=" << totals[3]
+                  << " berserk-nmp-saved=" << totals[4] << sync_endl;
     }
     if (karsliFirst10Diagnostics)
     {
@@ -409,6 +535,12 @@ bool Search::Worker::iterative_deepening() {
     Value  bestValue     = -VALUE_INFINITE;
     Color  us            = rootPos.side_to_move();
     double timeReduction = 1, totBestMoveChanges = 0;
+    int triumMoveStability = 0, triumEvalStability = 0;
+    Move triumPreviousMove = Move::none();
+    Value triumPreviousScore = VALUE_NONE;
+    int triumMateIterations = 0;
+    Value triumMateScore = VALUE_NONE;
+    Move triumMateMove = Move::none();
     int    delta, iterIdx                        = 0;
 
     // Allocate stack with extra size to allow access from (ss - 7) to (ss + 2):
@@ -741,6 +873,35 @@ bool Search::Worker::iterative_deepening() {
         // Do we have time for the next iteration? Can we stop searching now?
         if (limits.use_time_management() && !threads.stop && !mainThread->stopOnPonderhit)
         {
+            const bool earlyStopEligible = mainThread->tm.trium_active()
+              && options["Karsli Trium Early Stop"] && multiPV == 1 && !skill.enabled();
+            if (earlyStopEligible && is_valid(bestValue) && is_mate_or_mated(bestValue)
+                && !rootMoves[0].is_inexact())
+            {
+                const bool sameWinner = is_valid(triumMateScore)
+                  && ((bestValue > 0) == (triumMateScore > 0));
+                triumMateIterations = sameWinner && triumMateMove == rootMoves[0].pv[0]
+                  ? triumMateIterations + 1 : 1;
+                triumMateScore = bestValue;
+                triumMateMove = rootMoves[0].pv[0];
+            }
+            else
+            {
+                triumMateIterations = 0;
+                triumMateScore = VALUE_NONE;
+                triumMateMove = Move::none();
+            }
+            if (earlyStopEligible && (rootMoves.size() == 1 || triumMateIterations >= 7))
+            {
+                if (options["Karsli Trium Time Diagnostics"])
+                    sync_cout << "info string Karsli Trium Early Stop reason="
+                              << (rootMoves.size() == 1 ? "single-reply" : "stable-mate") << sync_endl;
+                if (mainThread->ponder)
+                    mainThread->stopOnPonderhit = true;
+                else
+                    threads.stop = true;
+                break;
+            }
             u64 nodesEffort = rootMoves[0].effort * 100000 / std::max(u64(1), u64(nodes));
 
             double fallingEval = (11.48 + 2.30 * (mainThread->bestPreviousAverageScore - bestValue)
@@ -764,7 +925,26 @@ bool Search::Worker::iterative_deepening() {
             double totalTime = mainThread->tm.optimum() * fallingEval * reduction
                              * bestMoveInstability * highBestMoveEffort;
 
-            if (karsliReckless.evalStability)
+            if (mainThread->tm.trium_active())
+            {
+                const Move move = rootMoves[0].pv[0];
+                triumMoveStability = move == triumPreviousMove
+                  ? std::min(4, triumMoveStability + 1) : 0;
+                triumEvalStability = is_valid(triumPreviousScore) && !is_decisive(bestValue)
+                  && !is_decisive(triumPreviousScore)
+                  && std::abs(bestValue - triumPreviousScore) <= 10
+                  ? std::min(4, triumEvalStability + 1) : 0;
+                triumPreviousMove = move;
+                triumPreviousScore = bestValue;
+                // Fresh factors from the base allocation, never from the prior
+                // iteration's scaled time. The SF hard limit remains authoritative.
+                totalTime = std::clamp(double(mainThread->tm.optimum())
+                  * Karsli::trium_time_factor(triumMoveStability, triumEvalStability,
+                      std::min(1.0, double(rootMoves[0].effort) / std::max(1.0, double(nodes)))),
+                  1.0, double(mainThread->tm.maximum()));
+            }
+
+            if (karsliReckless.evalStability && !mainThread->tm.trium_active())
             {
                 totalTime *= Karsli::eval_stability_factor(karsliEvalStreak, karsliReckless.evalStability);
                 note_karsli(Karsli::RecklessEvent::EvalStability);
@@ -913,6 +1093,8 @@ void Search::Worker::clear() {
     karsliCaptureThreatHistory.clear();
     karsliTransitionCorrection.fill(0);
     karsliCaptureRouteHistory.fill(0);
+    karsliPzCorrection.fill(0);
+    karsliMajorCorrection.fill(0);
 
     // Each thread clears its part of the dynamically-sized shared histories.
     // The constant-size continuation history is initialized by thread 0 of each NUMA node.
@@ -987,6 +1169,7 @@ Value Search::Worker::search(
 
     // Step 1. Initialize node
     ss->karsliPositionKey = pos.key();
+    ss->karsliPzThreatIndex = karsliPzCorrectionWeight ? Karsli::pz_control_index(pos) : 0;
     ss->inCheck   = pos.checkers();
     priorCapture  = pos.captured_piece();
     Color us      = pos.side_to_move();
@@ -1036,7 +1219,8 @@ Value Search::Worker::search(
                      ? karsli_opponent_attacks(pos) : 0;
     (ss + 2)->cutoffCnt = 0;
 
-    const auto correctionValue = correction_value(*this, pos, ss);
+    int karsliTriumDisagreement = 0;
+    const auto correctionValue = correction_value(*this, pos, ss, &karsliTriumDisagreement);
 
     // Step 4. Transposition table lookup
     excludedMove                   = ss->excludedMove;
@@ -1271,6 +1455,18 @@ Value Search::Worker::search(
             if (eval - before >= beta && eval - futilityMargin < beta) note_orange(3);
         }
 
+        const int triumMargin = Karsli::trium_rfp_margin(karsliTriumDisagreement,
+                                                       karsliTriumDisagreementWeight);
+        if (triumMargin)
+        {
+            if (karsliTriumDiagnostics)
+            {
+                ++karsliTriumEvents[1];
+                if (eval - futilityMargin >= beta && eval - futilityMargin - triumMargin < beta)
+                    ++karsliTriumEvents[2];
+            }
+            futilityMargin += triumMargin;
+        }
         if (eval - futilityMargin >= beta)
             return (661 * beta + 363 * eval) / 1024;
     }
@@ -1283,11 +1479,22 @@ Value Search::Worker::search(
 
     // Step 10. Null move search with verification search
     if (cutNode && ss->staticEval >= beta - 13 * depth - 47 * improving + 365 && !excludedMove
+        && (ss - 1)->currentMove != Move::null()
         && pos.non_pawn_material(us) && ss->ply >= nmpMinPly && beta >= -2000)
     {
         if (karsliNmpGuard)
         {
             note_karsli(Karsli::RecklessEvent::NmpGuard);
+            goto after_null_move;
+        }
+        // Berserk 14 search.c:536-539: lower-valued attacks on our
+        // material defeat the free-tempo assumption. The geometric detector
+        // is already shared with Plenty; preserve Stockfish NMP verification.
+        // GPLv3-or-later, Jay Honnold and contributors; see candidate NOTICE.
+        if (karsliBerserkThreatNmpGuard && depth >= 5
+            && Karsli::plenty_material_threats(pos))
+        {
+            note_orange(4);
             goto after_null_move;
         }
         assert((ss - 1)->currentMove != Move::null());
@@ -1420,7 +1627,11 @@ moves_loop:  // When in check, search starts here
                   karsliPawnocchioDiagnostics ? &karsliPawnocchioEvents[2] : nullptr,
                   karsliHobbesCaptureRoute ? &karsliCaptureRouteHistory : nullptr,
                   karsliHobbesCaptureRoute,
-                  karsliOrangeDiagnostics ? &karsliOrangeEvents[0] : nullptr);
+                  karsliOrangeDiagnostics ? &karsliOrangeEvents[0] : nullptr,
+                  karsliCaissaWeight && !rootNode && !ss->inCheck && ss->ply < 3
+                    ? karsliCaissaNodeCache.find(posKey) : nullptr,
+                  karsliCaissaWeight,
+                  karsliCaissaDiagnostics ? &karsliCaissaEvents[0] : nullptr);
 
     value = bestValue;
 
@@ -1644,7 +1855,20 @@ moves_loop:  // When in check, search starts here
             note_karsli(Karsli::RecklessEvent::RecaptureExtension);
         }
 
-        u64 nodeCount = rootNode ? u64(nodes) : 0;
+        // Stormphrax lower-depth singular-extension concept. Local quiet-only,
+        // one-ply variant; do not stack on an existing singular/recapture path.
+        else if (move == ttData.move && is_valid(ss->staticEval)
+            && !is_decisive(ss->staticEval) && !is_decisive(alpha)
+            && Karsli::shallow_tt_extension(karsliStormShallowExtension, depth, ss->ply,
+              rootDepth, ss->inCheck, rootNode, excludedMove.is_ok(), !pos.capture_stage(move),
+              ttData.bound == BOUND_LOWER, ttData.depth, ss->staticEval, alpha))
+        {
+            extension = 1;
+            if (karsliFocusDiagnostics) ++karsliFocusEvents[3];
+        }
+
+        u64 nodeCount = rootNode || (karsliCaissaWeight && ss->ply > 0 && ss->ply < 3)
+                          ? u64(nodes) : 0;
 
         // Plenty7 search.cpp:1055: important captures at PV/TT-PV nodes.
         // Narrow adaptation: actual captures with non-losing Stockfish SEE.
@@ -1716,13 +1940,36 @@ moves_loop:  // When in check, search starts here
         // Apply the computed LMR
         if (depth >= 2 && moveCount > 1)
         {
-            if (karsliAlexandriaRelativeCorrection && !capture && !ss->inCheck
+            if ((karsliAlexandriaRelativeCorrection || karsliAlexandriaComplexity) && !capture && !ss->inCheck
                 && !excludedMove && is_valid(ss->staticEval) && !is_decisive(ss->staticEval))
             {
                 const int before = r;
                 r = Karsli::relative_correction_reduction(r, correctionValue, ss->staticEval,
                                                         karsliAlexandriaRelativeCorrection);
                 if (r != before) note_first10(3);
+                if (is_valid(unadjustedStaticEval) && !is_decisive(unadjustedStaticEval))
+                {
+                    const int candidate = Karsli::eval_complexity_reduction(before,
+                      unadjustedStaticEval, ss->staticEval, karsliAlexandriaComplexity);
+                    // Overlapping protections use the stronger discount, not a sum.
+                    if (candidate < r)
+                    {
+                        r = candidate;
+                        if (karsliFocusDiagnostics) ++karsliFocusEvents[2];
+                    }
+                }
+            }
+            if (karsliTarnishedWeight)
+            {
+                const std::uint8_t context = std::uint8_t(!capture)
+                  | (std::uint8_t(!PvNode) << 1) | (std::uint8_t(improving) << 2)
+                  | (std::uint8_t(cutNode) << 3) | (std::uint8_t(ss->ttPv) << 4)
+                  | (std::uint8_t(ttHit) << 5)
+                  | (std::uint8_t((ss + 1)->cutoffCnt > 2) << 6)
+                  | (std::uint8_t(std::abs(correctionValue) / 131072 > 64) << 7);
+                const int before = r;
+                r = Karsli::tarnished_lmr(r, context, karsliTarnishedWeight);
+                if (karsliTarnishedDiagnostics && r != before) ++karsliTarnishedEvents;
             }
             // Pawnocchio-inspired bounded alpha-raise LMR. Preserve zero
             // and negative reductions; count only prior genuine raises.
@@ -1831,6 +2078,15 @@ moves_loop:  // When in check, search starts here
         // principal variation or transposition table.
         if (threads.stop.load(std::memory_order_relaxed))
             return VALUE_ZERO;
+
+        // Quiet scoring only at plies 1 and 2; root, TB/MultiPV ranks and
+        // capture/check-evasion stages retain the existing ordering.
+        if (karsliCaissaWeight && !rootNode && !ss->inCheck && ss->ply < 3
+            && !capture && move.type_of() != PROMOTION)
+        {
+            karsliCaissaNodeCache.record(posKey, move, u64(nodes) - nodeCount);
+            if (karsliCaissaDiagnostics) ++karsliCaissaEvents[1];
+        }
 
         if (rootNode)
         {
@@ -2079,6 +2335,7 @@ Value Search::Worker::qsearch(Position& pos, Stack* ss, Value alpha, Value beta)
 
     // Step 1. Initialize node
     ss->karsliPositionKey = pos.key();
+    ss->karsliPzThreatIndex = karsliPzCorrectionWeight ? Karsli::pz_control_index(pos) : 0;
     if (PvNode)
     {
         (ss + 1)->pv = &pv;
@@ -2577,7 +2834,7 @@ void SearchManager::check_time(Search::Worker& worker) {
     {
         lastInfoTime = tick;
         dbg_print();
-        // Same native node heartbeat as the app Stockfish backend; no search change.
+        // Native progress heartbeat; does not change search decisions.
         sync_cout << "info nodes " << worker.threads.nodes_searched() << sync_endl;
     }
 

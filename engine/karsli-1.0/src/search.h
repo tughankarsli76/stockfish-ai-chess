@@ -35,12 +35,16 @@
 #include <cstring>
 
 #include "history.h"
+#include "karsli_caissa.h"
 #include "karsli_reckless.h"
 #include "karsli_plenty.h"
 #include "karsli_pawnocchio.h"
 #include "karsli_coda_idea.h"
 #include "karsli_first10.h"
 #include "karsli_orange.h"
+#include "karsli_trium.h"
+#include "karsli_pz.h"
+#include "karsli_tarnished.h"
 #include "misc.h"
 #include "nnue/nnue_accumulator.h"
 #include "numa.h"
@@ -140,6 +144,7 @@ struct Stack {
     int                         reduction;
     Bitboard                    karsliThreats;
     Key                         karsliPositionKey;
+    usize                       karsliPzThreatIndex;
 };
 
 
@@ -374,8 +379,23 @@ class Worker {
     KarsliCaptureRouteHistory karsliCaptureRouteHistory;
     int karsliHobbesCaptureRoute = 0;
     int karsliHalogenMaterialMargin = 0;
+    Karsli::CaissaNodeCache karsliCaissaNodeCache;
+    int karsliCaissaWeight = 0;
+    bool karsliCaissaDiagnostics = false;
+    std::array<u64, 2> karsliCaissaEvents{};
+    int karsliTriumDisagreementWeight = 0;
+    bool karsliTriumDiagnostics = false;
+    std::array<u64, 3> karsliTriumEvents{};
+    Stats<i16, 1024, COLOR_NB, Karsli::PzThreatBuckets> karsliPzCorrection;
+    int karsliPzCorrectionWeight = 0;
+    bool karsliPzDiagnostics = false;
+    std::array<u64, 2> karsliPzEvents{};
+    int karsliTarnishedWeight = 0;
+    bool karsliTarnishedDiagnostics = false;
+    u64 karsliTarnishedEvents = 0;
+    bool karsliBerserkThreatNmpGuard = false;
     bool karsliOrangeDiagnostics = false;
-    std::array<u64, 4> karsliOrangeEvents{};
+    std::array<u64, 5> karsliOrangeEvents{};
     void note_orange(int event) {
         if (karsliOrangeDiagnostics) ++karsliOrangeEvents[event];
     }
@@ -383,6 +403,12 @@ class Worker {
     bool karsliObsidianShallowHistory = false;
     int karsliAlexandriaRelativeCorrection = 0;
     bool karsliFirst10Diagnostics = false;
+    Stats<i16, 1024, COLOR_NB, 4096> karsliMajorCorrection;
+    int karsliPlentyMajorWeight = 0;
+    int karsliAlexandriaComplexity = 0;
+    bool karsliStormShallowExtension = false;
+    bool karsliFocusDiagnostics = false;
+    std::array<u64, 4> karsliFocusEvents{};
     std::array<u64, 4> karsliFirst10Events{};
     void note_first10(int event) {
         if (karsliFirst10Diagnostics) ++karsliFirst10Events[event];

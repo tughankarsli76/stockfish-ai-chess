@@ -158,8 +158,26 @@ Engine::Engine(std::optional<std::filesystem::path> path) :
     options.add("Karsli Obsidian Shallow History", Option(false));
     options.add("Karsli Alexandria Relative Correction", Option(0, 0, 512));
     options.add("Karsli First10 Diagnostics", Option(false));
+    options.add("Karsli Plenty Major Correction", Option(0, 0, 256));
+    options.add("Karsli Alexandria Eval Complexity", Option(0, 0, 512));
+    options.add("Karsli Stormphrax Shallow Extension", Option(false));
+    options.add("Karsli Focus10 Diagnostics", Option(false));
     options.add("Karsli Hobbes Capture Route", Option(0, 0, 256));
     options.add("Karsli Halogen Material Margin", Option(0, 0, 64));
+    options.add("Karsli Berserk Threat NMP Guard", Option(false));
+    options.add("Karsli Caissa Node Cache Weight", Option(0, 0, 4096));
+    options.add("Karsli Caissa Diagnostics", Option(false));
+    options.add("Karsli Trium Disagreement RFP Weight", Option(0, 0, 128));
+    options.add("Karsli Trium Diagnostics", Option(false));
+    options.add("Karsli Trium Time Management", Option(false));
+    options.add("Karsli Trium Time Min Base Ms", Option(15000, 0, 3600000));
+    options.add("Karsli Trium Time Diagnostics", Option(false));
+    options.add("Karsli Trium Predicted Reply", Option(false));
+    options.add("Karsli Trium Early Stop", Option(false));
+    options.add("Karsli PZ Threat Correction Weight", Option(0, 0, 256));
+    options.add("Karsli PZ Diagnostics", Option(false));
+    options.add("Karsli Tarnished Interaction LMR Weight", Option(0, 0, 256));
+    options.add("Karsli Tarnished Diagnostics", Option(false));
     options.add("Karsli Orange Diagnostics", Option(false));
 
     options.add(  //

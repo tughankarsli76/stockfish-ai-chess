@@ -1,0 +1,35 @@
+{
+  "engineRepository": "tughankarsli76/karsli-engine",
+  "exportCommit": "768c7cd4045c8481d55068e01462c022919ad1e2",
+  "appleValidatedSourceCommit": "2511c3f1142990cf834c4f43a932ba44219f0474",
+  "appleEngineBuild": 5,
+  "appleEngineTests": {
+    "passed": 5,
+    "total": 5
+  },
+  "engineNativeSourceSHA256": "a3a3104a3b268b6f54e97e24e9a4673682acd6d322cc4853bc141cebbefe0011",
+  "profileSHA256": "9808e9e72ee22926c0f9903fa4dd592905a137cc5a8a0a88ee73c2bb6d74fe22",
+  "profileChanged": false,
+  "networkChanged": false,
+  "newControlsDefaultOff": true,
+  "applicationNativeValidation": "pending application Xcode Cloud build; engine Build 5 validates framework only",
+  "engineEvidenceURL": "https://github.com/tughankarsli76/karsli-engine/tree/2511c3f1142990cf834c4f43a932ba44219f0474/experiments/karsli/reports/uci-session-fix",
+  "scope": "Exact validated engine source/notice export, existing KarsliIOS backend/API preserved; no candidate promotion or strength claim",
+  "localApplicationChecks": {
+    "webTests": {
+      "passed": 213,
+      "failed": 0,
+      "skipped": 0
+    },
+    "exactPinnedExport": {
+      "sourceFiles": 147,
+      "additionalNoticeFiles": 2,
+      "passed": true
+    },
+    "prepareKarsli": "passed: revision 10 source and unchanged fourteen-option profile",
+    "KarsliIOSBackendGCCSyntax": "passed: Linux C++17 syntax check only; not Apple compilation/runtime",
+    "iOSIntegrationJavascriptSyntax": "passed",
+    "sourceDistributionCoverage": "Karsli source and preparation script included; archive not built or published",
+    "recordedAt": "2026-10-14T14:14:59.832896+00:00"
+  }
+}
