@@ -4,7 +4,7 @@ import {DEFAULT_SETTINGS,computerMoveTime} from '../dist/features.js';
 import {StockfishEngine} from '../dist/engine.js';
 
 test('fixed move time uses seconds while game clocks use a separate UCI budget',()=>{
-  assert.equal(computerMoveTime(DEFAULT_SETTINGS),10000);
+  assert.equal(computerMoveTime(DEFAULT_SETTINGS),5000);
   assert.equal(computerMoveTime({...DEFAULT_SETTINGS,moveTime:17}),17000);
   assert.equal(computerMoveTime({...DEFAULT_SETTINGS,fixedTime:false,moveTime:17}),0);
   assert.equal(computerMoveTime({...DEFAULT_SETTINGS,moveTime:100000}),60000);

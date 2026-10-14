@@ -1,5 +1,5 @@
 import {REVIEW_SYMBOLS,reviewSymbol} from './review-symbols.js';
-import {gameAccuracy,estimatedGameRating} from './accuracy.js';
+import {gameAccuracy} from './accuracy.js';
 import {MOVE_RATINGS} from './move-ratings.js';
 
 export function gameReviewStats(moves,ratingFor){
@@ -55,7 +55,6 @@ export function installGameReview(api){
   row('Accuracy',accuracy.w.accuracy===null?'—':accuracy.w.accuracy.toFixed(1),accuracy.b.accuracy===null?'—':accuracy.b.accuracy.toFixed(1));
   row('Total moves',stats.w.total,stats.b.total);
   for(const kind of ['brilliant','great','book','best','excellent','good','inaccuracy','mistake','miss','blunder'])row('',stats.w.counts[kind]+(kind==='miss'?stats.w.counts.missedWin:kind==='best'?stats.w.counts.forced:0),stats.b.counts[kind]+(kind==='miss'?stats.b.counts.missedWin:kind==='best'?stats.b.counts.forced:0),kind);
-  row('Game Rating',estimatedGameRating(accuracy.w.averageCentipawnLoss)??'—',estimatedGameRating(accuracy.b.averageCentipawnLoss)??'—');
  }
  function open(){
   const state=api.state();if(!canShowGameReview(state))return;
