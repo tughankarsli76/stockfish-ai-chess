@@ -1,8 +1,8 @@
 {
   "updatedAt": "2026-10-12T10:08:15.519329+00:00",
-  "userIntent": "User clarified on October 13 that the requested scope is Karsli on Apple Xcode Cloud only. Extra Codex Cloud research was stopped; standalone GitHub Actions automation removed. Preserve research evidence.",
+  "userIntent": "Continue developing Karsli from the user's own device without Megan's Mac: use the existing durable cloud coding chat, GitHub source and Apple Xcode Cloud native builds/tests. Confirmed October 13, 2026.",
   "completedResearch": "Revision9 focused reviews and selected adaptations only, NOT all requested feature integrations. Five new adaptations plus earlier groups; 96 exploratory games, strength unproven.",
-  "activePhase": "Xcode Cloud Karsli native validation only",
+  "activePhase": "remote Karsli development with Xcode Cloud native validation",
   "workspace": "repository root",
   "changes": "engine/karsli-1.0 exact imported source with UCI command/stop adapter + node heartbeat; namespace isolation; full14-option profile; backend, native bridge/catalogue and source/license bundling",
   "webTests": {
@@ -108,9 +108,9 @@
     "branch": "codex/karsli-cloud-research",
     "pullRequest": "https://github.com/tughankarsli76/stockfish-ai-chess/pull/2",
     "codingChat": "01a12832-000f-7517-bdd9-ca18ec9b80e6",
-    "codingChatStatus": "stop requested after scope clarification",
+    "codingChatStatus": "resumed after purpose clarified and user confirmed",
     "githubRun": "https://github.com/tughankarsli76/stockfish-ai-chess/actions/runs/38495772685",
-    "githubStatus": "standalone workflow removed after scope clarification",
+    "githubStatus": "standalone Actions workflow removed; engine tests run in the durable coding workspace",
     "xcodeValidationWorkflow": "621457fb-9e51-4068-9d70-619d5e83ede9",
     "xcodeValidationBuild": 79,
     "xcodeValidationBuildID": "c7eba6fb-84d7-4863-a132-2e57cab00dd6",

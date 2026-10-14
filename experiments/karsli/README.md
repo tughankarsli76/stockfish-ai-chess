@@ -36,13 +36,20 @@ moves, incomplete games, clock forfeits or sanitizer errors. `--skip-build` can
 reuse recorded binaries after checking their hashes and the pinned network;
 use a fresh build after source changes. Small game samples do not prove strength.
 
-## GitHub engine runner
+## Work away from Megan's Mac
 
-`.github/workflows/karsli-research.yml` runs on relevant pushes to this branch.
-It runs PZ and Tarnished sequentially on Ubuntu, including sanitizers and matches,
-and retains evidence for thirty days as Actions artifacts. It has read-only
-repository permissions and does not modify or deploy the app. Manual dispatch
-becomes available when GitHub can discover the workflow on the default branch.
+Continue in the existing durable cloud chat **Set up stockfish-ai-chess**:
+https://chatgpt.com/local/01a12832-000f-7517-bdd9-ca18ec9b80e6
+
+That workspace edits and tests Karsli remotely. GitHub preserves source and
+checkpoints, and the **Karsli Validation** workflow in Apple Xcode Cloud compiles
+and tests the native iOS integration on Apple's computers. Megan's Mac is not
+required for those steps. Physical iPhone checks still need the intended device.
+
+Run standalone engine validation and paired matches with the commands above in
+the durable workspace. The separate GitHub Actions research workflow was removed;
+there is no additional scheduled engine automation. Keep generated evidence in
+`build/cloud/` and deliberately save reviewed final records under `reports/`.
 
 ## Xcode Cloud and TestFlight
 
