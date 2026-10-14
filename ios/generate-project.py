@@ -2,7 +2,7 @@
 from pathlib import Path
 import hashlib,json,os,plistlib,shutil,subprocess
 root=Path(__file__).resolve().parent
-marketing_version=os.environ.get('CHESS_MARKETING_VERSION','1.8')
+marketing_version=os.environ.get('CHESS_MARKETING_VERSION','1.9')
 build_number=os.environ.get('CI_BUILD_NUMBER',os.environ.get('CHESS_BUILD_NUMBER','22'))
 if not build_number.isdigit() or int(build_number)<1:raise ValueError('Invalid build number')
 subprocess.run(['/usr/bin/python3',str(root/'bundle-background.py')],check=True)
