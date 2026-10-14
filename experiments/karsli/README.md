@@ -3,9 +3,9 @@
 The research branch is `codex/karsli-cloud-research` in
 `tughankarsli76/stockfish-ai-chess`. The app's native revision 9 is in
 `engine/karsli-1.0`; unfinished and validated research snapshots are in this
-directory. All five sequential candidates retain their source and notices:
+directory. All five sequential candidates retain their exact reconstructed source and notices:
 Berserk NMP, Caissa node cache, Trium disagreement, PZ threat correction and
-Tarnished interactions. Generated binaries and the shared network are excluded
+Tarnished interactions. Unchanged files are reused from the pinned app engine; candidate overlays and per-file hashes reconstruct each full source snapshot. Generated binaries and the shared network are excluded
 from Git. Historical records contain paths to the original Mac; use the new
 runner for reproducible current paths and evidence.
 
@@ -53,8 +53,11 @@ and creates a separate shared `KarsliCloud` scheme and test plan. That plan runs
 the three native tests for the combined profile/material fixtures, background
 search and the native engine catalog/matches/stop flows.
 
-Use **Karsli Validation** for research-branch changes: Test, iOS, `KarsliCloud`,
-required to pass, one current iPhone simulator destination, no distribution.
+Use **Karsli Validation** for research-branch changes: Test, iOS, `StockfishChess`,
+`KARSLI_CLOUD_TEST_PLAN=1`, required to pass, one current iPhone simulator
+destination, no distribution. This environment switch selects the focused plan
+through Apple's existing registered scheme; the separate `KarsliCloud` scheme
+also supports local command-line tests.
 Use **Karsli TestFlight** manually after validation: Archive the `StockfishChess`
 scheme from the research branch and deliver to the existing Owner Testing group.
 Neither workflow submits the app for App Review.

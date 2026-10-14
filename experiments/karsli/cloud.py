@@ -34,6 +34,11 @@ def run(command, log, env=None, cwd=ROOT):
         raise RuntimeError(f'Command failed ({result.returncode}); see {log}')
 
 
+def source_file(stage, name):
+    overlay = HERE / 'candidates' / stage / 'source' / name
+    return overlay if overlay.is_file() else ROOT / 'engine/karsli-1.0' / name
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--candidate', choices=['pz-threat-correction', 'tarnished-interactions', 'all'], default='all')
@@ -50,7 +55,12 @@ def main():
     for name, expected in manifest['files'].items():
         if sha(HERE / name) != expected:
             raise RuntimeError('Candidate source checksum mismatch: ' + name)
+    for stage, files in manifest['reconstructedSources'].items():
+        for name, expected in files.items():
+            if sha(source_file(stage, name)) != expected:
+                raise RuntimeError('Reconstructed candidate source mismatch: ' + stage + '/' + name)
     print(f"Verified {len(manifest['files'])} imported source/notice files.", flush=True)
+    print('Verified all five reconstructed source snapshots.', flush=True)
     if args.verify_only:
         return
     metadata = json.loads((ROOT / 'ios/ci_scripts/model-inputs.json').read_text())
@@ -84,19 +94,25 @@ def main():
         for name in STAGES[:STAGES.index(selected[-1]) + 1]:
             for sanitized in ([False, True] if args.sanitizers and name in selected else [False]):
                 key = name + ('-sanitized' if sanitized else '')
+                source_hash = hashlib.sha256(json.dumps(manifest['reconstructedSources'][name], sort_keys=True).encode()).hexdigest()
                 source = out / (key + '-source')
-                if source.exists():
-                    shutil.rmtree(source)
-                shutil.copytree(HERE / 'candidates' / name / 'source', source)
-                (source / 'src' / NET_NAME).symlink_to(net)
                 binary = out / ('karsli-' + key)
                 if args.skip_build:
                     record = next(r for r in previous_report['builds'] if r['name'] == key)
+                    if record.get('sourceSHA256') != source_hash or previous_report['architecture'] != arch:
+                        raise RuntimeError('Source or architecture changed; build fresh binaries: ' + key)
                     if sha(binary) != record['sha256']:
                         raise RuntimeError('Previously built binary checksum mismatch: ' + key)
                     binaries[key] = binary
                     report['builds'].append(record)
                     continue
+                if source.exists():
+                    shutil.rmtree(source)
+                for relative in manifest['reconstructedSources'][name]:
+                    destination = source / relative
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(source_file(name, relative), destination)
+                (source / 'src' / NET_NAME).symlink_to(net)
                 command = ['make', '-j' + str(args.jobs), 'build', 'ARCH=' + arch,
                            'COMP=' + compiler, 'EXE=' + str(binary)]
                 if sanitized:
@@ -104,15 +120,20 @@ def main():
                                 'EXTRACXXFLAGS=-O1 -fno-omit-frame-pointer']
                 run(command, out / (key + '-build.log'), cwd=source / 'src')
                 binaries[key] = binary
-                report['builds'].append({'name': key, 'sha256': sha(binary), 'command': command})
+                report['builds'].append({'name': key, 'sha256': sha(binary), 'sourceSHA256': source_hash, 'command': command})
         env = os.environ.copy()
         leaks = '0' if platform.system() == 'Darwin' else '1'
         env.update({'ASAN_OPTIONS': 'detect_leaks=' + leaks + ':halt_on_error=1', 'UBSAN_OPTIONS': 'halt_on_error=1:print_stacktrace=1'})
         for name in selected:
             candidate = HERE / 'candidates' / name
             bounds = out / (name + '-bounds')
+            bounds_input = out / (name + '-bounds-input')
+            bounds_input.mkdir(exist_ok=True)
+            shutil.copy2(candidate / 'bounds.cpp', bounds_input / 'bounds.cpp')
+            if not (bounds_input / 'source').exists():
+                (bounds_input / 'source').symlink_to(out / (name + '-source'), target_is_directory=True)
             run([cxx, '-std=c++17', '-O1', '-g', '-fsanitize=address,undefined',
-                 '-fno-omit-frame-pointer', candidate / 'bounds.cpp', '-o', bounds],
+                 '-fno-omit-frame-pointer', bounds_input / 'bounds.cpp', '-o', bounds],
                 out / (name + '-bounds-build.log'), env=env)
             run([bounds], out / (name + '-bounds.log'), env=env)
             prefix = 'KARSLI_PZ' if name.startswith('pz-') else 'KARSLI_TARNISHED'

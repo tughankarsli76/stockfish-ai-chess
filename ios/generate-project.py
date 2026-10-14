@@ -125,6 +125,8 @@ for child in list(testAction):testAction.remove(child)
 plans=ET.SubElement(testAction,'TestPlans')
 ET.SubElement(plans,'TestPlanReference',{'reference':'container:KarsliCloud.xctestplan','default':'YES'})
 scheme.write(root/'StockfishChess.xcodeproj/xcshareddata/xcschemes/KarsliCloud.xcscheme',encoding='UTF-8',xml_declaration=True)
+if os.environ.get('KARSLI_CLOUD_TEST_PLAN')=='1':
+ scheme.write(root/'StockfishChess.xcodeproj/xcshareddata/xcschemes/StockfishChess.xcscheme',encoding='UTF-8',xml_declaration=True)
 plan={'configurations':[{'id':'4A3E2706-9CD9-4D6D-943D-C06A48D13490','name':'Karsli native validation','options':{}}],
  'defaultOptions':{'targetForVariableExpansion':{'containerPath':'container:StockfishChess.xcodeproj','identifier':target,'name':'StockfishChess'}},
  'testTargets':[{'target':{'containerPath':'container:StockfishChess.xcodeproj','identifier':testTarget,'name':'StockfishChessTests'},'parallelizable':False,
