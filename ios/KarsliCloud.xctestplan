@@ -1,0 +1,32 @@
+{
+  "configurations": [
+    {
+      "id": "4A3E2706-9CD9-4D6D-943D-C06A48D13490",
+      "name": "Karsli native validation",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {
+    "targetForVariableExpansion": {
+      "containerPath": "container:StockfishChess.xcodeproj",
+      "identifier": "0E8A3AD980EC179856012B7E",
+      "name": "StockfishChess"
+    }
+  },
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:StockfishChess.xcodeproj",
+        "identifier": "64BCB755386F844C96A2A5B0",
+        "name": "StockfishChessTests"
+      },
+      "parallelizable": false,
+      "selectedTests": [
+        "IntegrationTests/testKarsliCombinedProfileAndMaterial()",
+        "IntegrationTests/testKarsliBackgroundSearch()",
+        "IntegrationTests/testNativeEnginesOfflineAnalysisMatchesAndStop()"
+      ]
+    }
+  ],
+  "version": 1
+}

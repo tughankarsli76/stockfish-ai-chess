@@ -1,0 +1,170 @@
+{
+  "createdAt": "2026-10-12T09:38:50.213Z",
+  "purpose": "Berserk geometric-threat NMP guard activation, compatibility and material checks; no Elo claim",
+  "checks": [
+    {
+      "name": "disabled guard preserves complete revision9 deterministic bench",
+      "passed": true,
+      "elapsedMs": 1612,
+      "evidence": {
+        "candidate": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 1288,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {
+            "Karsli Berserk Threat NMP Guard": false
+          }
+        },
+        "baseline": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 323,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {}
+        }
+      }
+    },
+    {
+      "name": "guard default off and ready",
+      "passed": true,
+      "elapsedMs": 123,
+      "evidence": "Karsli 1.0-dev"
+    },
+    {
+      "name": "active guard preserves legal move generation",
+      "passed": true,
+      "elapsedMs": 10,
+      "evidence": 97862
+    },
+    {
+      "name": "geometric threat blocks NMP even with Reckless TT guard disabled",
+      "passed": true,
+      "elapsedMs": 210,
+      "evidence": {
+        "hits": 1752,
+        "evidence": [
+          {
+            "bestmove": "d5e6",
+            "checkedPv": 14,
+            "ranks": [
+              1
+            ],
+            "events": [
+              "info string Karsli Orange capture-route-read=0 capture-route-update=0 material-threat=0 rfp-saved=0 berserk-nmp-saved=1752"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "guard off reports zero blocks",
+      "passed": true,
+      "elapsedMs": 24,
+      "evidence": {
+        "bestmove": "e2a6",
+        "checkedPv": 10,
+        "ranks": [
+          1
+        ],
+        "events": [
+          "info string Karsli Orange capture-route-read=0 capture-route-update=0 material-threat=0 rfp-saved=0 berserk-nmp-saved=0"
+        ]
+      }
+    },
+    {
+      "name": "guard on with complete current14-option profile and MultiPV",
+      "passed": true,
+      "elapsedMs": 45,
+      "evidence": {
+        "bestmove": "e2a6",
+        "checkedPv": 30,
+        "ranks": [
+          1,
+          2,
+          3
+        ],
+        "events": [
+          "info string Karsli Orange capture-route-read=29903 capture-route-update=3219 material-threat=2259 rfp-saved=64 berserk-nmp-saved=59"
+        ]
+      }
+    },
+    {
+      "name": "guard on four workers stop and reuse",
+      "passed": true,
+      "elapsedMs": 219,
+      "evidence": {
+        "stopped": {
+          "bestmove": "d5e6",
+          "checkedPv": 16,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Orange capture-route-read=399549 capture-route-update=48078 material-threat=56312 rfp-saved=1362 berserk-nmp-saved=5288"
+          ]
+        },
+        "reused": {
+          "bestmove": "e2a6",
+          "checkedPv": 8,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Orange capture-route-read=1596 capture-route-update=377 material-threat=291 rfp-saved=20 berserk-nmp-saved=6"
+          ]
+        }
+      }
+    },
+    {
+      "name": "guard on free queen captures both colors",
+      "passed": true,
+      "elapsedMs": 24,
+      "evidence": [
+        {
+          "bestmove": "d4e5",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Orange capture-route-read=10 capture-route-update=16 material-threat=18 rfp-saved=0 berserk-nmp-saved=0"
+          ]
+        },
+        {
+          "bestmove": "d5e4",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Orange capture-route-read=20 capture-route-update=24 material-threat=16 rfp-saved=0 berserk-nmp-saved=0"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clean process exit",
+      "passed": true,
+      "elapsedMs": 47,
+      "evidence": true
+    }
+  ],
+  "passed": true,
+  "binaries": {
+    "candidate": {
+      "path": "/Users/meganfaust/Desktop/Stockfish-AI-Chess-Mac-Handoff/experiments/karsli/candidates/berserk-nmp/karsli-berserk-nmp",
+      "sha256": "408ac02d50d05c008f0a78394a0fc92fccdcfa04a6cbb6b96c1209a4822f7aa7"
+    },
+    "baseline": {
+      "path": "/Users/meganfaust/Desktop/Stockfish-AI-Chess-Mac-Handoff/experiments/karsli/build/karsli-orange",
+      "sha256": "6441f59222f148b49c1e952b24a2e17e8c5a5bbf86cc108ca43243f094dabef9"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "base": "caissa-node-cache candidate",
+  "option": "Karsli Trium Disagreement RFP Weight",
+  "default": 0,
+  "status": "9 normal and 9 sanitizer plus bounds passed; 16 paired games 1W 1L 14D; no demonstrated gain; not on phone",
+  "promotedToPhone": false,
+  "remainingTriumFeatures": [
+    "TC gated time-management adaptation",
+    "TRANN1 inputs and trained compatible weights"
+  ],
+  "normalBinarySHA256": "c4dff4acc34b56700c125547280cb89d47d2249aaa4a488dcdd4afd9ba8fa8b8",
+  "sanitizedBinarySHA256": "13fcdc21d0f15fc30e90d9d1e425e30133ba034bb49126f0c3fda7a23cbe4332",
+  "pairedComparison": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 1,
+    "referenceWins": 1,
+    "draws": 14,
+    "timeForfeits": 0
+  }
+}

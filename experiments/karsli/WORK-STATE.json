@@ -1,0 +1,84 @@
+{
+  "updatedAt": "2026-10-12T10:08:15.519329+00:00",
+  "userIntent": "Continue Karsli research through Codex Cloud, GitHub and Xcode Cloud. Preserve the released app and promote only validated candidates.",
+  "completedResearch": "Revision9 focused reviews and selected adaptations only, NOT all requested feature integrations. Five new adaptations plus earlier groups; 96 exploratory games, strength unproven.",
+  "activePhase": "cloud portability and PZ/Tarnished validation authorized 2026-10-13",
+  "workspace": "repository root",
+  "changes": "engine/karsli-1.0 exact imported source with UCI command/stop adapter + node heartbeat; namespace isolation; full14-option profile; backend, native bridge/catalogue and source/license bundling",
+  "webTests": {
+    "passed": 158,
+    "failed": 0,
+    "log": "web-tests.log"
+  },
+  "remainingIOS": [],
+  "remainingEngineScope": "Review index identifies larger candidates still not integrated; need implement/test feasible adaptations or concrete existing mechanism mappings. User rejected treating deferred candidates as completed. Do not say all engine best features complete.",
+  "automation": "No recurring automation requested.",
+  "initialNativeResults": {
+    "passed": 2,
+    "failed": 1,
+    "retainedResult": "initial-device-tests.xcresult",
+    "failure": "catalog test newly included Obsidian match outside prior smoke scope; now retain original five opponents and add Karsli, capture detailed failure state"
+  },
+  "nativeResults": {
+    "targetedDistinctTests": 3,
+    "passed": 3,
+    "failed": 0,
+    "catalogChecks": 23,
+    "expandedCatalogChecks": 25,
+    "expandedObsidianRetest": "passed",
+    "logs": [
+      "device-tests.log",
+      "catalog-expanded-tests.log"
+    ],
+    "scope": "actual14-option profile, seven material fixtures, background search; eleven identities and analysis; seven match and stop/switch opponents"
+  },
+  "integrationCommit": "d16ec78",
+  "pushedToDevelop": true,
+  "activeCandidate": {
+    "path": "experiments/karsli/candidates/pz-threat-correction",
+    "status": "compiled; bounds sanitizer and 9 normal UCI checks passed; full ASAN/UBSAN build/validation and paired matches pending",
+    "promotedToPhone": false
+  },
+  "completedCandidates": {
+    "berserk-nmp": {
+      "technicalChecks": 9,
+      "sanitizedChecks": 9,
+      "pairedGames": 16,
+      "result": "1W 0L 15D",
+      "gameAuditPassed": true,
+      "promotedToPhone": false
+    },
+    "caissa-node-cache": {
+      "technicalChecks": 9,
+      "sanitizedChecks": 9,
+      "boundsPassed": true,
+      "pairedGames": 16,
+      "result": "0W 0L 16D",
+      "gameAuditPassed": true,
+      "promotedToPhone": false
+    },
+    "trium-disagreement": {
+      "technicalChecks": 9,
+      "sanitizedChecks": 9,
+      "boundsPassed": true,
+      "pairedGames": 16,
+      "result": "1W 1L 14D",
+      "gameAuditPassed": true,
+      "promotedToPhone": false,
+      "scope": "normalized RFP disagreement only; TMv2 and TRANN1 remain pending"
+    }
+  },
+  "laterCandidate": {
+    "path": "experiments/karsli/candidates/tarnished-interactions",
+    "status": "implemented bounded pair/triple blend; bounds sanitizer passed; engine build, UCI/sanitizer tests and matches pending; Karsli retuning pending"
+  },
+  "pausedByUser": false,
+  "resumeSteps": [
+    "PZ: build sanitized source, run same nine checks; then paired on/off matches and independent legal/clock audit.",
+    "Tarnished: build normal and sanitizer engines; run nine activation/compatibility tests, paired on/off games and audit.",
+    "Review combined effects before promoting validated candidates to the native iOS profile; current installed phone build49 has existing14-option revision9 profile only.",
+    "Keep remaining scope explicit: Trium TC-gated time management and TRANN1; Karsli-specific factorized LMR tuning; Raphael full fractional depth architecture. No claim that all best features integrated.",
+    "Preserve current phone games/settings; previous three games recovered and final installation verified."
+  ],
+  "cloudBranch": "codex/karsli-cloud-research"
+}

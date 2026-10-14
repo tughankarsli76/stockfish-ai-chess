@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "createdAt": "2026-10-12T09:55:21.929Z",
+  "games": 16,
+  "pairedOpenings": 8,
+  "legalPliesReplayed": 1844,
+  "onlyProfileDifference": "Karsli Caissa Node Cache Weight",
+  "profileHash": "be42cc80fa2b2c1abdf2efea9acfb052ef5dd8ecee93af8224a64448fc3a3e28",
+  "binaryHash": "3a6120294c40662b0b8ae079044638f3264420a688ce6146f6b606a28589691e",
+  "summary": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 0,
+    "referenceWins": 0,
+    "draws": 16,
+    "timeForfeits": 0
+  },
+  "strengthProven": false
+}

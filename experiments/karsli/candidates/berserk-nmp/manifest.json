@@ -1,0 +1,24 @@
+{
+  "baseRevision": 9,
+  "option": "Karsli Berserk Threat NMP Guard",
+  "default": false,
+  "modified": {
+    "engine.cpp": "a1197748b40005480c39ff09153e8c47dce1ac62c7bbcfad4b720090abe51118",
+    "search.h": "ef472eec7ea1bea66eac6adad3fb962a3b1a0dfe2347186af27cb8d9e84f50d3",
+    "search.cpp": "7bfb692b38d9d3ec12f5c59861e46dd576837b54abe4a7fc4bf83f9c605f3eaf"
+  },
+  "upstreamCommit": "8ae895a6151695be4a50d4fb65b0c131659c513a",
+  "status": "Implemented and technically validated; 16 paired exploratory games 1W 0L 15D; no proven strength gain; not yet promoted to phone",
+  "normalBinarySHA256": "408ac02d50d05c008f0a78394a0fc92fccdcfa04a6cbb6b96c1209a4822f7aa7",
+  "technicalValidation": true,
+  "pairedComparison": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 1,
+    "referenceWins": 0,
+    "draws": 15,
+    "timeForfeits": 0
+  },
+  "sanitizedBinarySHA256": "e170393e78323e9aca19bc7d4b0d44caad1c2f03908432699d0283c75c5003fa",
+  "sanitizedValidation": true
+}

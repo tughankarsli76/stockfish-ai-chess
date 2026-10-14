@@ -1,0 +1,8 @@
+{
+  "base": "trium-disagreement candidate",
+  "option": "Karsli PZ Threat Correction Weight",
+  "default": 0,
+  "status": "PAUSED after bounds sanitizer and 9 normal checks passed; full sanitizer and paired comparison pending",
+  "promotedToPhone": false,
+  "technicalChecks": 9
+}

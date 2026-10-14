@@ -1,0 +1,21 @@
+{
+  "base": "berserk-nmp candidate",
+  "upstreamCommit": "bb725799e9b19ebdaa0d584f5433fc1c3019e349",
+  "status": "9 normal and 9 sanitizer checks plus bounds passed; 16 paired games 0W 0L 16D; no proven strength gain; not on phone",
+  "option": "Karsli Caissa Node Cache Weight",
+  "default": 0,
+  "notOnPhone": true,
+  "technicalChecks": 9,
+  "sanitizedChecks": 9,
+  "retainedInitialHarnessFailure": "initial validator diagnostic field name was wrong; corrected with source unchanged; initial logs retained",
+  "normalBinarySHA256": "3a6120294c40662b0b8ae079044638f3264420a688ce6146f6b606a28589691e",
+  "sanitizedBinarySHA256": "8f2a492e353164c85fa421719aa6dd6ac2339dcec3e70b1c7022ed4060f51816",
+  "pairedComparison": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 0,
+    "referenceWins": 0,
+    "draws": 16,
+    "timeForfeits": 0
+  }
+}

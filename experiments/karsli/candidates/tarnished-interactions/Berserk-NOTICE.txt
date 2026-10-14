@@ -1,0 +1,5 @@
+Experimental Berserk 14 geometric threat null-move guard adaptation.
+Upstream Jay Honnold and contributors, GPLv3-or-later.
+Pinned commit: 8ae895a6151695be4a50d4fb65b0c131659c513a
+Source: src/search.c 536-539, src/board.h OpponentsEasyCaptures.
+Detector is identical to existing Plenty lesser-value attack masks. No upstream tuned constants or network imported. Default off; not yet promoted to phone/profile; strength unproven. Existing revision9 GPL and AGPL grants retained.

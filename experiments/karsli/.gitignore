@@ -1,0 +1,7 @@
+/build/
+/networks/
+*.o
+*.d
+*.nnue
+*.dSYM/
+__pycache__/

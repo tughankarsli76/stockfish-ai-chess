@@ -1,0 +1,170 @@
+{
+  "createdAt": "2026-10-12T09:50:17.027Z",
+  "purpose": "Caissa quiet node-effort cache activation, compatibility and material checks; no Elo claim",
+  "checks": [
+    {
+      "name": "disabled cache preserves complete revision9 deterministic bench",
+      "passed": true,
+      "elapsedMs": 2308,
+      "evidence": {
+        "candidate": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 2005,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {
+            "Karsli Caissa Node Cache Weight": 0
+          }
+        },
+        "baseline": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 303,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {}
+        }
+      }
+    },
+    {
+      "name": "cache default off and ready",
+      "passed": true,
+      "elapsedMs": 288,
+      "evidence": "Karsli 1.0-dev"
+    },
+    {
+      "name": "active cache preserves legal move generation",
+      "passed": true,
+      "elapsedMs": 76,
+      "evidence": 97862
+    },
+    {
+      "name": "node effort changes quiet ordering with prior packs disabled",
+      "passed": true,
+      "elapsedMs": 482,
+      "evidence": {
+        "hits": 630,
+        "evidence": [
+          {
+            "bestmove": "e2a6",
+            "checkedPv": 14,
+            "ranks": [
+              1
+            ],
+            "events": [
+              "info string Karsli Caissa order-use=630 cache-record=1666"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "cache off reports zero blocks",
+      "passed": true,
+      "elapsedMs": 101,
+      "evidence": {
+        "bestmove": "e2a6",
+        "checkedPv": 10,
+        "ranks": [
+          1
+        ],
+        "events": [
+          "info string Karsli Caissa order-use=0 cache-record=0"
+        ]
+      }
+    },
+    {
+      "name": "cache on with complete current14-option profile and MultiPV",
+      "passed": true,
+      "elapsedMs": 166,
+      "evidence": {
+        "bestmove": "e2a6",
+        "checkedPv": 30,
+        "ranks": [
+          1,
+          2,
+          3
+        ],
+        "events": [
+          "info string Karsli Caissa order-use=202 cache-record=1324"
+        ]
+      }
+    },
+    {
+      "name": "cache on four workers stop and reuse",
+      "passed": true,
+      "elapsedMs": 347,
+      "evidence": {
+        "stopped": {
+          "bestmove": "e2a6",
+          "checkedPv": 13,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Caissa order-use=440 cache-record=2332"
+          ]
+        },
+        "reused": {
+          "bestmove": "e2a6",
+          "checkedPv": 8,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Caissa order-use=205 cache-record=272"
+          ]
+        }
+      }
+    },
+    {
+      "name": "cache on free queen captures both colors",
+      "passed": true,
+      "elapsedMs": 124,
+      "evidence": [
+        {
+          "bestmove": "d4e5",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Caissa order-use=32 cache-record=77"
+          ]
+        },
+        {
+          "bestmove": "d5e4",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Caissa order-use=23 cache-record=99"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clean process exit",
+      "passed": true,
+      "elapsedMs": 55,
+      "evidence": true
+    }
+  ],
+  "passed": true,
+  "binaries": {
+    "candidate": {
+      "path": "/Users/meganfaust/Desktop/Stockfish-AI-Chess-Mac-Handoff/experiments/karsli/candidates/caissa-node-cache/karsli-caissa-node-cache-sanitized",
+      "sha256": "8f2a492e353164c85fa421719aa6dd6ac2339dcec3e70b1c7022ed4060f51816"
+    },
+    "baseline": {
+      "path": "/Users/meganfaust/Desktop/Stockfish-AI-Chess-Mac-Handoff/experiments/karsli/candidates/berserk-nmp/karsli-berserk-nmp",
+      "sha256": "408ac02d50d05c008f0a78394a0fc92fccdcfa04a6cbb6b96c1209a4822f7aa7"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "createdAt": "2026-10-12T10:04:47.399Z",
+  "games": 16,
+  "pairedOpenings": 8,
+  "legalPliesReplayed": 2057,
+  "onlyProfileDifference": "Karsli Trium Disagreement RFP Weight",
+  "profileHash": "6ae1de88ddda9089be437fd3c6dc80adfead3c8e231c60f0ea2cd588119dc700",
+  "binaryHash": "c4dff4acc34b56700c125547280cb89d47d2249aaa4a488dcdd4afd9ba8fa8b8",
+  "summary": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 1,
+    "referenceWins": 1,
+    "draws": 14,
+    "timeForfeits": 0
+  },
+  "strengthProven": false
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "createdAt": "2026-10-12T09:48:30.902Z",
+  "games": 16,
+  "pairedOpenings": 8,
+  "legalPliesReplayed": 2349,
+  "onlyProfileDifference": "Karsli Berserk Threat NMP Guard",
+  "profileHash": "1e1dce5c8645aa33fe9181976a4bfc0f4a86076fcd4c2277731ff288b4784dec",
+  "binaryHash": "408ac02d50d05c008f0a78394a0fc92fccdcfa04a6cbb6b96c1209a4822f7aa7",
+  "summary": {
+    "completed": 16,
+    "truncated": 0,
+    "candidateWins": 1,
+    "referenceWins": 0,
+    "draws": 15,
+    "timeForfeits": 0
+  },
+  "strengthProven": false
+}

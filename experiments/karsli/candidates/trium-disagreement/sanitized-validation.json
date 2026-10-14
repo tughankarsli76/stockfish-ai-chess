@@ -1,0 +1,170 @@
+{
+  "createdAt": "2026-10-12T09:59:24.939Z",
+  "purpose": "Trium normalized disagreement RFP activation, compatibility and material checks; no Elo claim",
+  "checks": [
+    {
+      "name": "disabled disagreement guard preserves complete revision9 deterministic bench",
+      "passed": true,
+      "elapsedMs": 2269,
+      "evidence": {
+        "candidate": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 1954,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {
+            "Karsli Trium Disagreement RFP Weight": 0
+          }
+        },
+        "baseline": {
+          "nodes": 158239,
+          "positions": 51,
+          "elapsedMs": 314,
+          "command": "bench 16 1 8 default depth",
+          "checkBonus": 0,
+          "depthSlope": 0,
+          "alphaBonus": 0,
+          "extraOptions": {}
+        }
+      }
+    },
+    {
+      "name": "disagreement guard default off and ready",
+      "passed": true,
+      "elapsedMs": 424,
+      "evidence": "Karsli 1.0-dev"
+    },
+    {
+      "name": "active disagreement guard preserves legal move generation",
+      "passed": true,
+      "elapsedMs": 60,
+      "evidence": 97862
+    },
+    {
+      "name": "normalized correction disagreements widen RFP margin",
+      "passed": true,
+      "elapsedMs": 617,
+      "evidence": {
+        "hits": 61188,
+        "evidence": [
+          {
+            "bestmove": "e2a6",
+            "checkedPv": 14,
+            "ranks": [
+              1
+            ],
+            "events": [
+              "info string Karsli Trium disagreement-read=94889 rfp-margin=61188 rfp-saved=1331"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "disagreement guard off reports zero blocks",
+      "passed": true,
+      "elapsedMs": 107,
+      "evidence": {
+        "bestmove": "e2a6",
+        "checkedPv": 10,
+        "ranks": [
+          1
+        ],
+        "events": [
+          "info string Karsli Trium disagreement-read=0 rfp-margin=0 rfp-saved=0"
+        ]
+      }
+    },
+    {
+      "name": "disagreement guard on with complete current14-option profile and MultiPV",
+      "passed": true,
+      "elapsedMs": 212,
+      "evidence": {
+        "bestmove": "d5e6",
+        "checkedPv": 30,
+        "ranks": [
+          1,
+          2,
+          3
+        ],
+        "events": [
+          "info string Karsli Trium disagreement-read=17200 rfp-margin=9802 rfp-saved=209"
+        ]
+      }
+    },
+    {
+      "name": "disagreement guard on four workers stop and reuse",
+      "passed": true,
+      "elapsedMs": 356,
+      "evidence": {
+        "stopped": {
+          "bestmove": "d5e6",
+          "checkedPv": 11,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Trium disagreement-read=63288 rfp-margin=39944 rfp-saved=837"
+          ]
+        },
+        "reused": {
+          "bestmove": "d5e6",
+          "checkedPv": 8,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Trium disagreement-read=1942 rfp-margin=1371 rfp-saved=53"
+          ]
+        }
+      }
+    },
+    {
+      "name": "disagreement guard on free queen captures both colors",
+      "passed": true,
+      "elapsedMs": 124,
+      "evidence": [
+        {
+          "bestmove": "d4e5",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Trium disagreement-read=218 rfp-margin=99 rfp-saved=1"
+          ]
+        },
+        {
+          "bestmove": "d5e4",
+          "checkedPv": 9,
+          "ranks": [
+            1
+          ],
+          "events": [
+            "info string Karsli Trium disagreement-read=314 rfp-margin=187 rfp-saved=0"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "clean process exit",
+      "passed": true,
+      "elapsedMs": 52,
+      "evidence": true
+    }
+  ],
+  "passed": true,
+  "binaries": {
+    "candidate": {
+      "path": "/Users/meganfaust/Desktop/Stockfish-AI-Chess-Mac-Handoff/experiments/karsli/candidates/trium-disagreement/karsli-trium-disagreement-sanitized",
+      "sha256": "13fcdc21d0f15fc30e90d9d1e425e30133ba034bb49126f0c3fda7a23cbe4332"
+    },
+    "baseline": {
+      "path": "/Users/meganfaust/Desktop/Stockfish-AI-Chess-Mac-Handoff/experiments/karsli/candidates/caissa-node-cache/karsli-caissa-node-cache",
+      "sha256": "3a6120294c40662b0b8ae079044638f3264420a688ce6146f6b606a28589691e"
+    }
+  }
+}

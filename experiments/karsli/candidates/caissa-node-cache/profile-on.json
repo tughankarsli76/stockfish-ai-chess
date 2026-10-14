@@ -1,0 +1,18 @@
+{
+  "Karsli Check Bonus": 512,
+  "Karsli Depth Slope": 2,
+  "Karsli Alpha Bonus": 128,
+  "Karsli Reckless Pack": true,
+  "Karsli Plenty Threat Guard": true,
+  "Karsli Plenty Capture LMR": 256,
+  "Karsli Pawnocchio Razor Margin": 128,
+  "Karsli Pawnocchio Pawn Escape": 256,
+  "Karsli Coda Idea LMP Margin": 64,
+  "Karsli Cinder Transition Weight": 128,
+  "Karsli Obsidian Shallow History": true,
+  "Karsli Alexandria Relative Correction": 256,
+  "Karsli Hobbes Capture Route": 128,
+  "Karsli Halogen Material Margin": 32,
+  "Karsli Berserk Threat NMP Guard": true,
+  "Karsli Caissa Node Cache Weight": 512
+}

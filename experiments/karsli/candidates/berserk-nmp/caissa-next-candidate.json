@@ -1,0 +1,21 @@
+{
+  "engine": "Caissa 2.0",
+  "pinnedCommit": "bb725799e9b19ebdaa0d584f5433fc1c3019e349",
+  "status": "implementation pending",
+  "upstreamMechanism": "NodeCache supplied at ply < 3; quiet move bonus proportional to nodes searched for move when nodesSum > 256; bounded 32 moves per entry and 256 entries; updated after each searched move",
+  "evidence": [
+    "src/backend/Search.cpp:1781-1788",
+    "src/backend/Search.cpp:2126-2133",
+    "src/backend/MoveOrderer.cpp:446-452",
+    "src/backend/NodeCache.hpp"
+  ],
+  "proposedLocalScope": "Start with quiet ordering at ply 1 and 2; preserve explicit root sorting, MultiPV and TB rank groups. Worker-local position-keyed bounded cache, default off option and activation counters. Calibrate Stockfish history scale; do not copy upstream tuned bonus blindly.",
+  "requiredValidation": [
+    "bounded cache collision and counter arithmetic",
+    "disabled option exact revision9 bench",
+    "active nonzero ordering use",
+    "legal perft, Chess960, MultiPV, stop and reuse",
+    "ASAN/UBSAN",
+    "paired on/off games"
+  ]
+}
