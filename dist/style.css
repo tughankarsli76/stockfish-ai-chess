@@ -57,7 +57,7 @@ body[data-theme=green] .board-frame{background:#586e53}
 .options-screen .option-group{margin-top:18px}
 .options-screen .list>label,.options-screen .list>button{min-height:48px;font-size:16px}
 .option-value{display:flex;align-items:center;justify-content:flex-end;gap:8px;color:#93939b!important;font-size:16px!important}
-#settingsDialog .option-chevron{display:block;width:17.34px;height:17.34px;flex-shrink:0;color:#5c5c66}
+#settingsDialog .option-chevron{display:block;width:15.9528px;height:15.9528px;flex-shrink:0;color:#5c5c66}
 #settingsDialog .option-chevron path{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .main-toolbar{display:none;align-items:center;justify-content:space-between;border-top:1px solid #d6d6de;padding:4px 16px;min-height:53px}
 .main-toolbar button{font-size:clamp(15px,3.65vw,16px);color:#111;font-weight:600;padding:8px 4px}
