@@ -179,8 +179,9 @@ body[data-theme=walnut] .setup-board{background-image:url('assets/walnut.jpg')}
 /* Requested five-item navigation. The toolbar option controls move navigation. */
 .tabs,.tools{display:none!important}
 .main-toolbar,body.use-toolbar .main-toolbar{display:flex}
-.main-toolbar button{flex:0 0 auto;min-width:0;text-align:center}
-.main-toolbar button.active{color:var(--blue);background:#e5e5ec;border-radius:999px}
+.main-toolbar button{flex:0 0 auto;min-width:0;text-align:center;position:relative;isolation:isolate}
+.main-toolbar button.active{color:var(--blue);background:transparent}
+.main-toolbar button.active::before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:calc(100% + 8px);min-width:44px;height:30px;border-radius:999px;background:#e5e5ec;z-index:-1;pointer-events:none}
 body:not(.use-toolbar) .history-nav,body:not(.use-toolbar) .position-label{display:none}
 .app{max-height:calc(100dvh - 36px);overflow-y:auto;overscroll-behavior:contain}
 .main-toolbar{position:sticky;bottom:0;background:#efeff5;z-index:5}
