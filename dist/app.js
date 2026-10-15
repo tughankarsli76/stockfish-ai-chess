@@ -184,6 +184,12 @@ function publishSearchProgress(){
   renderSearchCount();
   renderAnalysisProgress();
 }
+function appendTablebaseIndicator(container,progress,spanish){
+  if(!(progress?.tbHits>0))return;
+  const indicator=document.createElement('span');indicator.className='tablebase-indicator';
+  indicator.textContent='TB';indicator.title=spanish?'Bases de finales utilizadas':'Tablebases used';
+  indicator.setAttribute('aria-label',indicator.title);container.append(indicator);
+}
 function renderAnalysisProgress(){
   const progress=analysisProgress?.fen===session.position().fen()?analysisProgress:null;
   const counter=$('engineDepth');
@@ -191,9 +197,11 @@ function renderAnalysisProgress(){
   if(!progress)return;
   const spanish=document.documentElement.lang==='es';
   const stats=[[(spanish?'Profundidad':'Depth'),progress.depth],[(spanish?'Velocidad':'Speed'),Number.isFinite(progress.nps)?new Intl.NumberFormat(document.documentElement.lang||'en',{maximumFractionDigits:0,useGrouping:false}).format(progress.nps/1000)+' kN/s':'—'],[(spanish?'Posiciones':'Positions'),new Intl.NumberFormat(document.documentElement.lang||'en').format(progress.nodes)]];
-  for(const [label,value] of stats){
+  for(const [index,[label,value]] of stats.entries()){
     const stat=document.createElement('span');stat.className='engine-stat engine-stat-badge';
-    stat.textContent=label+'\u00a0'+value;counter.append(stat);
+    stat.textContent=label+'\u00a0'+value;
+    if(index===stats.length-1)appendTablebaseIndicator(stat,progress,spanish);
+    counter.append(stat);
   }
 }
 function renderSearchCount(){
@@ -215,11 +223,7 @@ function renderSearchCount(){
       }else stat.textContent=label+'\u00a0'+value;
       counter.append(stat);
     });
-    if(progress.tbHits>0){
-      const indicator=document.createElement('span');indicator.className='tablebase-indicator';
-      indicator.textContent='TB';indicator.title=spanish?'Bases de finales utilizadas':'Tablebases used';
-      indicator.setAttribute('aria-label',indicator.title);counter.append(indicator);
-    }
+    appendTablebaseIndicator(counter,progress,spanish);
   }
 }
 function onInfo(job,info){
