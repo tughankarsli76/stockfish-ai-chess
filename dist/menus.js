@@ -66,6 +66,12 @@ export function installMenus(api,html){
   $('settingsDialog').classList.add('options-screen');$('settingsDialog').innerHTML=OPTIONS;
   const toolbar=document.createElement('nav');toolbar.id='mainToolbar';toolbar.className='main-toolbar';toolbar.setAttribute('aria-label','Chess toolbar');
   toolbar.innerHTML='<button id="toolbarGame">Game</button><button id="toolbarOptions">Options</button><button id="toolbarAnalysis">Analysis</button><button id="toolbarFlip">Flip</button><button id="toolbarMove">Move</button>';
+  toolbar.querySelector(api.state().tab==='analysis'?'#toolbarAnalysis':'#toolbarGame').classList.add('active');
+  toolbar.addEventListener('click',event=>{
+    const selected=event.target.closest('button');
+    if(!selected||!toolbar.contains(selected)||selected.disabled)return;
+    for(const button of toolbar.querySelectorAll('button'))button.classList.toggle('active',button===selected);
+  },true);
   document.querySelector('.app').append(toolbar);
   toolbar.insertAdjacentHTML('beforebegin','<nav id="analysisMoveNav" class="analysis-move-nav" aria-label="Analysis move navigation" hidden><button id="analysisBack" type="button" aria-label="Previous move" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 5-7 7 7 7"/></svg></button><button id="analysisForward" type="button" aria-label="Next move" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></button></nav>');
   $('analysisBack').onclick=()=>api.navigate(Math.max(0,api.state().session.cursor-1));
@@ -299,9 +305,7 @@ export function installMenus(api,html){
     for(const [id,value] of Object.entries(values))$(id+'Value').textContent=value;
     document.body.classList.toggle('use-toolbar',s.useToolbar);
     $('analysisTab').hidden=true;
-    $('toolbarAnalysis').classList.toggle('active',tab==='analysis'&&!api.state().analysisPaused);
     $('toolbarAnalysis').setAttribute('aria-pressed',String(tab==='analysis'&&!api.state().analysisPaused));
-    $('toolbarGame').classList.toggle('active',tab==='game');
     $('showAnalysisView').hidden=!s.showAnalysis;
     $('newGame').textContent={new:'＋',flip:'⇅',move:'▶',hint:'◇'}[s.shortcut]||'＋';$('newGame').setAttribute('aria-label',t(labels[s.shortcut]||'Start Game'));
     $('takeBack').disabled=session.cursor===0;$('stepForward').disabled=session.live;$('startOfGame').disabled=session.cursor===0;$('endOfGame').disabled=session.live;

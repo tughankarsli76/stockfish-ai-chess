@@ -180,8 +180,7 @@ body[data-theme=walnut] .setup-board{background-image:url('assets/walnut.jpg')}
 .tabs,.tools{display:none!important}
 .main-toolbar,body.use-toolbar .main-toolbar{display:flex}
 .main-toolbar button{flex:0 0 auto;min-width:0;text-align:center}
-.main-toolbar button.active{color:#125eac}
-.main-toolbar #toolbarGame.active{color:#111}
+.main-toolbar button.active{color:var(--blue);background:#e5e5ec;border-radius:0}
 body:not(.use-toolbar) .history-nav,body:not(.use-toolbar) .position-label{display:none}
 .app{max-height:calc(100dvh - 36px);overflow-y:auto;overscroll-behavior:contain}
 .main-toolbar{position:sticky;bottom:0;background:#efeff5;z-index:5}
