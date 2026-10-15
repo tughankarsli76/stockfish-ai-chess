@@ -119,7 +119,7 @@
     [self waitForBoard:web expectation:loaded attempts:200];[self waitForExpectations:@[loaded] timeout:25];
     XCTestExpectation *done=[self expectationWithDescription:@"Ten native engine checks"];
     [web callAsyncJavaScript:@"const tests=await import('./ios-integration-tests.js');return await tests.nativeEngines();" arguments:@{} inFrame:nil inContentWorld:WKContentWorld.pageWorld completionHandler:^(id result,NSError *error){
-        XCTAssertNil(error,@"%@",error);XCTAssertEqual([result count],25u);NSLog(@"ELEVEN_NATIVE_ENGINES: %@",result);[done fulfill];
+        XCTAssertNil(error,@"%@",error);XCTAssertEqual([result count],22u);NSLog(@"TEN_NATIVE_ENGINES: %@",result);[done fulfill];
     }];
     [self waitForExpectations:@[done] timeout:240];
 }
@@ -691,16 +691,6 @@
     state=[self javascript:@"const {nativeIntegration:api}=await import('chess://app/app.js');await new Promise(r=>setTimeout(r,1200));const before=document.getElementById('positionCount').textContent;for(let i=0;i<80&&before===document.getElementById('positionCount').textContent;i++)await new Promise(r=>setTimeout(r,100));return {active:api.state().active,suspended:api.state().suspended,lines:api.state().lines.length,changed:before!==document.getElementById('positionCount').textContent};" web:web];
     XCTAssertEqualObjects(state[@"active"],@YES);XCTAssertEqualObjects(state[@"suspended"],@NO);XCTAssertGreaterThan([state[@"lines"] intValue],0);XCTAssertEqualObjects(state[@"changed"],@YES);
     NSLog(@"BACKGROUND_SEARCH_PASS: %@",engine);
-}
-- (void)testKarsliBackgroundSearch {[self checkBackgroundSearchForEngine:@"karsli01"];}
-- (void)testKarsliCombinedProfileAndMaterial {
-    XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated test storage");
-    WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
-    XCTestExpectation *loaded=[self expectationWithDescription:@"Karsli board"];
-    [self waitForBoard:web expectation:loaded attempts:200];[self waitForExpectations:@[loaded] timeout:25];
-    NSDictionary *result=[self javascript:@"const tests=await import('./ios-integration-tests.js');return await tests.karsliMaterial();" web:web];
-    XCTAssertEqualObjects(result[@"identity"],@"Karsli 1.0-dev");XCTAssertEqual([result[@"material"] count],7u);
-    NSLog(@"KARSLI_COMBINED_MATERIAL: %@",result);
 }
 - (void)testStockfish19BackgroundSearch {[self checkBackgroundSearchForEngine:@"stockfish19"];}
 - (void)testBackgroundWebViewRecoveryWaitsForForeground {

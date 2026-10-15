@@ -7,7 +7,6 @@ build_number=os.environ.get('CI_BUILD_NUMBER',os.environ.get('CHESS_BUILD_NUMBER
 if not build_number.isdigit() or int(build_number)<1:raise ValueError('Invalid build number')
 subprocess.run(['/usr/bin/python3',str(root/'bundle-background.py')],check=True)
 subprocess.run(['/usr/bin/python3',str(root/'prepare-cpp-engines.py')],check=True)
-subprocess.run(['/usr/bin/python3',str(root/'prepare-karsli.py')],check=True)
 # Preserve existing signing and build settings when extending the project.
 projectFile=root/'StockfishChess.xcodeproj/project.pbxproj'
 projectFile.parent.mkdir(parents=True,exist_ok=True)
@@ -21,7 +20,6 @@ def ref(path,typ,tree='SOURCE_ROOT'):
 def build(file):
  item={'isa':'PBXBuildFile','fileRef':file}
  path=objects[file].get('path','')
- if '/karsli-1.0/src/' in path or path.endswith('KarsliBackend.cpp'):item['settings']={'COMPILER_FLAGS':'-DStockfish=KarsliIOS'}
  if path.endswith('CloverBackend.cpp'):item['settings']={'COMPILER_FLAGS':'-std=c++20 -DCLOVER_EVALFILE=\\"'+'$(SRCROOT)/../engine/clover-9.1/src/quantised.nnue'+'\\"'}
  if '/clover-9.1/src/3rdparty/' in path:item['settings']={'COMPILER_FLAGS':'-include '+'$(SRCROOT)/StockfishChess/EnginePorts/CloverTablebaseNames.h'}
  if path.endswith('StarzixBackend.cpp'):item['settings']={'COMPILER_FLAGS':'-std=c++23 -DSTARZIX_EVALFILE=\\"'+'$(SRCROOT)/../engine/starzix-6.1/src/net.bin'+'\\"'}
@@ -34,9 +32,6 @@ sources=[ref('StockfishChess/App.mm','sourcecode.cpp.objcpp'),ref('StockfishChes
 for p in sorted((root/engine).rglob('*.cpp')):
  if p.name!='main.cpp' and 'universal' not in p.parts:sources.append(ref(str(engine/p.relative_to(root/engine)),'sourcecode.cpp.cpp'))
 sources.extend(ref('StockfishChess/'+name,'sourcecode.cpp.cpp') for name in ['Stockfish19Backend.cpp','RecklessBackend.cpp','AsyncRustBackend.cpp','CloverBackend.cpp','StarzixBackend.cpp','HalogenBackend.cpp'])
-for p in sorted((root/'../engine/karsli-1.0/src').rglob('*.cpp')):
- if p.name!='main.cpp' and 'universal' not in p.parts:sources.append(ref('../engine/karsli-1.0/src/'+str(p.relative_to(root/'../engine/karsli-1.0/src')),'sourcecode.cpp.cpp'))
-sources.append(ref('StockfishChess/KarsliBackend.cpp','sourcecode.cpp.cpp'))
 sources.append(ref('../engine/clover-9.1/src/3rdparty/Fathom/src/tbprobe.c','sourcecode.c.c'))
 sources.extend(ref(str(p.relative_to(root)),'sourcecode.cpp.cpp') for p in sorted((root/'StockfishChess/EnginePorts').glob('Halogen_*.cpp')))
 plenty=Path('../engine/plentychess-8.0.0/src')
@@ -65,7 +60,7 @@ mainGroup=add('main',{'isa':'PBXGroup','children':sources+resources+[productGrou
 sourcePhase=add('sources',{'isa':'PBXSourcesBuildPhase','buildActionMask':2147483647,'files':[build(f) for f in sources],'runOnlyForDeploymentPostprocessing':0})
 resourcePhase=add('resources',{'isa':'PBXResourcesBuildPhase','buildActionMask':2147483647,'files':[build(f) for f in resources],'runOnlyForDeploymentPostprocessing':0})
 copyPhase=add('web',{'isa':'PBXShellScriptBuildPhase','buildActionMask':2147483647,'files':[],'inputPaths':[],'outputPaths':[],'alwaysOutOfDate':1,'runOnlyForDeploymentPostprocessing':0,'shellPath':'/bin/sh','shellScript':'/usr/bin/python3 "$SRCROOT/bundle-web.py"\n'})
-recklessPhase=add('reckless',{'isa':'PBXShellScriptBuildPhase','buildActionMask':2147483647,'files':[],'inputPaths':[],'outputPaths':['$(BUILT_PRODUCTS_DIR)/libchess_rust_ios.a','$(SRCROOT)/StockfishChess/background-model.js'],'alwaysOutOfDate':1,'runOnlyForDeploymentPostprocessing':0,'shellPath':'/bin/sh','shellScript':'/usr/bin/python3 "$SRCROOT/bundle-background.py"\n/usr/bin/python3 "$SRCROOT/prepare-cpp-engines.py"\n/usr/bin/python3 "$SRCROOT/prepare-karsli.py"\n/usr/bin/python3 "$SRCROOT/prepare-halogen-network.py"\n/bin/sh "$SRCROOT/build-rust-engines.sh"\n'})
+recklessPhase=add('reckless',{'isa':'PBXShellScriptBuildPhase','buildActionMask':2147483647,'files':[],'inputPaths':[],'outputPaths':['$(BUILT_PRODUCTS_DIR)/libchess_rust_ios.a','$(SRCROOT)/StockfishChess/background-model.js'],'alwaysOutOfDate':1,'runOnlyForDeploymentPostprocessing':0,'shellPath':'/bin/sh','shellScript':'/usr/bin/python3 "$SRCROOT/bundle-background.py"\n/usr/bin/python3 "$SRCROOT/prepare-cpp-engines.py"\n/usr/bin/python3 "$SRCROOT/prepare-halogen-network.py"\n/bin/sh "$SRCROOT/build-rust-engines.sh"\n'})
 pawnPhase=add('pawnocchio',{'isa':'PBXShellScriptBuildPhase','buildActionMask':2147483647,'files':[],'inputPaths':[],'outputPaths':['$(BUILT_PRODUCTS_DIR)/libpawnocchio_ios.a'],'alwaysOutOfDate':1,'runOnlyForDeploymentPostprocessing':0,'shellPath':'/bin/sh','shellScript':'/bin/sh "$SRCROOT/build-pawnocchio.sh"\n'})
 settings={'ARCHS':'arm64','CLANG_ENABLE_MODULES':'YES','CLANG_ENABLE_OBJC_ARC':'YES','CLANG_CXX_LANGUAGE_STANDARD':'c++17','IPHONEOS_DEPLOYMENT_TARGET':'17.0','SDKROOT':'iphoneos','TARGETED_DEVICE_FAMILY':'1,2','PRODUCT_BUNDLE_IDENTIFIER':'org.example.stockfishaichess','PRODUCT_NAME':'$(TARGET_NAME)','INFOPLIST_FILE':'StockfishChess/Info.plist','ASSETCATALOG_COMPILER_APPICON_NAME':'AppIcon','HEADER_SEARCH_PATHS':'$(SRCROOT)/../engine/stockfish-progress/src','GCC_PREPROCESSOR_DEFINITIONS':['$(inherited)','NDEBUG','IS_64BIT','USE_POPCNT','USE_NEON=8','NNUE_EMBEDDING_OFF'],'OTHER_CPLUSPLUSFLAGS':['-O3','-fconstexpr-steps=500000000'],'OTHER_LDFLAGS':['-framework','CoreGraphics','-framework','UIKit','-framework','WebKit','-framework','UniformTypeIdentifiers'],'ENABLE_USER_SCRIPT_SANDBOXING':'NO','CODE_SIGN_STYLE':'Automatic','DEVELOPMENT_TEAM':'KQVRWBVGS7','SWIFT_VERSION':'5.0','MARKETING_VERSION':marketing_version,'CURRENT_PROJECT_VERSION':build_number,'SUPPORTED_PLATFORMS':'iphoneos iphonesimulator','SUPPORTS_MACCATALYST':'NO'}
 def configs(key,settings):

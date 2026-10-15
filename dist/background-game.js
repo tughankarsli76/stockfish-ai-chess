@@ -1,12 +1,13 @@
 import {Chess} from './vendor/chess.js';
 import {GameClock} from './clock.js';
-import {chooseBookMove,computerMoveTime} from './features.js';
+import {chooseBookMove,computerMoveTime,migrateRemovedKarsli} from './features.js';
 import {validatePosition} from './position-safety.js';
 
 // No DOM or WebKit timers: the native host drives this same game model offscreen.
 export class BackgroundGame {
  constructor(data,tournament=null,now=()=>Date.now()){
   this.data=JSON.parse(JSON.stringify(data));this.tournament=tournament?JSON.parse(JSON.stringify(tournament)):null;this.now=now;
+  migrateRemovedKarsli(this.data,this.tournament);
   delete this.data.settings.tablebasePieces;delete this.data.tablebaseDefaultsRevision;
   this.data.engineNames ||= {};
   this.game=new Chess();this.game.loadPgn(data.pgn);validatePosition(this.game);

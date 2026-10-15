@@ -440,7 +440,7 @@ static NSUInteger ChessMaxHashMB(void) {
         if(self.suspended){reply(nil,@"App suspended");return;}
         NSString *session=body[@"session"];if(![session isKindOfClass:NSString.class]||session.length>64){reply(nil,@"Invalid session");return;}
         NSString *engineID=body[@"engine"]?:@"stockfish19";
-        if(![@[@"stockfish19",@"karsli01",@"reckless090",@"plenty800",@"pawn201",@"obsidian160",@"cinder061",@"viridithas200",@"halogen160",@"clover91",@"starzix61"] containsObject:engineID]){reply(nil,@"Unsupported engine");return;}
+        if(![@[@"stockfish19",@"reckless090",@"plenty800",@"pawn201",@"obsidian160",@"cinder061",@"viridithas200",@"halogen160",@"clover91",@"starzix61"] containsObject:engineID]){reply(nil,@"Unsupported engine");return;}
         self.activeSession=session;self.searchRunning=NO;[self endSearchBackgroundTask];[self clearBackgroundLines]; __weak ChessViewController *weakSelf=self;
         [[SFEngine shared] open:session engine:engineID output:^(NSString *identifier,NSString *line){
             [weakSelf receiveEngineLine:line session:identifier];

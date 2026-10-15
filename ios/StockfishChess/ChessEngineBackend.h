@@ -8,7 +8,6 @@ struct ChessEngineBackend {
     virtual void stop() = 0;
 };
 std::unique_ptr<ChessEngineBackend> makeStockfish19(const std::string& executable, const std::string& resources);
-std::unique_ptr<ChessEngineBackend> makeKarsli(const std::string& executable, const std::string& resources);
 std::unique_ptr<ChessEngineBackend> makeReckless();
 std::unique_ptr<ChessEngineBackend> makePlentyChess();
 std::unique_ptr<ChessEngineBackend> makePawnocchio();

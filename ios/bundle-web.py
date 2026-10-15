@@ -33,7 +33,6 @@ engine=root/'engine/stockfish-progress'
 shutil.copytree(engine/'src',licenses/'Stockfish19Source',dirs_exist_ok=True,ignore=shutil.ignore_patterns('*.o','stockfish','*.nnue','*.exe'))
 for p in (root/'engine/stockfish-19/stockfish').glob('*'):
  if p.name in ['Copying.txt','AUTHORS','README.md']:shutil.copy2(p,licenses/p.name)
-shutil.copytree(root/'engine/karsli-1.0',licenses/'KarsliSource',ignore=shutil.ignore_patterns('*.o','*.d','*.nnue','stockfish','__pycache__'))
 shutil.copytree(root/'ios/StockfishChess',licenses/'IOSIntegration',dirs_exist_ok=True,ignore=shutil.ignore_patterns('Assets.xcassets','Stockfish18Backend.cpp'))
 # Keep the exact source metadata as text without declaring a nested app bundle.
 # App Store validation interprets files named Info.plist as bundle manifests.
@@ -53,13 +52,12 @@ for name in ['cinder-0.6.1','viridithas-20.0.0','halogen-16.0.0','clover-9.1','s
  shutil.copytree(root/'engine'/name,licenses/'NewEngineSources'/name,dirs_exist_ok=True,ignore=shutil.ignore_patterns(*ignored))
 shutil.copytree(root/'engine/simde-0.8.2/simde',licenses/'simde-0.8.2/simde',dirs_exist_ok=True)
 shutil.copy2(root/'engine/simde-0.8.2/COPYING',licenses/'simde-0.8.2/COPYING')
-for name in ['prepare-karsli.py','prepare-scan-models.py','prepare-scan-models.sh','scan-model-inputs.json','scan-model-requirements.txt','generate-project.py','bundle-web.py','build-reckless.sh','build-rust-engines.sh','build-pawnocchio.sh','bundle-background.py','prepare-cpp-engines.py','prepare-halogen-network.py','test-viridithas-neon.sh','verify-new-engine-inputs.py']:
+for name in ['prepare-scan-models.py','prepare-scan-models.sh','scan-model-inputs.json','scan-model-requirements.txt','generate-project.py','bundle-web.py','build-reckless.sh','build-rust-engines.sh','build-pawnocchio.sh','bundle-background.py','prepare-cpp-engines.py','prepare-halogen-network.py','test-viridithas-neon.sh','verify-new-engine-inputs.py']:
  shutil.copy2(root/'ios'/name,licenses/name)
 
 startup_baseline=out/'startup-book-baseline.js'
 if startup_baseline.exists():startup_baseline.unlink()
 if os.environ.get('CONFIGURATION')=='Debug':
- shutil.copy2(root/'engine/karsli-1.0/combined-profile.json',out/'Web/karsli-test-profile.json')
  if (root/'.cloud-cache/scan/test-fixtures').is_dir():
   shutil.copytree(root/'.cloud-cache/scan/test-fixtures',out/'Web/scan-fixtures',dirs_exist_ok=True)
  shutil.copy2(root/'ios/StockfishChessTests/ios-integration-tests.js',out/'Web/ios-integration-tests.js')

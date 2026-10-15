@@ -12,7 +12,7 @@ This grant covers original application contributions to the interface, native in
 
 ## Third-party components
 
-- Karsli 1.0-dev revision 9: Stockfish-derived research blend; exact component grants, modifications and attributions are in engine/karsli-1.0/NOTICE.md and its retained licenses. Reckless contributions keep AGPLv3, other GPL components their GPL grants, and Hobbes its MIT notice. The shared Stockfish network remains unchanged.
+- Archived Karsli 1.0-dev revision 9 source (not built into or bundled with the current app): Stockfish-derived research blend; exact component grants, modifications and attributions are in engine/karsli-1.0/NOTICE.md and its retained licenses. Reckless contributions keep AGPLv3, other GPL components their GPL grants, and Hobbes its MIT notice. The shared Stockfish network remains unchanged.
 
 - Stockfish, PlentyChess, Pawnocchio and Obsidian code: see the GPL licenses and notices in their respective engine directories.
 - Reckless: AGPL version 3, engine/reckless-0.9.0/LICENSE. GPLv3 section 13 and AGPLv3 section 13 permit the combination while preserving the applicable terms. Do not relabel Reckless as GPL-only.

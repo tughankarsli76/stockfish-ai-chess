@@ -1,3 +1,5 @@
+import {migrateRemovedKarsli} from './features.js';
+
 export function createSchedule(engines,games,random=Math.random){
   if(new Set(engines).size!==engines.length||engines.length<2||!Number.isInteger(games)||games<1||games>10)throw Error('Choose at least two engines and 1–10 games against each other.');
   const schedule=[],reverseColors=random()<0.5;
@@ -23,7 +25,7 @@ export function tournamentOutcome(t){
 export function installTournament(api){
   const $=id=>document.getElementById(id),engines=globalThis.chessNative?.engines||[{id:'stockfish19',name:'Stockfish 19'}];
   let tournament=null,nextAt=0;
-  try{tournament=JSON.parse(localStorage.getItem('chess-preview-tournament')||'null');}catch{}
+  try{tournament=JSON.parse(localStorage.getItem('chess-preview-tournament')||'null');if(migrateRemovedKarsli(null,tournament))localStorage.setItem('chess-preview-tournament',JSON.stringify(tournament));}catch{}
   const save=()=>localStorage.setItem('chess-preview-tournament',JSON.stringify(tournament));
   $('newEngineMatch').insertAdjacentHTML('afterend','<button id="newEngineTournament">Engine Tournament</button>');
   document.body.insertAdjacentHTML('beforeend',`<dialog id="tournamentDialog" class="mode-screen" aria-label="Engine Tournament"><div class="mode-heading"><button type="button" id="tournamentBack" aria-label="Back to New Game"><span aria-hidden="true" class="back-chevron"></span><span>Back</span></button><h2>Engine Tournament</h2></div><div class="tournament-content"><p>Select participating engines</p><div id="tournamentEngines" class="list"></div><div class="list"><label>Games against each other<select id="tournamentGames">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<option ${n===2?'selected':''}>${n}</option>`).join('')}</select></label><label>Time control<select id="tournamentControl"><option value="move">Time per move</option><option value="game">Time per game</option></select></label><label id="tournamentSecondsRow">Seconds per move<select id="tournamentSeconds">${[1,3,5,10,15,30,45,60,90,120].map(n=>`<option ${n===5?'selected':''}>${n}</option>`).join('')}</select></label><label id="tournamentMinutesRow" hidden>Minutes per engine<select id="tournamentMinutes">${[1,3,5,10,15,30,45,60,90,120].map(n=>`<option ${n===3?'selected':''}>${n}</option>`).join('')}</select></label></div><p id="tournamentSummary"></p><p>Starting colors are randomized and balanced across engines. Colors alternate each game per pairing. An even number gives equal games with each color.</p><p id="tournamentError" class="error" role="alert"></p><button id="startTournament" class="primary">Start Tournament</button><p id="tournamentProgress"></p><div id="tournamentStandings"></div><button id="viewTournamentResults" hidden>View Results</button><button id="resumeTournament">Resume Tournament</button><button id="stopTournament">Stop Tournament</button></div></dialog>`);

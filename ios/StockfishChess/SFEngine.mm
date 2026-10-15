@@ -52,11 +52,11 @@ public:
             std::cout.rdbuf(&self->_output);
             const std::string executable=NSBundle.mainBundle.executablePath.UTF8String;
             const std::string resources=NSBundle.mainBundle.resourcePath.UTF8String;
-            self->_engine=[engineID isEqual:@"karsli01"]?makeKarsli(executable,resources):[engineID isEqual:@"obsidian160"]?makeObsidian():[engineID isEqual:@"pawn201"]?makePawnocchio():[engineID isEqual:@"plenty800"]?makePlentyChess():[engineID isEqual:@"reckless090"]?makeReckless():[engineID isEqual:@"cinder061"]?makeCinder():[engineID isEqual:@"viridithas200"]?makeViridithas():[engineID isEqual:@"halogen160"]?makeHalogen():[engineID isEqual:@"clover91"]?makeClover():[engineID isEqual:@"starzix61"]?makeStarzix():makeStockfish19(executable,resources);
+            self->_engine=[engineID isEqual:@"obsidian160"]?makeObsidian():[engineID isEqual:@"pawn201"]?makePawnocchio():[engineID isEqual:@"plenty800"]?makePlentyChess():[engineID isEqual:@"reckless090"]?makeReckless():[engineID isEqual:@"cinder061"]?makeCinder():[engineID isEqual:@"viridithas200"]?makeViridithas():[engineID isEqual:@"halogen160"]?makeHalogen():[engineID isEqual:@"clover91"]?makeClover():[engineID isEqual:@"starzix61"]?makeStarzix():makeStockfish19(executable,resources);
         }
         // Use every available tablebase file, including optional completed downloads.
         // Reset any limit left by an earlier session; this is an internal engine default.
-        if(([engineID isEqual:@"stockfish19"]||[engineID isEqual:@"karsli01"]))self->_engine->command("setoption name SyzygyProbeLimit value 7");
+        if([engineID isEqual:@"stockfish19"])self->_engine->command("setoption name SyzygyProbeLimit value 7");
         self->_engine->command("ucinewgame");
     });
 }
@@ -67,7 +67,7 @@ public:
         command=[@"setoption name SyzygyPath value " stringByAppendingString:path];
     }
     dispatch_async(_queue, ^{ if([self->_session isEqual:session] && self->_engine) {
-        if([command hasPrefix:@"position fen "] && ([self->_engineID isEqual:@"stockfish19"]||[self->_engineID isEqual:@"karsli01"])) {
+        if([command hasPrefix:@"position fen "] && [self->_engineID isEqual:@"stockfish19"]) {
             NSString *path=ChessTablebaseSearchPath();
             if(![self->_syzygyPath isEqual:path]){self->_engine->command([@"setoption name SyzygyPath value " stringByAppendingString:path].UTF8String);self->_syzygyPath=path;}
         }
