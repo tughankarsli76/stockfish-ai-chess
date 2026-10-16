@@ -1,6 +1,6 @@
 # Phone to TestFlight workflow
 
-Version 1.8 development continues from version 1.6 with optional offline Chess Coach. The GitHub `develop` branch contains editable interface, native integration and engine sources. The 13 large engine model files stay in the immutable public build 21 source asset and are restored with checksum verification. No credentials or compiler installations are committed.
+Version 1.9.2 development continues from version 1.6 with optional offline Chess Coach. The GitHub `develop` branch contains editable interface, native integration and engine sources. The 13 large engine model files stay in the immutable public build 21 source asset and are restored with checksum verification. No credentials or compiler installations are committed.
 
 ## Xcode Cloud configuration
 
@@ -10,7 +10,7 @@ Open `ios/StockfishChess.xcodeproj` from the `develop` checkout in Xcode. Choose
 
 Use a workflow named **Phone Development** with an Apple Silicon environment, Xcode 27.0 (or a compatible later release), branch-change start condition limited to `develop`, and an iOS Archive action using the shared StockfishChess scheme and Release configuration. Start the cloud build sequence at 22. Set TestFlight internal testing as the delivery postaction and select the owner's internal tester group. Keep App Store releases manual.
 
-Apple discovers `ios/ci_scripts/ci_post_clone.sh` automatically. It restores model inputs, installs Rust nightly-2026-08-16 and Zig 0.16.0, runs all web tests, then regenerates the project using version 1.9.1 and the cloud build number. The initial end-to-end validation completed with build 25: the clean archive and TestFlight delivery succeeded, and version 1.5 (25) was Testing in Owner Testing. All 13 model checks and all 153 web tests passed in that build. This setup has no automatic App Review submission or public release action.
+Apple discovers `ios/ci_scripts/ci_post_clone.sh` automatically. It restores model inputs, installs Rust nightly-2026-08-16 and Zig 0.16.0, runs all web tests, then regenerates the project using version 1.9.2 and the cloud build number. The initial end-to-end validation completed with build 25: the clean archive and TestFlight delivery succeeded, and version 1.5 (25) was Testing in Owner Testing. All 13 model checks and all 153 web tests passed in that build. This setup has no automatic App Review submission or public release action.
 
 ## Ask an AI agent from your phone
 
@@ -22,6 +22,8 @@ ChatGPT mobile Remote can also control a connected Mac, but that route requires 
 
 Sources: [Apple first workflow guide](https://developer.apple.com/documentation/xcode/configuring-your-first-xcode-cloud-workflow), [Apple custom scripts](https://developer.apple.com/documentation/xcode/writing-custom-build-scripts), [Codex Cloud](https://learn.chatgpt.com/docs/cloud), [ChatGPT mobile Remote](https://developers.openai.com/blog/mastering-codex-remote-for-engineering).
 
-## Build 95 delivery rejection
+## Closed App Store Connect version trains
 
-Apple rejected version 1.9 build 95 after native compilation and archive export succeeded. The delivery email reported ITMS-90186 (the 1.9 pre-release train is closed) and ITMS-90062 (the marketing version must be higher than the previously approved 1.9). The next development version is 1.9.1 in both the checked-in project and project generator. Rebuilding the old 1.9 commit will not resolve this rejection. If a workflow supplies `CHESS_MARKETING_VERSION`, its value must also be newer than 1.9. No App Review submission or public release is authorized by this correction.
+Apple rejected version 1.9 build 95 after native compilation and archive export succeeded. The delivery email reported ITMS-90186 (the 1.9 pre-release train is closed) and ITMS-90062 (the marketing version must be higher than the previously approved 1.9). Moving to 1.9.1 addressed that version rejection.
+
+Apple subsequently rejected version 1.9.1 build 106 with the same errors: the 1.9.1 train is now closed, and uploads must have a higher marketing version than the approved 1.9.1. The current development version is 1.9.2 in both the checked-in project and project generator. Rebuilding an old 1.9 or 1.9.1 commit will not resolve these rejections. If a workflow supplies `CHESS_MARKETING_VERSION`, it must also specify the current version. Build numbers continue to come from Xcode Cloud. No App Review submission or public release is authorized by this version correction.
