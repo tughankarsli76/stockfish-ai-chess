@@ -66,13 +66,37 @@ export function installMenus(api,html){
   $('settingsDialog').classList.add('options-screen');$('settingsDialog').innerHTML=OPTIONS;
   const toolbar=document.createElement('nav');toolbar.id='mainToolbar';toolbar.className='main-toolbar';toolbar.setAttribute('aria-label','Chess toolbar');
   toolbar.innerHTML='<button id="toolbarGame">Game</button><button id="toolbarOptions">Options</button><button id="toolbarAnalysis">Analysis</button><button id="toolbarFlip">Flip</button><button id="toolbarMove">Move</button>';
-  toolbar.querySelector(api.state().tab==='analysis'?'#toolbarAnalysis':'#toolbarGame').classList.add('active');
+  const toolbarButtons=[...toolbar.querySelectorAll('button')];
+  const toolbarSelection=document.createElement('span');toolbarSelection.className='toolbar-selection';toolbarSelection.hidden=true;toolbarSelection.setAttribute('aria-hidden','true');toolbar.append(toolbarSelection);
+  let selectedToolbar=toolbar.querySelector(api.state().tab==='analysis'?'#toolbarAnalysis':'#toolbarGame'),toolbarLayoutFrame=0;
+  selectedToolbar.classList.add('active');
+  function positionToolbarSelection(animate=false){
+    const target=selectedToolbar.getBoundingClientRect(),bounds=toolbar.getBoundingClientRect();
+    if(!target.width||!target.height)return;
+    if(!animate)toolbarSelection.classList.remove('animated');
+    const width=Math.max(44,target.width+8);
+    toolbarSelection.style.width=width+'px';
+    toolbarSelection.style.transform=`translate3d(${target.left-bounds.left-toolbar.clientLeft+(target.width-width)/2}px,${target.top-bounds.top-toolbar.clientTop+(target.height-30)/2}px,0)`;
+    toolbarSelection.hidden=false;
+    if(!animate){
+      cancelAnimationFrame(toolbarLayoutFrame);
+      toolbarLayoutFrame=requestAnimationFrame(()=>{toolbarSelection.classList.add('animated');toolbarLayoutFrame=0;});
+    }
+  }
   toolbar.addEventListener('click',event=>{
     const selected=event.target.closest('button');
     if(!selected||!toolbar.contains(selected)||selected.disabled)return;
-    for(const button of toolbar.querySelectorAll('button'))button.classList.toggle('active',button===selected);
+    selectedToolbar=selected;
+    for(const button of toolbarButtons)button.classList.toggle('active',button===selected);
+    positionToolbarSelection(true);
   },true);
   document.querySelector('.app').append(toolbar);
+  positionToolbarSelection();
+  if(typeof ResizeObserver!=='undefined'){
+    const observer=new ResizeObserver(()=>positionToolbarSelection());
+    for(const element of [toolbar,...toolbarButtons])observer.observe(element);
+  }
+  window.addEventListener('resize',()=>positionToolbarSelection());
   toolbar.insertAdjacentHTML('beforebegin','<nav id="analysisMoveNav" class="analysis-move-nav" aria-label="Analysis move navigation" hidden><button id="analysisBack" type="button" aria-label="Previous move" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 5-7 7 7 7"/></svg></button><button id="analysisForward" type="button" aria-label="Next move" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 7 7-7 7"/></svg></button></nav>');
   $('analysisBack').onclick=()=>api.navigate(Math.max(0,api.state().session.cursor-1));
   $('analysisForward').onclick=()=>{const {session}=api.state();api.navigate(Math.min(session.length,session.cursor+1));};
