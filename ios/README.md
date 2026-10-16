@@ -168,6 +168,12 @@ During a live foreground game, the native idle timer is disabled, including whil
 The owner approved removing the background-match status message and pausing engine matches whenever they leave the app. This supersedes the earlier minimized-match continuation behavior and test results above. The centered Resume Match button is now smaller and positioned lower. Ordinary computer-game background search behavior remains as described above.
 
 
+## Chess Coach explanations and game defaults
+
+Bad-move feedback uses the legal before/after engine lines and board geometry to explain loose pieces, removed defenders, opened attacks, forks, unfavorable exchanges, promotions, king checks and missed mating or capture opportunities. Suggested alternatives describe their verified immediate effect when available; otherwise both analyzed continuations are compared. Recaptures and promotions count toward material, and pinned attackers are excluded from playable fork targets. Unsupported positional stories are not inferred from evaluation numbers. Successive notifications vary their phrasing and order while preserving the underlying chess facts. Coach searches and the 20-second advice lifetime are unchanged.
+
+The default game mode is User Plays White against the computer, fixed time, 5 seconds per computer move. Fresh-start and Reset Everything flows use these defaults; explicitly saved mode/time preferences continue to be remembered.
+
 ## Retired Karsli app engine
 
 Karsli is no longer selectable or linked into Stockfish AI Chess. The native catalog contains the ten retained engines. Karsli source, profile generation and engine-specific fixtures are excluded from app builds and app resources; its historical source and license notices remain in Git. New Karsli development belongs to the independent `karsli-engine` project.
