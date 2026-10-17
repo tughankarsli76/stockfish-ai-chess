@@ -463,6 +463,7 @@ function finishNativeClock(){
 function backgroundGameEligible(){return !benchmarkMode&&!nativeSuspended&&session.live&&!session.game.isGameOver()&&!clockExpired()&&!document.querySelector('dialog[open]')&&(tab==='game'||matchActive()&&matchView())&&(matchActive()?!engineMatch.paused:settings.opponent==='computer'&&session.game.turn()!==settings.side);}
 window.addEventListener('chess-native-lifecycle',event=>{
   const lifecycle=typeof event.detail==='string'?{type:event.detail}:event.detail;
+  if(['screen-lock','match-inactive','suspend'].includes(lifecycle.type)){winCelebration.stop();mateCelebration.stop();}
   if(lifecycle.type==='match-background-expired'){pauseEngineMatch();return;}
   if(lifecycle.type==='screen-lock'||lifecycle.type==='match-inactive'||lifecycle.type==='background'&&matchActive()){screenAwakeState=null;nativeSuspended=true;++requestId;clearTimeout(bookTimer);clearTimeout(progressTimer);progressTimer=null;analysisUpdates.cancel();gameClock.run(null);advanceMoveClock(moveClock,session.game.fen(),session.game.turn(),false);if(matchActive())engineMatch.paused=true;engine.suspend();engineReady=false;if(lifecycle.type==='background')persist();return;}
   if(lifecycle.type==='background'){
@@ -504,7 +505,7 @@ document.addEventListener('visibilitychange',()=>{
   if(document.hidden&&!globalThis.chessNative)suspendPermanentBrain();
 });
 menus=installMenus({
- state:()=>({settings,session,tab,analysisPaused,analysis,analysisLines,analysisFen,engineFailed,engineMatch,clockExpired:clockExpired()?gameClock.expired:null,suspended:nativeSuspended,celebrating:winCelebration.active}),
+ state:()=>({settings,session,tab,analysisPaused,analysis,analysisLines,analysisFen,engineFailed,engineMatch,clockExpired:clockExpired()?gameClock.expired:null,suspended:nativeSuspended,celebrating:winCelebration.active||mateCelebration.active}),
  moveRating:move=>moveRatings.get(move),
  startEngineMatch,pauseEngineMatch,resumeEngineMatch,stopEngineMatch,loadHistoricalGame,
  beginBenchmark:()=>{benchmarkMode=true;syncScreenAwake();++requestId;clearTimeout(bookTimer);clearTimeout(progressTimer);analysisUpdates.cancel();engine.suspend();engineReady=false;gameClock.run(null);advanceMoveClock(moveClock,session.game.fen(),session.game.turn(),false);},
@@ -524,7 +525,7 @@ menus=installMenus({
  recoverReset:()=>{try{const data=JSON.parse(localStorage.getItem('chess-preview-reset-backup'));if(!data)throw Error();migrateRemovedKarsli(data);session.load(data.pgn);settings={...DEFAULT_SETTINGS,...data.settings};engineMatch=data.engineMatch?{...data.engineMatch,paused:true}:null;resetGameClock(data.clock);saved=data.saved||[];scores=data.scores||{};flipped=!!data.flipped;syncSettings();setTab('game');persist();toast('Previous games and settings restored.');}catch{toast('No valid recovery copy is available.');}}
 },MENU_MARKUP);
 installCoachCard();
-gameReview=installGameReview({state:()=>({settings,session,tab,engineMatch,celebrating:winCelebration.active,suspended:nativeSuspended,inactive:inactiveTab,clockExpired:clockExpired()?gameClock.expired:null,result:clockExpired()?clockStatus():session.game.isGameOver()?gameStatus(session.game):({'1-0':'White wins','0-1':'Black wins','1/2-1/2':'Draw'}[session.game.getHeaders().Result]||gameStatus(session.game)),white:$('whiteName').textContent,black:$('blackName').textContent,reviewProgress:reviewAnalysis}),ratingFor:move=>moveRatings.get(move),accuracyFor:move=>moveRatings.accuracy(move),open:showDialog,startAnalysis:startReviewAnalysis,cancelAnalysis:cancelReviewAnalysis});
+gameReview=installGameReview({state:()=>({settings,session,tab,engineMatch,celebrating:winCelebration.active||mateCelebration.active,suspended:nativeSuspended,inactive:inactiveTab,clockExpired:clockExpired()?gameClock.expired:null,result:clockExpired()?clockStatus():session.game.isGameOver()?gameStatus(session.game):({'1-0':'White wins','0-1':'Black wins','1/2-1/2':'Draw'}[session.game.getHeaders().Result]||gameStatus(session.game)),white:$('whiteName').textContent,black:$('blackName').textContent,reviewProgress:reviewAnalysis}),ratingFor:move=>moveRatings.get(move),accuracyFor:move=>moveRatings.accuracy(move),open:showDialog,startAnalysis:startReviewAnalysis,cancelAnalysis:cancelReviewAnalysis});
 const saveScreen=installSaveGame({open:showDialog,snapshot:()=>({pgn:session.game.pgn(),white:playerHeader('White'),black:playerHeader('Black'),clock:clockSave()}),save:entry=>{
  saved.unshift({...entry,id:Date.now().toString(),date:new Date().toLocaleString()});
  if(!persist()){saved.shift();return false;}

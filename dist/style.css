@@ -74,6 +74,10 @@ body.use-toolbar .tabs,body.use-toolbar .tools{display:none}
 .native-ios #gameInsights.checkmate-result{padding-bottom:0}
 .mate-celebration{width:120px;height:69px;flex-shrink:0;position:relative;display:grid;place-items:center;margin:9px auto 0;pointer-events:none}
 .mate-celebration[hidden]{display:none}
+.mate-celebration[data-kind=mate]{width:min(100%,330px);height:auto;aspect-ratio:560/200;margin-top:2px}
+.mate-samurai{display:block;width:100%;height:auto;grid-area:1/1}
+.mate-samurai[hidden],.mate-celebration:not([data-kind=mate]) .mate-samurai{display:none}
+.mate-celebration[data-kind=mate].samurai-ready>.mate-king,.mate-celebration[data-kind=mate].samurai-ready>.mate-halo,.mate-celebration[data-kind=mate].samurai-ready>.mate-star{display:none}
 .mate-halo{position:absolute;inset:8px 24px;border-radius:50%;background:radial-gradient(ellipse,#dfbf6860,transparent 70%);opacity:.4}
 .mate-king{position:relative;font:46px/1 Georgia,"Apple Symbols","DejaVu Sans",serif;color:#fafafa;-webkit-text-stroke:1px #42434a;paint-order:stroke fill;filter:drop-shadow(0 2px 2px #0002);transform-origin:center bottom}
 .mate-celebration[data-winner=black] .mate-king{color:#111218;-webkit-text-stroke:.7px #777982}
