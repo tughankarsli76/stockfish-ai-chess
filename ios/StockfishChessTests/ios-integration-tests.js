@@ -574,7 +574,7 @@ export async function obsidian(){
 export async function optionsDetailNavigation(){
  const api=nativeIntegration;
  api.stopEngineMatch();api.patch({opponent:'local',showAnalysis:false,language:'en'});
- const cases=[['#boardButton','Board'],['#piecesButton','Pieces'],['#languageButton','Language'],['#nameButton','Your Name'],['#helpButton','Help & FAQ'],['[data-release-info="support"]','Support'],['[data-release-info="privacy"]','Privacy Policy'],['[data-release-info="credits"]','About & Credits']];
+ const cases=[['#boardButton','Board'],['#piecesButton','Pieces'],['#languageButton','Language'],['#nameButton','Your Name'],['#helpButton','Help & FAQ'],['[data-release-info="support"]','Support']];
  const frame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
  const visible=()=>[...document.querySelectorAll('dialog[open]')];
  const require=(ok,message)=>{if(!ok)throw Error(message);};
