@@ -757,3 +757,5 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 
 #settingsDialog .right-control-only,#settingsDialog .right-control-only *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 #settingsDialog button.right-control-only:hover,#settingsDialog button.right-control-only:active{background:transparent}
+
+.release-info-screen a.support-feedback{display:inline-block;min-height:44px;padding:12px 16px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600}.support-feedback:focus-visible{outline:3px solid #267eff;outline-offset:3px}

@@ -28,7 +28,7 @@ for(const version of ['1.3','1.5','2.0.1'])test(`release pages show installed ve
  assert.ok(page.body.innerHTML.includes('Developed by Tughan Y. Karsli'));
  page.open('support');assert.ok(page.body.innerHTML.includes('mailto:tughankarsli@gmail.com'));
  assert.ok(page.body.innerHTML.endsWith('remove any information you do not want to share.</p>'));
- assert.ok(!page.body.innerHTML.includes('<h3>'));
+ assert.ok(page.body.innerHTML.includes('mailto:tughankarsli@gmail.com?subject=Stockfish%20AI%20Chess%20Feedback'));
  page.open('privacy');assert.ok(page.body.innerHTML.includes('Privacy Policy'));
  assert.equal(page.body.title.textContent,`Stockfish AI Chess · App version ${version}`);
  assert.ok(page.body.innerHTML.includes('Privacy policy last updated: October 10, 2026'));
