@@ -734,6 +734,11 @@ dialog>.dialog-heading button:is(:hover,:active){background:transparent}
 
 .game-review-table td{font-size:17.5px;font-weight:700}
 
+.captured-side{padding:14px 0}
+.captured-side+.captured-side{border-top:1px solid #d8d8dd}
+.captured-side h3{margin:0 0 10px;font-size:16px}
+.captured-piece-list{display:flex;flex-wrap:wrap;align-items:center;gap:5px;min-height:40px;color:#666}
+.captured-piece-list img{width:36px;height:36px;object-fit:contain}
 .game-review-dialog{font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif}
 .game-review-dialog .move-rating{font-family:inherit}
 
