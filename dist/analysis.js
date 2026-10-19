@@ -86,6 +86,24 @@ export class EvaluationBar {
   }
 }
 
+// Presentation only: previous search data must never become an engine input.
+export class AnalysisDisplay {
+  constructor(){this.game=null;this.engine=null;this.lines=[];this.progress=null;this.wdl=null;this.fen=null;}
+  followMove(game){this.game=game;}
+  update({game,engine,fen,lines=[],progress=null,wdl=null,terminal=false,continuingMatch=false}){
+    if(game!==this.game||engine!==this.engine&&!continuingMatch){
+      this.game=game;this.engine=engine;this.lines=[];this.progress=null;this.wdl=null;this.fen=null;
+    }
+    this.engine=engine;
+    const freshProgress=progress&&(progress.depth>0||progress.nodes>0||Number.isFinite(progress.nps)||progress.tbHits>0);
+    if(freshProgress)this.progress=progress;
+    if(terminal){this.lines=[];this.wdl=null;this.fen=null;}
+    else if(lines.length){this.lines=lines;this.wdl=wdl;this.fen=fen;}
+    return {lines:this.lines,wdl:this.wdl,pending:!terminal&&this.fen!==fen,
+      progress:this.progress?{...this.progress,tbHits:progress?.tbHits||0}:null};
+  }
+}
+
 export function boardPoint(square, flipped = false) {
   if (!/^[a-h][1-8]$/.test(square)) throw Error('Invalid square');
   const file = 'abcdefgh'.indexOf(square[0]), rank = Number(square[1]);

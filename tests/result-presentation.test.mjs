@@ -7,7 +7,7 @@ import {timeResult,timeWinner} from '../dist/clock.js';
 
 function element(){
  const classes=new Set();
- return {hidden:false,textContent:'',children:[],classList:{toggle(name,on){if(on)classes.add(name);else classes.delete(name);},contains:name=>classes.has(name)},replaceChildren(){this.children=[];},append(...items){this.children.push(...items);}};
+ return {hidden:false,textContent:'',children:[],classList:{toggle(name,on){if(on)classes.add(name);else classes.delete(name);},contains:name=>classes.has(name)},setAttribute(){},replaceChildren(...items){this.children=items;},append(...items){this.children.push(...items);}};
 }
 function harness(){
  const session=new GameSession();session.load('1. e4');
@@ -17,7 +17,7 @@ function harness(){
  bookSuggestions:()=>[{label:'1...e5'}],openingForPosition:()=>({eco:'B00',name:'Opening'}),whiteWdl:()=>[90,5,5],t:x=>x,
  settings:state.settings,session,tab:'analysis',matchActive:()=>true,clockExpired:()=>!!state.clockExpired,gameClock:{expired:'b'},clockStatus:()=>timeResult(state.clockExpired),
  currentAnalysisLines:()=>[{uci:'e7e5',rank:1}],analysisPaused:false,engineFailed:false,gameStatus,
- mateCelebration:{render(position,winner){c.winner=winner;}},renderEvaluationBar(){},renderAnalysisProgress(){},renderAnalysisArrows(){}};
+ mateCelebration:{render(position,winner){c.winner=winner;}},displayAnalysis:()=>({lines:[],pending:false}),renderEvaluationBar(){},renderAnalysisProgress(){},renderAnalysisArrows(){}};
  vm.createContext(c);
  const menus=readFileSync(new URL('../dist/menus.js',import.meta.url),'utf8');
  vm.runInContext(menus.slice(menus.indexOf('  function renderInsights(){'),menus.indexOf('  fillResourceOptions();')),c);

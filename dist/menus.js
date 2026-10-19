@@ -353,7 +353,7 @@ export function installMenus(api,html){
     if($('capturedPiecesDialog').open)refreshCapturedPieces();
   }
   function renderInsights(){
-    const {settings:s,session,analysis,analysisLines,analysisFen,clockExpired}=api.state(),position=session.position();
+    const {settings:s,session,tab,analysis,analysisLines,analysisFen,clockExpired}=api.state(),position=session.position();
     const available=analysisFen===position.fen()?analysisLines:[],book=s.openingBook?bookSuggestions(position):[];
     const opening=book.length?openingForPosition(position,session.moves.slice(0,session.cursor).map(m=>m.before)):null;
     const timeout=session.live?timeResult(clockExpired):'',result=timeout||(position.isCheckmate()?api.status(position):'');
@@ -387,7 +387,7 @@ export function installMenus(api,html){
       }
       $('gameInsights').append(text);
     }
-    const wdl=!result&&s.wdl&&analysisFen===position.fen()?whiteWdl(analysis?.wdl,position.turn()):null;
+    const wdl=!result&&s.wdl?(tab==='analysis'&&api.displayAnalysis?api.displayAnalysis().wdl:analysisFen===position.fen()?whiteWdl(analysis?.wdl,position.turn()):null):null;
     $('wdlSummary').hidden=!s.wdl;$('wdlSummary').textContent=wdl?t('White')+': '+wdl[0]+'% · '+t('Draw')+': '+wdl[1]+'% · '+t('Black')+': '+wdl[2]+'%':'';
     if(wdl&&s.showAnalysis){const p=document.createElement('p');p.className='wdl-inline';p.textContent=$('wdlSummary').textContent;$('gameInsights').append(p);}
   }

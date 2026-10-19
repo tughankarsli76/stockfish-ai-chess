@@ -4,6 +4,8 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {GameSession} from '../dist/model.js';
 import {StockfishEngine} from '../dist/engine.js';
+import {AnalysisDisplay} from '../dist/analysis.js';
+import {whiteWdl} from '../dist/features.js';
 
 const fen='6k1/8/8/8/8/8/5Q2/6K1 w - - 0 1';
 function element(){
@@ -14,10 +16,11 @@ function indicators(node){return (node.className==='tablebase-indicator'?[node]:
 function harness(language='en'){
  const session=new GameSession();session.load(fen);
  const elements=new Map(),node=id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);};
- const c={session,$:node,tab:'analysis',analysisProgress:null,engineReady:true,engineFailed:false,
+ const c={analysisDisplay:new AnalysisDisplay(),connectedEngine:'stockfish19',analysisFen:null,analysis:null,whiteWdl,matchActive:()=>false,session,$:node,tab:'analysis',analysisProgress:null,engineReady:true,engineFailed:false,
   document:{documentElement:{lang:language},createElement:element,createTextNode:text=>text},clockExpired:()=>false,currentAnalysisLines:()=>[]};
  vm.createContext(c);
  const source=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
+ vm.runInContext(source.slice(source.indexOf('function displayAnalysis(){'),source.indexOf('function renderAnalysisArrows(){')),c);
  vm.runInContext(source.slice(source.indexOf('function appendTablebaseIndicator('),source.indexOf('function onInfo(')),c);
  return {c,node};
 }

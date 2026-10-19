@@ -13,8 +13,8 @@ import {MoveRatings,appendMoveRating} from './move-ratings.js';
 import {ChessCoach} from './coach.js';
 import {StockfishEngine} from './engine.js';
 import {NativeEngineTransport} from './native-engine.js';
-import {LINE_COLORS,requestedLines,describeLine,arrowMarkup,AnalysisUpdates,EvaluationBar} from './analysis.js';
-import {DEFAULT_SETTINGS,notation,chooseBookMove,bookMoves,computerMoveTime,normalizeAnalysisTime,analysisMoveTime,shouldThinkDuringTurn,migrateRemovedKarsli} from './features.js';
+import {LINE_COLORS,requestedLines,describeLine,arrowMarkup,AnalysisUpdates,EvaluationBar,AnalysisDisplay} from './analysis.js';
+import {DEFAULT_SETTINGS,notation,chooseBookMove,bookMoves,computerMoveTime,normalizeAnalysisTime,analysisMoveTime,shouldThinkDuringTurn,migrateRemovedKarsli,whiteWdl} from './features.js';
 import {installMenus} from './menus.js';
 import {MENU_MARKUP} from './menu-markup.js';
 import {installSaveGame} from './save-game.js';
@@ -30,6 +30,7 @@ const moveSound=new MoveSound();
 const moveHaptics=new MoveHaptics();
 const winCelebration=new WinCelebration();
 const evaluationBar=new EvaluationBar();
+const analysisDisplay=new AnalysisDisplay();
 const mateCelebration=new CheckmateCelebration([$('gameCelebration'),$('analysisCelebration')]);
 const glyph={p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'},names={p:'pawn',n:'knight',b:'bishop',r:'rook',q:'queen',k:'king'};
 let settings={...DEFAULT_SETTINGS,links:{}};
@@ -192,7 +193,7 @@ function appendTablebaseIndicator(container,progress,spanish){
   indicator.setAttribute('aria-label',indicator.title);container.append(indicator);
 }
 function renderAnalysisProgress(){
-  const progress=analysisProgress?.fen===session.position().fen()?analysisProgress:null;
+  const progress=tab==='analysis'?displayAnalysis().progress:analysisProgress?.fen===session.position().fen()?analysisProgress:null;
   const counter=$('engineDepth');
   counter.replaceChildren();
   if(!progress)return;
@@ -244,7 +245,8 @@ function publishAnalysis(job,info){
   if(scores[job.fen]!==score){scores[job.fen]=score;renderGraph();}
   analysisLines=job.lines.map(line=>describeLine(job.fen,line)).filter(Boolean);
   renderSearchCount();
-  $('engineBadge').textContent=job.computer?engineName(connectedEngine)+' is thinking':'';
+  if(job.computer)$('engineBadge').textContent=engineName(connectedEngine)+' is thinking';
+  else if(tab!=='analysis')$('engineBadge').textContent='';
   renderAnalysis();
 }
 function onResult(job,move,info){
@@ -276,7 +278,7 @@ function onResult(job,move,info){
     try{makeMove({from:move.slice(0,2),to:move.slice(2,4),promotion:move[4]||'q'});}catch{toast('The engine returned an invalid move.');}
   }else renderStatus();
 }
-function renderBoard(){ boardMotion.cancel();$('boardFrame').classList.toggle('no-coordinates',!settings.coordinates);$('ranks').innerHTML=(flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1]).map(n=>'<span>'+n+'</span>').join('');$('files').innerHTML=(flipped?'hgfedcba':'abcdefgh').split('').map(f=>'<span>'+f+'</span>').join('');$('arrows').replaceChildren();const position=session.position(),moves=session.moves,recent=moves[session.cursor-1],legal=selected&&settings.legalHints?position.moves({square:selected,verbose:true}):[],focus=document.activeElement?.dataset?.square;$('board').replaceChildren();for(let row=0;row<8;row++)for(let col=0;col<8;col++){const file=flipped?7-col:col,rank=flipped?row+1:8-row,sq='abcdefgh'[file]+rank,p=position.get(sq),b=document.createElement('button');b.className='square'+((file+rank)%2===1?' dark':'')+(sq===selected?' selected':'')+(settings.lastMove&&[recent?.from,recent?.to].includes(sq)?' recent':'')+(legal.some(m=>m.to===sq)?' legal'+(p?' capture':''):'')+(p?.type==='k'&&p.color===position.turn()&&position.isCheck()?' checked':'');b.dataset.square=sq;b.setAttribute('aria-label',sq+(p?' '+(p.color==='w'?'White':'Black')+' '+names[p.type]+(p.type==='k'&&p.color===position.turn()&&position.isCheck()?' in check':''):' empty'));b.setAttribute('aria-pressed',String(sq===selected));b.innerHTML=p?'<img class="piece-img" src="'+pieceImage(settings.pieceSet,p.color,p.type)+'" alt="" draggable="false">':'';b.onclick=()=>selectSquare(sq);$('board').append(b);}if(focus)$('board').querySelector('[data-square="'+focus+'"]')?.focus({preventScroll:true});renderAnalysisArrows();}
+function renderBoard(){ boardMotion.cancel();$('boardFrame').classList.toggle('no-coordinates',!settings.coordinates);$('ranks').innerHTML=(flipped?[1,2,3,4,5,6,7,8]:[8,7,6,5,4,3,2,1]).map(n=>'<span>'+n+'</span>').join('');$('files').innerHTML=(flipped?'hgfedcba':'abcdefgh').split('').map(f=>'<span>'+f+'</span>').join('');const position=session.position(),moves=session.moves,recent=moves[session.cursor-1],legal=selected&&settings.legalHints?position.moves({square:selected,verbose:true}):[],focus=document.activeElement?.dataset?.square;$('board').replaceChildren();for(let row=0;row<8;row++)for(let col=0;col<8;col++){const file=flipped?7-col:col,rank=flipped?row+1:8-row,sq='abcdefgh'[file]+rank,p=position.get(sq),b=document.createElement('button');b.className='square'+((file+rank)%2===1?' dark':'')+(sq===selected?' selected':'')+(settings.lastMove&&[recent?.from,recent?.to].includes(sq)?' recent':'')+(legal.some(m=>m.to===sq)?' legal'+(p?' capture':''):'')+(p?.type==='k'&&p.color===position.turn()&&position.isCheck()?' checked':'');b.dataset.square=sq;b.setAttribute('aria-label',sq+(p?' '+(p.color==='w'?'White':'Black')+' '+names[p.type]+(p.type==='k'&&p.color===position.turn()&&position.isCheck()?' in check':''):' empty'));b.setAttribute('aria-pressed',String(sq===selected));b.innerHTML=p?'<img class="piece-img" src="'+pieceImage(settings.pieceSet,p.color,p.type)+'" alt="" draggable="false">':'';b.onclick=()=>selectSquare(sq);$('board').append(b);}if(focus)$('board').querySelector('[data-square="'+focus+'"]')?.focus({preventScroll:true});renderAnalysisArrows();}
 function selectSquare(square){
   if(boardMotion.running)return;
   syncClock();
@@ -329,7 +331,7 @@ function renderStatus(){gameReview?.update();syncClock();syncScreenAwake();rende
 function renderGraph(){const moves=session.moves,positions=moves.length?[moves[0].before,...moves.map(m=>m.after)]:[session.game.fen()];const svg=$('graph');svg.innerHTML='<line x1="12" y1="65" x2="428" y2="65" stroke="#777"/><line x1="12" y1="8" x2="12" y2="123" stroke="#aaa"/>';let segment=[];const flush=()=>{if(segment.length){const path=document.createElementNS('http://www.w3.org/2000/svg','polyline');path.setAttribute('points',segment.join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#30383b');path.setAttribute('stroke-width','1.5');svg.append(path);if(settings.graphStyle==='filled'&&segment.length>1){const area=document.createElementNS('http://www.w3.org/2000/svg','polygon');area.setAttribute('points',segment[0].split(',')[0]+',65 '+segment.join(' ')+' '+segment.at(-1).split(',')[0]+',65');area.setAttribute('fill','#586da52b');svg.prepend(area);}segment=[];}};positions.forEach((fen,i)=>{if(typeof scores[fen]!=='number'){flush();return;}const x=12+(positions.length>1?i/(positions.length-1)*416:0),y=65-Math.max(-6,Math.min(6,scores[fen]*(settings.graphStyle==='black'?-1:1)))/6*55;segment.push(x+','+y);const point=document.createElementNS('http://www.w3.org/2000/svg','circle');point.setAttribute('cx',x);point.setAttribute('cy',y);point.setAttribute('r',i===session.cursor?'4':'2');point.setAttribute('fill',i===session.cursor?'#3232ff':'#555');svg.append(point);});flush();document.querySelector('.graph-title>span').textContent=settings.graphStyle==='black'?'Black advantage':'White advantage';const score=scores[session.position().fen()],current=typeof score==='number'?score*(settings.graphStyle==='black'?-1:1):undefined;$('graphScore').textContent=typeof current==='number'?(current>=0?'+':'')+current.toFixed(2):'Not analyzed';$('graphHelp').textContent=(settings.graphStyle==='black'?'Black above the line · White below':'White above the line · Black below')+' · Gaps are unanalyzed positions';}
 function render(){renderCoach();renderBoard();renderHistory();renderStatus();renderGraph();renderAnalysis();}
 function changed(motion){
-  if(motion)evaluationBar.followMove(session.game);
+  if(motion){evaluationBar.followMove(session.game);analysisDisplay.followMove(session.game);}
   if(!motion){winCelebration.stop();mateCelebration.stop();}
   render();persist();
   if(!motion){analyze();return;}
@@ -507,6 +509,7 @@ document.addEventListener('visibilitychange',()=>{
   if(document.hidden&&!globalThis.chessNative)suspendPermanentBrain();
 });
 menus=installMenus({
+ displayAnalysis,
  state:()=>({settings,session,tab,analysisPaused,analysis,analysisLines,analysisFen,engineFailed,engineMatch,clockExpired:clockExpired()?gameClock.expired:null,suspended:nativeSuspended,celebrating:winCelebration.active||mateCelebration.active}),
  moveRating:move=>moveRatings.get(move),
  startEngineMatch,pauseEngineMatch,resumeEngineMatch,stopEngineMatch,loadHistoricalGame,
@@ -559,10 +562,17 @@ function toggleAnalysis(){setTab(tab==='analysis'?'game':'analysis');}
 function currentAnalysisLines(){
   return analysisFen===session.position().fen()?analysisLines:[];
 }
+function displayAnalysis(){
+  const position=session.position(),fen=position.fen();
+  return analysisDisplay.update({game:session.game,engine:connectedEngine,fen,lines:currentAnalysisLines(),
+    progress:analysisProgress?.fen===fen?analysisProgress:null,
+    wdl:analysisFen===fen?whiteWdl(analysis?.wdl,position.turn()):null,
+    terminal:position.isGameOver()||session.live&&clockExpired(),continuingMatch:matchActive()});
+}
 function renderAnalysisArrows(){
   const position=session.position(),book=(tab==='game'||matchActive()&&tab==='analysis')&&settings.openingBook?bookMoves(position).slice(0,2).map((move,i)=>({...move,rank:i+1})):[];
-  const lines=tab==='game'?currentAnalysisLines().slice(0,2):currentAnalysisLines();
-  const markup=!boardMotion.running&&(tab==='analysis'||(tab==='game'&&settings.showAnalysis))&&settings.analysisArrows
+  const lines=tab==='analysis'?displayAnalysis().lines:currentAnalysisLines().slice(0,2);
+  const markup=(tab==='analysis'||!boardMotion.running)&&(tab==='analysis'||(tab==='game'&&settings.showAnalysis))&&settings.analysisArrows
     ?arrowMarkup(book.length?book:lines,flipped):'';
   if($('arrows').innerHTML!==markup)$('arrows').innerHTML=markup;
 }
@@ -580,10 +590,11 @@ function renderEvaluationBar(){
 }
 function renderAnalysis(){
   document.body.classList.toggle('match-analysis',tab==='analysis'&&matchActive());
-  const position=session.position(),timeout=session.live&&clockExpired(),lines=timeout?[]:currentAnalysisLines();
+  const position=session.position(),timeout=session.live&&clockExpired(),display=tab==='analysis'?displayAnalysis():null,lines=timeout?[]:display?.lines||currentAnalysisLines();
   $('engineBadge').hidden=timeout||tab==='analysis'&&matchActive()&&!position.isGameOver()&&!engineFailed;
   if(tab==='analysis'&&analysisPaused)$('engineBadge').textContent='Analysis stopped';
-  $('analysisLines').replaceChildren();
+  $('analysisLines').setAttribute('aria-busy',String(display?.pending||false));
+  $('engineDepth').setAttribute('aria-busy',String(display?.pending||false));
   $('analysisMessage').classList.toggle('checkmate-result',position.isCheckmate()||timeout);
   $('analysisMessage').hidden=lines.length>0;
   if(!lines.length)$('analysisMessage').textContent=session.live&&clockExpired()?clockStatus():position.isGameOver()
@@ -600,6 +611,7 @@ function renderAnalysis(){
     :position.moves().length===2?'Only two legal moves.'
     :'';
   $('analysisNote').hidden=!$('analysisNote').textContent;
+  const rows=[];
   for(const line of lines){
     const row=document.createElement('li');row.className='analysis-line';
     row.dataset.rank=line.rank;row.dataset.move=line.uci;row.style.setProperty('--line-color',LINE_COLORS[line.rank-1]);
@@ -607,8 +619,9 @@ function renderAnalysis(){
     const root=document.createElement('strong');root.className='line-move';root.textContent=notation(line.root,settings.figurine);
     const evaluation=document.createElement('span');evaluation.className='line-evaluation';evaluation.dataset.scoreTone=line.scoreTone;evaluation.textContent=line.evaluation;
     const continuation=document.createElement('p');continuation.className='line-continuation';continuation.textContent=notation(line.continuation,settings.figurine);
-    row.append(rank,root,evaluation,continuation);$('analysisLines').append(row);
+    row.append(rank,root,evaluation,continuation);rows.push(row);
   }
+  $('analysisLines').replaceChildren(...rows);
   renderAnalysisArrows();menus?.renderInsights();
 }
 

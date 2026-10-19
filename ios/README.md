@@ -76,6 +76,8 @@ Tournaments wait for the active result celebration before starting the next game
 The Analysis screen includes a horizontal White/Black evaluation bar beneath
 Positions. It follows the best engine line from White's perspective and holds
 its last evaluation while the next position is being searched. It is separate from WDL.
+Depth, speed, Positions, variation lines, WDL and arrows also remain visible
+while the next position is searched, then update as the new data arrives.
 Options → Chess News, below Computer Chess Rankings, opens World Chess news.
 
 ## Classical & Legendary Games
