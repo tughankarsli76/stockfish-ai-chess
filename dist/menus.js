@@ -225,7 +225,7 @@ export function installMenus(api,html){
 
   click('copyFen',async()=>{try{await navigator.clipboard.writeText(api.state().session.position().fen());api.toast('Position copied.');}catch{api.toast('Clipboard is unavailable.');}});
   $('newGame').onclick=()=>{const shortcut=api.state().settings.shortcut;if(shortcut==='new')open('newDialog');if(shortcut==='flip')api.flip();if(shortcut==='move')api.moveNow();if(shortcut==='hint')api.hint();};
-  $('animations').setAttribute('aria-description','Show the samurai celebration after a win.');
+  $('animations').setAttribute('aria-description','Show only the selected celebration after a win; when off, show only the starred king.');
   const toggles={chessCoach:'chessCoach',animations:'animations',sound:'moveSound',haptics:'moveHaptics',coordinates:'coordinates',legalHints:'legalHints',lastMove:'lastMove',optionArrows:'analysisArrows',showAnalysis:'showAnalysis',figurine:'figurine',openingBook:'openingBook',wdl:'wdl'};
   for(const [id,key] of Object.entries(toggles))$(id).onchange=()=>api.patch({[key]:$(id).checked});
   for(const [id,key] of [['theme','theme'],['language','language']])$(id).onchange=()=>api.patch({[key]:$(id).value});

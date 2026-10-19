@@ -1,4 +1,14 @@
 import {SamuraiCelebration} from './samurai-celebration.js';
+import {DragonCelebration} from './dragon-celebration.js';
+import {IceWizardCelebration} from './ice-wizard-celebration.js';
+import {LightningKnightCelebration} from './lightning-knight-celebration.js';
+import {PhoenixCelebration} from './phoenix-celebration.js';
+import {GorillaCelebration} from './gorilla-celebration.js';
+import {StormWarriorCelebration} from './storm-warrior-celebration.js';
+import {LionKingCelebration} from './lion-king-celebration.js';
+import {CosmicWizardCelebration} from './cosmic-wizard-celebration.js';
+import {EmeraldArcherCelebration} from './emerald-archer-celebration.js';
+import {randomCelebration} from './celebration-choice.js';
 
 // A brief, non-interactive confetti overlay.
 export class WinCelebration {
@@ -34,11 +44,11 @@ export class WinCelebration {
   }
 }
 
-// Every decisive result uses the samurai or the original winner-colored king.
+// Choose once per decisive result; both result views keep the same scene.
 export class CheckmateCelebration {
-  constructor(containers){
-    this.containers=containers;this.position=null;this.kind=null;this.playing=null;this.timer=null;this.useSamurai=true;
-    this.samurai=new Map();
+  constructor(containers,choose=randomCelebration){
+    this.containers=containers;this.position=null;this.kind=null;this.playing=null;this.timer=null;this.useAnimations=true;
+    this.choose=choose;this.choices=new WeakMap();this.animation='samurai';this.scenes=new Map();
     for(const container of containers){
       container.setAttribute('aria-hidden','true');
       const halo=document.createElement('div');halo.className='mate-halo';
@@ -48,42 +58,51 @@ export class CheckmateCelebration {
         const star=document.createElement('span');star.className='mate-star '+name;
         star.textContent=[1,4,7,9,10].includes(index)?'✧':'✦';container.append(star);
       });
-      this.samurai.set(container,new SamuraiCelebration(container));
+      this.scenes.set(container,{samurai:new SamuraiCelebration(container),dragon:new DragonCelebration(container),'ice-wizard':new IceWizardCelebration(container),'lightning-knight':new LightningKnightCelebration(container),phoenix:new PhoenixCelebration(container),gorilla:new GorillaCelebration(container),'storm-warrior':new StormWarriorCelebration(container),'lion-king':new LionKingCelebration(container),'cosmic-wizard':new CosmicWizardCelebration(container),'emerald-archer':new EmeraldArcherCelebration(container)});
     }
   }
-  get active(){return this.playing!==null&&(this.useSamurai?this.samurai.get(this.playing).active:this.timer!==null);}
+  scene(container){return this.scenes.get(container)[this.animation];}
+  get active(){return this.playing!==null&&(this.useAnimations?this.scene(this.playing).active:this.timer!==null);}
   stop(settle=true){
     const previous=this.playing;
     clearTimeout(this.timer);this.timer=null;previous?.classList.remove('playing');this.playing=null;
-    for(const scene of this.samurai.values())scene.stop();
-    if(settle&&this.useSamurai&&previous&&this.position)this.samurai.get(previous).renderFinal(previous.dataset.winner==='white'?'w':'b');
+    for(const scenes of this.scenes.values())for(const scene of Object.values(scenes))scene.stop();
+    if(settle&&this.useAnimations&&this.position)for(const container of this.containers)if(!container.hidden)this.scene(container).renderFinal(container.dataset.winner==='white'?'w':'b');
   }
-  render(position,winner=null,enabled=true,resultKind='time'){
+  render(position,winner=null,enabled=true,resultKind='time',game=position){
     const mate=position.isCheckmate(),winningSide=mate?(position.turn()==='w'?'b':'w'):winner;
-    const decided=!!winningSide,kind=mate?'mate':resultKind,modeChanged=enabled!==this.useSamurai,playingView=this.active?this.playing.dataset.view:null;
-    const key=decided?position.fen()+'|'+winningSide+'|'+kind+'|'+enabled:null,changed=key!==this.position;
+    const decided=!!winningSide,kind=mate?'mate':resultKind,modeChanged=enabled!==this.useAnimations,playingView=this.active?this.playing.dataset.view:null;
+    const key=decided?position.fen()+'|'+winningSide+'|'+kind+'|'+enabled:null,changed=key!==this.position||game!==this.game;
     if(changed)this.stop(false);
-    this.useSamurai=enabled;
-    this.position=key;
+    this.useAnimations=enabled;
+    if(decided){
+      let choices=this.choices.get(game);
+      if(!choices){choices=new Map();this.choices.set(game,choices);}
+      const result=position.fen()+'|'+winningSide+'|'+kind;
+      if(!choices.has(result))choices.set(result,this.choose());
+      this.animation=choices.get(result);
+    }
+    this.position=key;this.game=game;
     this.kind=decided?kind:null;
     for(const container of this.containers){
       container.hidden=!decided;
       container.dataset.winner=winningSide==='w'?'white':'black';
       container.dataset.kind=this.kind||'';
-      container.dataset.animation=enabled?'samurai':'king';
-      if(changed&&decided&&enabled)this.samurai.get(container).renderFinal(container.dataset.winner==='white'?'w':'b');
+      container.dataset.animation=enabled?this.animation:'king';
+      if(changed&&decided&&enabled)this.scene(container).renderFinal(container.dataset.winner==='white'?'w':'b');
     }
     if(modeChanged&&playingView&&decided)this.play(playingView);
   }
   play(view){
-    this.stop(false);
+    // Keep both result views settled while only the selected view animates.
+    this.stop();
     if(!this.position||document.hidden||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     const container=this.containers.find(element=>element.dataset.view===view);
     if(!container)return;
     // Flush a previous animation before a new decisive result starts.
     void container.offsetWidth;
     this.playing=container;container.classList.add('playing');
-    if(this.useSamurai)this.samurai.get(container).play(container.dataset.winner==='white'?'w':'b');
+    if(this.useAnimations)this.scene(container).play(container.dataset.winner==='white'?'w':'b');
     else this.timer=setTimeout(()=>this.stop(),9300);
   }
 }

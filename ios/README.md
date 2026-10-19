@@ -66,11 +66,16 @@ The project generator now preserves existing build/signing settings rather than 
 
 ## Version 2.1 interface
 
-Options → Game End Animations, directly below Chess Coach, controls only the samurai
-celebration. It defaults to on and is saved between launches. Decisive results
-in human and computer matches use the same scene, including wins on time.
-Turning it off keeps the original winner-colored king animation, piece motion,
-menu transitions and confetti.
+Options → Game End Animations, directly below Chess Coach, controls ten local
+celebrations: samurai, dragon, ice wizard, lightning knight, phoenix, gorilla,
+storm warrior, lion king, cosmic wizard and emerald archer. It defaults to on
+and is saved between launches. Each decisive result independently chooses a
+scene with equal 10% probability; consecutive repeats are allowed. The choice
+stays fixed across Game and Analysis, history navigation and animation toggles
+within that game. With animations on, only the selected scene appears, with
+no starred king during loading or after completion. Turning it off shows the
+original winner-colored starred king. Confetti, piece motion and menu
+transitions retain their existing behavior.
 Tournaments wait for the active result celebration before starting the next game.
 
 The Analysis screen includes a horizontal White/Black evaluation bar beneath

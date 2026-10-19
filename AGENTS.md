@@ -5,6 +5,7 @@ The `develop` branch is the active app source for version 2.1. The release downl
 - Edit the interface in `dist/`, native integration in `ios/StockfishChess/`, and Xcode project configuration in `ios/generate-project.py`.
 - Run `npm test` with Node 24 or newer for interface and game changes. There are no npm dependencies to install.
 - Regenerate the Xcode project after native/project changes on a Mac. Linux cloud agents can edit and run web tests; native compilation requires macOS and Xcode.
+- Apply the same display policy to every current and future game-end animation: when Game End Animations is on, show only the selected scene, with no starred king during loading or at the end. When it is off, show only the original winner-colored starred king. Keep the existing confetti overlay unchanged in both modes.
 - Large model inputs are restored with `python3 ios/ci_scripts/restore-models.py`. Their paths, sizes and SHA-256 digests are pinned in `ios/ci_scripts/model-inputs.json`. Keep compiler downloads, models and generated build outputs out of Git.
 - Xcode Cloud runs the post-clone script beside the project, verifies the models, installs pinned Rust/Zig compilers, runs the web tests and generates the project before archiving.
 - Target pull requests at `develop`. Commit only changes relevant to the requested task. Do not submit to App Review or release an app without the owner's explicit instruction.

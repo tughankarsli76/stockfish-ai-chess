@@ -4,6 +4,82 @@ import {recentLichessGames} from './lichess.js';
 import {Chess} from './vendor/chess.js';
 const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const passed=[];
+// Only temporary result views are exercised: the app's game and settings are untouched.
+export async function gameEndAnimationAssets(){
+ const [{CheckmateCelebration,WinCelebration},{CELEBRATIONS}]=await Promise.all([import('./celebration.js'),import('./celebration-choice.js')]);
+ const assert=(condition,message)=>{if(!condition)throw Error(message);};
+ const visible=node=>!!node&&!node.hidden&&node.getClientRects().length>0&&getComputedStyle(node).display!=='none'&&getComputedStyle(node).visibility!=='hidden';
+ const pixels=(canvas,region=[0,0,560,200])=>{
+  const scale=canvas.width/560,[x,y,w,h]=region.map(value=>Math.round(value*scale));
+  const rgba=canvas.getContext('2d',{willReadFrequently:true}).getImageData(x,y,w,h).data;
+  let opaque=0,emerald=0;
+  for(let i=0;i<rgba.length;i+=4)if(rgba[i+3]>32){opaque++;if(rgba[i+1]>rgba[i]*1.12&&rgba[i+1]>rgba[i+2]*1.08)emerald++;}
+  return {opaque,emerald};
+ };
+ const host=document.createElement('div');host.dataset.integrationFixture='game-end-assets';
+ Object.assign(host.style,{position:'fixed',left:'0',top:'0',width:'340px',zIndex:'2000',pointerEvents:'none',display:'grid',gap:'8px'});
+ const containers=['game','analysis'].map(view=>{const node=document.createElement('div');node.className='mate-celebration';node.dataset.view=view;host.append(node);return node;});
+ document.body.append(host);
+ let selected='samurai';const celebration=new CheckmateCelebration(containers,()=>selected),confetti=new WinCelebration(),position=new Chess();
+ const result={scenesChecked:0,viewsChecked:0,animationOffCases:0,noAnimatedKing:true,offWinnerColors:true,confettiBothModes:false,confettiCleaned:false,archerCrystallized:false,archerTargetCleared:false,archerFinalHasCharacter:false,archerCompleted:false,temporaryContainersRemoved:false,scenePixels:[]};
+ const noStars=()=>containers.every(node=>[...node.querySelectorAll('.mate-king,.mate-halo,.mate-star')].every(child=>!visible(child)));
+ try{
+  assert(CELEBRATIONS.length===10,'Expected all ten bundled game-end scenes');
+  for(const [index,name] of CELEBRATIONS.entries()){
+   selected=name;const winner=index%2?'b':'w';
+   celebration.render(position,winner,true,'result',{});
+   const loaded=await Promise.all(containers.map(node=>celebration.scene(node).renderFinal(winner)));
+   assert(loaded.every(Boolean),'Bundled animation asset failed to decode: '+name);
+   assert(noStars(),'Animated result exposed a starred king: '+name);
+   for(const node of containers){
+    const canvases=[...node.querySelectorAll('canvas')].filter(visible),canvas=canvases[0];
+    assert(node.dataset.animation===name&&node.dataset.winner===(winner==='w'?'white':'black'),'Result scene or winner differs between views: '+name);
+    assert(canvases.length===1&&canvas.classList.contains('mate-'+name),'Wrong or multiple animation canvases visible: '+name);
+    const count=pixels(canvas).opaque;assert(count>200,'Decoded animation canvas is empty: '+name);
+    result.scenePixels.push({name,view:node.dataset.view,opaque:count});result.viewsChecked++;
+   }
+   result.scenesChecked++;
+  }
+  assert(!matchMedia('(prefers-reduced-motion: reduce)').matches,'Full animation regression requires Reduce Motion off in the isolated test app');
+  for(const winner of ['w','b'])for(const view of ['game','analysis']){
+   celebration.render(position,winner,false,'result',{});celebration.play(view);confetti.play();
+   await delay(1450);
+   assert(confetti.active&&confetti.canvas.isConnected&&getComputedStyle(confetti.canvas).pointerEvents==='none','Original confetti did not run with animations off');
+   for(const node of containers){
+    const king=node.querySelector('.mate-king'),stars=[...node.querySelectorAll('.mate-star')];
+    const correct=node.dataset.animation==='king'&&node.dataset.winner===(winner==='w'?'white':'black')&&visible(king)&&getComputedStyle(king).color===(winner==='w'?'rgb(250, 250, 250)':'rgb(17, 18, 24)');
+    assert(correct,'Animations off did not show the original winner-colored king');
+    assert(stars.length===12&&stars.every(visible),'Original stars are missing in animations-off mode');
+    assert([...node.querySelectorAll('canvas')].every(canvas=>!visible(canvas)),'A scene remained visible with animations off');
+   }
+   const active=containers.find(node=>node.dataset.view===view);
+   assert([...active.querySelectorAll('.mate-star')].some(star=>Number(getComputedStyle(star).opacity)>0),'Original king stars did not animate');
+   result.animationOffCases++;confetti.stop();celebration.stop(false);
+  }
+  selected='emerald-archer';celebration.render(position,'w',true,'result',{});
+  assert((await Promise.all(containers.map(node=>celebration.scene(node).renderFinal('w')))).every(Boolean),'Archer assets did not settle in both views');
+  const scene=celebration.scene(containers[0]),target=[365,84,102,92];
+  confetti.play();celebration.play('game');const started=performance.now();let emeraldPixels=0,samples=0;
+  assert(scene.active&&confetti.active,'Archer and original confetti did not start together');
+  result.confettiBothModes=true;
+  while(scene.active&&performance.now()-started<14000){
+   await delay(35);const elapsed=performance.now()-started;samples++;
+   if(elapsed>=3500&&elapsed<=4250)emeraldPixels=Math.max(emeraldPixels,pixels(scene.canvas,target).emerald);
+   assert(noStars(),'Archer playback exposed a starred winning king');
+  }
+  const elapsedMs=performance.now()-started;
+  assert(!scene.active&&elapsedMs>=7500&&elapsedMs<14000,'Archer did not complete its real 7.6-second sequence');
+  assert(emeraldPixels>20,'The defeated king did not visibly crystallize into emerald');
+  assert(pixels(scene.canvas,target).opaque===0,'Archer ending retained the defeated king or crystal debris');
+  assert(pixels(scene.canvas).opaque>200,'Archer disappeared at the end of its sequence');
+  assert(!confetti.active&&!confetti.canvas,'Original confetti did not clean itself up');
+  assert(containers.every(node=>visible(node.querySelector('.mate-emerald-archer'))),'Switching result views lost the settled archer');
+  Object.assign(result,{archerCrystallized:true,archerTargetCleared:true,archerFinalHasCharacter:true,archerCompleted:true,confettiCleaned:true,emeraldPixels,archerElapsedMs:elapsedMs,animationSamples:samples});
+ }finally{
+  confetti.stop();celebration.stop(false);host.remove();result.temporaryContainersRemoved=!host.isConnected;
+ }
+ return result;
+}
 export function trackMoveFeedback(){
  window.__restoreMoveFeedback?.();
  const events=[];

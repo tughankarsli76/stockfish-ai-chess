@@ -190,7 +190,7 @@ export class SamuraiCelebration {
     this.canvas.setAttribute('aria-hidden','true');this.canvas.hidden=true;
     container.append(this.canvas);
     this.frame=null;this.generation=0;this._active=false;this.scene=null;
-    // Prewarm while the game is played; failures retain the existing result fallback.
+    // Prewarm while the game is played; failures leave the game result text visible.
     loadAssets().catch(()=>{});
   }
   get active(){return this._active;}

@@ -604,7 +604,7 @@ function renderAnalysis(){
     :'';
   $('analysisMessage').hidden=lines.length>0||!$('analysisMessage').textContent;
   const declaredWinner=session.live?({'1-0':'w','0-1':'b'}[session.game.getHeaders().Result]||null):null;
-  mateCelebration.render(position,timeout?timeWinner(gameClock.expired):declaredWinner,settings.animations!==false,timeout?'time':'result');
+  mateCelebration.render(position,timeout?timeWinner(gameClock.expired):declaredWinner,settings.animations!==false,timeout?'time':'result',session.game);
   renderEvaluationBar();
   renderAnalysisProgress();
   $('analysisNote').textContent=timeout?'':position.isGameOver()?'No further moves.'
