@@ -76,11 +76,11 @@ Tournaments wait for the active result celebration before starting the next game
 The Analysis screen includes a horizontal White/Black evaluation bar beneath
 Positions. It follows the best engine line from White's perspective and holds
 its last evaluation while the next position is being searched. It is separate from WDL.
-Options → Study → Chess News, below Computer Chess Rankings, opens World Chess news.
+Options → Chess News, below Computer Chess Rankings, opens World Chess news.
 
 ## Classical & Legendary Games
 
-Options → Study → Classical & Legendary Games opens an offline collection of 150
+Options → Classical & Legendary Games opens an offline collection of 150
 historical games spanning 1475–2026, including the Immortal Game, the Opera Game,
 both landmark Deep Blue–Kasparov games, and games by Kasparov, Karpov, Tal,
 Carlsen, Fischer, Anand, Capablanca and other legends. Search by player,
