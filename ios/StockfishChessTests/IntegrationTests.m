@@ -805,6 +805,24 @@
     for(NSString *key in @[@"firstQueued",@"humanTurnLive",@"noStaleReply",@"noReview"])XCTAssertEqualObjects(rapid[key],@YES,@"%@",key);
 }
 
+- (void)testMainDisplayContinuityAndRoundedAnalysisBar {
+    XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for display tests");
+    WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
+    XCTestExpectation *loaded=[self expectationWithDescription:@"Main game ready"];
+    [self waitForBoard:web expectation:loaded attempts:200];
+    [self waitForExpectations:@[loaded] timeout:25];
+    XCTestExpectation *done=[self expectationWithDescription:@"Main display remains visible after moves"];
+    __block id result;
+    [web callAsyncJavaScript:@"const tests=await import('chess://app/ios-integration-tests.js');try{return await tests.mainDisplayContinuity();}catch(error){return {error:error.message};}" arguments:@{} inFrame:nil inContentWorld:WKContentWorld.pageWorld completionHandler:^(id value,NSError *error){XCTAssertNil(error,@"%@",error);result=value;[done fulfill];}];
+    [self waitForExpectations:@[done] timeout:90];
+    NSLog(@"MAIN_DISPLAY_CONTINUITY: %@",result);
+    XCTAssertNil(result[@"error"],@"%@",result);
+    XCTAssertEqualObjects(result[@"mainDisplayContinuous"],@YES);
+    XCTAssertEqualObjects(result[@"matchingRoundness"],@YES);
+    XCTAssertEqualObjects(result[@"movesChecked"],@3);
+    XCTAssertGreaterThan([result[@"samples"] intValue],60);
+}
+
 - (void)testMainGameMateArrowsStayResponsive {
     WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
     XCTestExpectation *loaded=[self expectationWithDescription:@"Main game ready"];

@@ -193,7 +193,7 @@ function appendTablebaseIndicator(container,progress,spanish){
   indicator.setAttribute('aria-label',indicator.title);container.append(indicator);
 }
 function renderAnalysisProgress(){
-  const progress=tab==='analysis'?displayAnalysis().progress:analysisProgress?.fen===session.position().fen()?analysisProgress:null;
+  const progress=displayAnalysis().progress;
   const counter=$('engineDepth');
   counter.replaceChildren();
   if(!progress)return;
@@ -208,10 +208,11 @@ function renderAnalysisProgress(){
 }
 function renderSearchCount(){
   const counter=$('positionCount'),position=session.position();
-  const progress=analysisProgress?.fen===position.fen()?analysisProgress:null;
-  counter.hidden=!(tab==='game'&&session.live&&!position.isGameOver()&&!clockExpired()&&engineReady&&!engineFailed&&progress);
+  const display=displayAnalysis(),progress=display.progress;
+  counter.hidden=!(tab==='game'&&session.live&&!position.isGameOver()&&!clockExpired()&&progress);
+  counter.setAttribute('aria-busy',String(display.pending));
   const spanish=document.documentElement.lang==='es';
-  const bestLine=currentAnalysisLines().find(line=>line.rank===1),evaluation=bestLine?.evaluation||'—';
+  const bestLine=display.lines.find(line=>line.rank===1),evaluation=bestLine?.evaluation||'—';
   counter.replaceChildren();
   if(!counter.hidden){
     const stats=[[(spanish?'Profundidad':'Depth'),progress.depth],[(spanish?'Puntuación':'Score'),evaluation],[(spanish?'Velocidad':'Speed'),Number.isFinite(progress.nps)?new Intl.NumberFormat(document.documentElement.lang||'en',{maximumFractionDigits:0,useGrouping:false}).format(progress.nps/1000)+' kN/s':'—'],[(spanish?'Posiciones':'Positions'),new Intl.NumberFormat(document.documentElement.lang||'en').format(progress.nodes)]];
@@ -571,8 +572,8 @@ function displayAnalysis(){
 }
 function renderAnalysisArrows(){
   const position=session.position(),book=(tab==='game'||matchActive()&&tab==='analysis')&&settings.openingBook?bookMoves(position).slice(0,2).map((move,i)=>({...move,rank:i+1})):[];
-  const lines=tab==='analysis'?displayAnalysis().lines:currentAnalysisLines().slice(0,2);
-  const markup=(tab==='analysis'||!boardMotion.running)&&(tab==='analysis'||(tab==='game'&&settings.showAnalysis))&&settings.analysisArrows
+  const lines=displayAnalysis().lines.slice(0,tab==='analysis'?3:2);
+  const markup=(tab==='analysis'||(tab==='game'&&settings.showAnalysis))&&settings.analysisArrows
     ?arrowMarkup(book.length?book:lines,flipped):'';
   if($('arrows').innerHTML!==markup)$('arrows').innerHTML=markup;
 }
@@ -590,7 +591,7 @@ function renderEvaluationBar(){
 }
 function renderAnalysis(){
   document.body.classList.toggle('match-analysis',tab==='analysis'&&matchActive());
-  const position=session.position(),timeout=session.live&&clockExpired(),display=tab==='analysis'?displayAnalysis():null,lines=timeout?[]:display?.lines||currentAnalysisLines();
+  const position=session.position(),timeout=session.live&&clockExpired(),display=displayAnalysis(),lines=timeout?[]:display.lines;
   $('engineBadge').hidden=timeout||tab==='analysis'&&matchActive()&&!position.isGameOver()&&!engineFailed;
   if(tab==='analysis'&&analysisPaused)$('engineBadge').textContent='Analysis stopped';
   $('analysisLines').setAttribute('aria-busy',String(display?.pending||false));

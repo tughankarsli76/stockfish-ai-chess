@@ -354,7 +354,10 @@ export function installMenus(api,html){
   }
   function renderInsights(){
     const {settings:s,session,tab,analysis,analysisLines,analysisFen,clockExpired}=api.state(),position=session.position();
-    const available=analysisFen===position.fen()?analysisLines:[],book=s.openingBook?bookSuggestions(position):[];
+    const display=api.displayAnalysis?.();
+    const available=display?.lines||(analysisFen===position.fen()?analysisLines:[]),book=s.openingBook?bookSuggestions(position):[];
+    const linePosition=(display?.fen||position.fen()).split(' '),lineSide=linePosition[1],lineNumber=Number(linePosition[5]);
+    $('gameInsights').setAttribute('aria-busy',String(display?.pending||false));
     const opening=book.length?openingForPosition(position,session.moves.slice(0,session.cursor).map(m=>m.before)):null;
     const timeout=session.live?timeResult(clockExpired):'',result=timeout||(position.isCheckmate()?api.status(position):'');
     $('gameInsights').classList.toggle('checkmate-result',!!result);
@@ -374,7 +377,7 @@ export function installMenus(api,html){
         dot.style.backgroundColor=LINE_COLORS[line.rank-1];dot.setAttribute('aria-hidden','true');
         const score=document.createElement('strong');score.className='move-score';score.dataset.scoreTone=line.scoreTone;
         score.textContent='('+line.evaluation+')';
-        move.append(dot,document.createTextNode(position.moveNumber()+(position.turn()==='w'?'. ':'... ')),moveNotation(line.root,s.figurine,position.turn()),document.createTextNode(' '),score);
+        move.append(dot,document.createTextNode(lineNumber+(lineSide==='w'?'. ':'... ')),moveNotation(line.root,s.figurine,lineSide),document.createTextNode(' '),score);
         text.append(move);
       });}
       else text.textContent=position.isGameOver()?api.status(position):'';
@@ -387,7 +390,7 @@ export function installMenus(api,html){
       }
       $('gameInsights').append(text);
     }
-    const wdl=!result&&s.wdl?(tab==='analysis'&&api.displayAnalysis?api.displayAnalysis().wdl:analysisFen===position.fen()?whiteWdl(analysis?.wdl,position.turn()):null):null;
+    const wdl=!result&&s.wdl?(display?display.wdl:analysisFen===position.fen()?whiteWdl(analysis?.wdl,position.turn()):null):null;
     $('wdlSummary').hidden=!s.wdl;$('wdlSummary').textContent=wdl?t('White')+': '+wdl[0]+'% · '+t('Draw')+': '+wdl[1]+'% · '+t('Black')+': '+wdl[2]+'%':'';
     if(wdl&&s.showAnalysis){const p=document.createElement('p');p.className='wdl-inline';p.textContent=$('wdlSummary').textContent;$('gameInsights').append(p);}
   }

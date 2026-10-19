@@ -99,7 +99,7 @@ export class AnalysisDisplay {
     if(freshProgress)this.progress=progress;
     if(terminal){this.lines=[];this.wdl=null;this.fen=null;}
     else if(lines.length){this.lines=lines;this.wdl=wdl;this.fen=fen;}
-    return {lines:this.lines,wdl:this.wdl,pending:!terminal&&this.fen!==fen,
+    return {lines:this.lines,wdl:this.wdl,fen:this.fen,pending:!terminal&&this.fen!==fen,
       progress:this.progress?{...this.progress,tbHits:progress?.tbHits||0}:null};
   }
 }

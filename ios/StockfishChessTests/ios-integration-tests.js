@@ -21,6 +21,32 @@ export function trackMoveFeedback(){
  window.__moveFeedback=events;
  window.__restoreMoveFeedback=()=>{for(const reset of restore)reset();};
 }
+export async function mainDisplayContinuity(){
+ const api=nativeIntegration,$=id=>document.getElementById(id);
+ api.stopEngineMatch();api.patch({engine:'stockfish19',opponent:'local',openingBook:false,showAnalysis:true,analysisArrows:true,wdl:true,chessCoach:false,animations:true,threads:1,hash:32,time:0});
+ await until(()=>api.state().ready,'Native engine did not become ready');
+ api.setTab('game');api.load('1. e4 e5 2. Nf3 Nc6');
+ const visible=()=>!$('positionCount').hidden&&$('positionCount').querySelectorAll('.engine-stat-badge').length===4&&
+  !!$('gameInsights').querySelector('.move-evaluations')?.textContent&&!!$('wdlSummary').textContent&&$('arrows').querySelectorAll('g').length>0;
+ await until(visible,'Main game analysis did not appear');
+ let samples=0;
+ for(let turn=0;turn<3;turn++){
+  const state=api.state(),board=new Chess(state.fen),move=board.moves({verbose:true}).find(move=>move.promotion===undefined);
+  const previous={score:document.querySelector('#positionCount .stat-score-value')?.textContent,insights:$('gameInsights').textContent,wdl:$('wdlSummary').textContent};
+  document.querySelector('[data-square="'+move.from+'"]').click();document.querySelector('[data-square="'+move.to+'"]').click();
+  if(api.state().fen===state.fen)throw Error('Board move was not played');
+  if(!visible()||document.querySelector('#positionCount .stat-score-value')?.textContent!==previous.score||$('gameInsights').textContent!==previous.insights||$('wdlSummary').textContent!==previous.wdl)throw Error('Main game display cleared immediately after a move');
+  const started=performance.now();
+  while(performance.now()-started<800){await delay(16);samples++;if(!visible())throw Error('Main game display disappeared during search or move animation');}
+  await until(()=>api.state().depth>0&&api.state().lines.length>0,'New position did not replace cached analysis');
+ }
+ api.setTab('analysis');await until(()=>$('engineDepth').querySelector('.engine-stat-badge'),'Analysis badges did not appear');
+ const bar=getComputedStyle($('analysisEvaluationBar')),badge=getComputedStyle($('engineDepth').querySelector('.engine-stat-badge'));
+ const matchingRoundness=bar.borderRadius===badge.borderRadius&&parseFloat(bar.borderRadius)>4;
+ if(!matchingRoundness)throw Error('Analysis bar does not match the rounded stat badges');
+ return {movesChecked:3,samples,matchingRoundness,mainDisplayContinuous:true};
+}
+
 export async function mainGameMateResponsiveness(){
  const api=nativeIntegration;
  api.stopEngineMatch();api.patch({engine:'stockfish19',opponent:'local',openingBook:false,showAnalysis:true,analysisArrows:true,threads:1,hash:32,level:'20',time:0});
