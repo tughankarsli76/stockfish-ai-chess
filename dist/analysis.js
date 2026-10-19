@@ -68,6 +68,24 @@ export function evaluationBarState(line,result=null){
   return {whiteShare:Math.max(.02,Math.min(.98,1/(1+Math.exp(-score/250)))),label:(score>=0?'+':'')+(score/100).toFixed(2),favored:score<0?'black':'white'};
 }
 
+// Hold the displayed evaluation while the next position is being searched.
+export class EvaluationBar {
+  constructor(){this.game=null;this.last=null;this.terminal=false;}
+  // Playing from an earlier position replaces the game object, but continues this analysis.
+  followMove(game){this.game=game;}
+  update(game,line,result=null){
+    if(game!==this.game){this.game=game;this.last=null;this.terminal=false;}
+    const state=evaluationBarState(line,result);
+    if(state.label!=='—'){
+      this.last=state;this.terminal=['1-0','0-1','1/2-1/2'].includes(result);
+      return {...state,pending:false};
+    }
+    // A completed game's result is not an evaluation of an earlier move.
+    if(this.terminal){this.last=null;this.terminal=false;}
+    return {...(this.last||state),pending:true};
+  }
+}
+
 export function boardPoint(square, flipped = false) {
   if (!/^[a-h][1-8]$/.test(square)) throw Error('Invalid square');
   const file = 'abcdefgh'.indexOf(square[0]), rank = Number(square[1]);

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
-import {describeLine,evaluationBarState} from '../dist/analysis.js';
+import {describeLine,evaluationBarState,EvaluationBar} from '../dist/analysis.js';
 import {GameSession} from '../dist/model.js';
 import {timeWinner} from '../dist/clock.js';
 
@@ -34,7 +34,7 @@ test('engine scores and mate signs keep White perspective on either turn',()=>{
 
 function harness(){
  const session=new GameSession(),bar={hidden:false,style:{setProperty(key,value){this[key]=value;}},dataset:{},setAttribute(key,value){this[key]=value;}},label={};
- const c={session,tab:'analysis',clockExpired:()=>false,gameClock:{expired:null},timeWinner,evaluationBarState,
+ const c={session,tab:'analysis',clockExpired:()=>false,gameClock:{expired:null},timeWinner,evaluationBar:new EvaluationBar(),
   currentAnalysisLines:()=>[], $:id=>id==='analysisEvaluationBar'?bar:label};
  vm.createContext(c);
  const app=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
@@ -42,12 +42,18 @@ function harness(){
  return {c,bar,label,session};
 }
 
-test('Analysis uses rank one, clears stale scores, and hides the bar on other screens',()=>{
+test('Analysis uses rank one, holds the last evaluation during search, and hides it on other screens',()=>{
  const {c,bar,label}=harness();
  c.currentAnalysisLines=()=>[{rank:2,type:'cp',whiteScore:800},{rank:1,type:'cp',whiteScore:-35}];
  c.renderEvaluationBar();assert.equal(label.textContent,'-0.35');assert.equal(bar.dataset.favored,'black');
  assert.equal(bar.hidden,false);assert.ok(parseFloat(bar.style['--white-share'])<50);
- c.currentAnalysisLines=()=>[];c.renderEvaluationBar();assert.equal(label.textContent,'—');assert.equal(bar.style['--white-share'],'50%');
+ const width=bar.style['--white-share'];
+ c.session.move('e4');c.currentAnalysisLines=()=>[];c.renderEvaluationBar();
+ assert.equal(label.textContent,'-0.35');assert.equal(bar.style['--white-share'],width);
+ assert.match(bar['aria-label'],/Updating evaluation/);
+ c.currentAnalysisLines=()=>[{rank:1,type:'cp',whiteScore:90}];c.renderEvaluationBar();
+ assert.equal(label.textContent,'+0.90');assert.ok(parseFloat(bar.style['--white-share'])>50);
+ assert.doesNotMatch(bar['aria-label'],/Updating evaluation/);
  for(const tab of ['game','graph']){c.tab=tab;c.renderEvaluationBar();assert.equal(bar.hidden,true);}
 });
 
@@ -59,4 +65,21 @@ test('mate, draw and live clock results override scores without leaking into his
  session.load('1. e4');session.navigate(0);c.renderEvaluationBar();assert.equal(label.textContent,'—');
  c.clockExpired=()=>false;session.load('[SetUp "1"]\n[FEN "8/8/8/8/8/8/3k4/K7 w - - 0 1"]\n\n*');
  c.renderEvaluationBar();assert.equal(label.textContent,'½–½');assert.equal(bar.style['--white-share'],'50%');
+});
+
+test('new games and imports start with no inherited evaluation',()=>{
+ const {c,label,bar,session}=harness();
+ c.currentAnalysisLines=()=>[{rank:1,type:'cp',whiteScore:500}];c.renderEvaluationBar();
+ session.reset();c.currentAnalysisLines=()=>[];c.renderEvaluationBar();
+ assert.equal(label.textContent,'—');assert.equal(bar.style['--white-share'],'50%');
+ c.currentAnalysisLines=()=>[{rank:1,type:'cp',whiteScore:-500}];c.renderEvaluationBar();
+ session.load('1. d4');c.currentAnalysisLines=()=>[];c.renderEvaluationBar();assert.equal(label.textContent,'—');
+});
+
+test('continuing analysis from an earlier move retains the bar until the new line arrives',()=>{
+ const {c,bar,label,session}=harness();session.load('1. e4 e5');
+ c.currentAnalysisLines=()=>[{rank:1,type:'cp',whiteScore:120}];c.renderEvaluationBar();
+ const width=bar.style['--white-share'];session.navigate(0);session.move('d4',{fromReview:true});
+ c.evaluationBar.followMove(session.game);c.currentAnalysisLines=()=>[];c.renderEvaluationBar();
+ assert.equal(bar.style['--white-share'],width);assert.equal(label.textContent,'+1.20');
 });

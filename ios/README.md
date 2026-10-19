@@ -66,15 +66,16 @@ The project generator now preserves existing build/signing settings rather than 
 
 ## Version 2.1 interface
 
-Options → Animations, directly below Game Review, controls only the samurai
+Options → Animations, directly below Chess Coach, controls only the samurai
 celebration. It defaults to on and is saved between launches. Decisive results
 in human and computer matches use the same scene, including wins on time.
-Turning it off does not change piece motion, menu transitions or confetti.
+Turning it off keeps the original winner-colored king animation, piece motion,
+menu transitions and confetti.
 Tournaments wait for the active result celebration before starting the next game.
 
 The Analysis screen includes a horizontal White/Black evaluation bar beneath
-Positions. It follows the best engine line from White's perspective and clears
-when a new position has not yet been evaluated. It is separate from WDL.
+Positions. It follows the best engine line from White's perspective and holds
+its last evaluation while the next position is being searched. It is separate from WDL.
 Options → Study → Chess News, below Computer Chess Rankings, opens World Chess news.
 
 ## Classical & Legendary Games

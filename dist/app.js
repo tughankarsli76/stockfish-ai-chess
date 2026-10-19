@@ -13,7 +13,7 @@ import {MoveRatings,appendMoveRating} from './move-ratings.js';
 import {ChessCoach} from './coach.js';
 import {StockfishEngine} from './engine.js';
 import {NativeEngineTransport} from './native-engine.js';
-import {LINE_COLORS,requestedLines,describeLine,arrowMarkup,AnalysisUpdates,evaluationBarState} from './analysis.js';
+import {LINE_COLORS,requestedLines,describeLine,arrowMarkup,AnalysisUpdates,EvaluationBar} from './analysis.js';
 import {DEFAULT_SETTINGS,notation,chooseBookMove,bookMoves,computerMoveTime,normalizeAnalysisTime,analysisMoveTime,shouldThinkDuringTurn,migrateRemovedKarsli} from './features.js';
 import {installMenus} from './menus.js';
 import {MENU_MARKUP} from './menu-markup.js';
@@ -29,6 +29,7 @@ const boardMotion=new BoardMotion($('board'));
 const moveSound=new MoveSound();
 const moveHaptics=new MoveHaptics();
 const winCelebration=new WinCelebration();
+const evaluationBar=new EvaluationBar();
 const mateCelebration=new CheckmateCelebration([$('gameCelebration'),$('analysisCelebration')]);
 const glyph={p:'♟',n:'♞',b:'♝',r:'♜',q:'♛',k:'♚'},names={p:'pawn',n:'knight',b:'bishop',r:'rook',q:'queen',k:'king'};
 let settings={...DEFAULT_SETTINGS,links:{}};
@@ -328,6 +329,7 @@ function renderStatus(){gameReview?.update();syncClock();syncScreenAwake();rende
 function renderGraph(){const moves=session.moves,positions=moves.length?[moves[0].before,...moves.map(m=>m.after)]:[session.game.fen()];const svg=$('graph');svg.innerHTML='<line x1="12" y1="65" x2="428" y2="65" stroke="#777"/><line x1="12" y1="8" x2="12" y2="123" stroke="#aaa"/>';let segment=[];const flush=()=>{if(segment.length){const path=document.createElementNS('http://www.w3.org/2000/svg','polyline');path.setAttribute('points',segment.join(' '));path.setAttribute('fill','none');path.setAttribute('stroke','#30383b');path.setAttribute('stroke-width','1.5');svg.append(path);if(settings.graphStyle==='filled'&&segment.length>1){const area=document.createElementNS('http://www.w3.org/2000/svg','polygon');area.setAttribute('points',segment[0].split(',')[0]+',65 '+segment.join(' ')+' '+segment.at(-1).split(',')[0]+',65');area.setAttribute('fill','#586da52b');svg.prepend(area);}segment=[];}};positions.forEach((fen,i)=>{if(typeof scores[fen]!=='number'){flush();return;}const x=12+(positions.length>1?i/(positions.length-1)*416:0),y=65-Math.max(-6,Math.min(6,scores[fen]*(settings.graphStyle==='black'?-1:1)))/6*55;segment.push(x+','+y);const point=document.createElementNS('http://www.w3.org/2000/svg','circle');point.setAttribute('cx',x);point.setAttribute('cy',y);point.setAttribute('r',i===session.cursor?'4':'2');point.setAttribute('fill',i===session.cursor?'#3232ff':'#555');svg.append(point);});flush();document.querySelector('.graph-title>span').textContent=settings.graphStyle==='black'?'Black advantage':'White advantage';const score=scores[session.position().fen()],current=typeof score==='number'?score*(settings.graphStyle==='black'?-1:1):undefined;$('graphScore').textContent=typeof current==='number'?(current>=0?'+':'')+current.toFixed(2):'Not analyzed';$('graphHelp').textContent=(settings.graphStyle==='black'?'Black above the line · White below':'White above the line · Black below')+' · Gaps are unanalyzed positions';}
 function render(){renderCoach();renderBoard();renderHistory();renderStatus();renderGraph();renderAnalysis();}
 function changed(motion){
+  if(motion)evaluationBar.followMove(session.game);
   if(!motion){winCelebration.stop();mateCelebration.stop();}
   render();persist();
   if(!motion){analyze();return;}
@@ -570,11 +572,11 @@ function renderEvaluationBar(){
     :position.isDraw()?'1/2-1/2'
     :session.live&&clockExpired()?(timeWinner(gameClock.expired)==='w'?'1-0':'0-1')
     :session.live?session.game.getHeaders().Result:null;
-  const state=evaluationBarState(currentAnalysisLines().find(line=>line.rank===1),result);
+  const state=evaluationBar.update(session.game,currentAnalysisLines().find(line=>line.rank===1),result);
   const bar=$('analysisEvaluationBar');bar.hidden=tab!=='analysis';
   bar.style.setProperty('--white-share',(state.whiteShare*100)+'%');bar.dataset.favored=state.favored;
   $('analysisEvaluationLabel').textContent=state.label;
-  bar.setAttribute('aria-label',state.label==='—'?'Position not yet evaluated':state.label+' · White perspective');
+  bar.setAttribute('aria-label',state.label==='—'?'Position not yet evaluated':(state.pending?'Updating evaluation; last evaluation ':'')+state.label+' · White perspective');
 }
 function renderAnalysis(){
   document.body.classList.toggle('match-analysis',tab==='analysis'&&matchActive());
@@ -616,7 +618,6 @@ function patchSettings(patch){
   const resetTime=['fixedTime','gameMinutes','increment'].some(key=>key in patch&&patch[key]!==settings[key]);
   if(['chessCoach','engine','opponent','side'].some(key=>key in patch))coach.clear();
   gameClock.tick();if('engine' in patch){scores={};moveRatings.clear();}Object.assign(settings,patch);
-  if('animations' in patch&&settings.animations===false)mateCelebration.stop(false);
   settings.gameMinutes=gameMinutes(settings.gameMinutes);settings.increment=moveIncrement(settings.increment);
   if(resetTime)resetGameClock();
   if('side' in patch)flipped=settings.side==='b';

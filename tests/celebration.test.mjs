@@ -70,15 +70,31 @@ test('time wins use the same samurai for either winner in both result views',()=
  }
 });
 
-test('disabling samurai hides both scenes, cancels playback and prevents replay',()=>{
- const {celebration,containers,scenes}=resultHarness(),position=mate('w');
+test('disabling samurai replaces a running scene with the original animated king',()=>{
+ const {celebration,containers,scenes,timers}=resultHarness(),position=mate('w');
  celebration.render(position);celebration.play('game');assert.equal(celebration.active,true);
- celebration.render(position,null,false);celebration.play('analysis');
- assert.equal(celebration.active,false);
- assert.ok(containers.every(container=>container.hidden));assert.ok(scenes.every(scene=>!scene.active));
- assert.deepEqual(scenes[1].plays,[]);
- celebration.render(position,null,true);
- assert.equal(celebration.active,false);assert.ok(containers.every(container=>!container.hidden));
+ celebration.render(position,null,false);
+ assert.equal(celebration.active,true);assert.equal(timers.size,1);
+ assert.ok(containers.every(container=>!container.hidden&&container.dataset.animation==='king'));
+ assert.ok(scenes.every(scene=>!scene.active));assert.deepEqual(scenes[1].plays,[]);
+ assert.equal(containers[0].classList.contains('playing'),true);
+ [...timers.values()][0]();assert.equal(celebration.active,false);
+ assert.equal(containers[0].classList.contains('playing'),false);
+ celebration.render(position,null,true);assert.equal(celebration.active,false);
+ assert.ok(containers.every(container=>container.dataset.animation==='samurai'));
+});
+
+test('samurai off retains the winner-colored king for mates and time wins in both views',()=>{
+ for(const winner of ['w','b'])for(const view of ['game','analysis'])for(const kind of ['mate','time']){
+  const {celebration,containers,scenes,timers}=resultHarness(),position=kind==='mate'?mate(winner):new GameSession().position();
+  const index=view==='game'?0:1;
+  celebration.render(position,kind==='time'?winner:null,false);celebration.play(view);
+  assert.equal(containers[index].hidden,false);assert.equal(containers[index].dataset.animation,'king');
+  assert.equal(containers[index].dataset.winner,winner==='w'?'white':'black');
+  assert.equal(celebration.active,true);assert.equal(timers.size,1);
+  assert.ok(scenes.every(scene=>!scene.active&&scene.plays.length===0&&scene.finals.length===0));
+  celebration.stop();assert.equal(celebration.active,false);assert.equal(timers.size,0);
+ }
 });
 
 test('a declared decisive result uses the same samurai scene',()=>{
