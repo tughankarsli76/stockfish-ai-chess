@@ -15,9 +15,9 @@ function harness(){
  const state={session,settings:{showAnalysis:false,openingBook:true,wdl:true},analysis:{wdl:[900,50,50]},analysisLines:[],analysisFen:session.position().fen(),clockExpired:'b'};
  const c={api:{state:()=>state,status:gameStatus},$:node,document:{createElement:element,body:element()},timeResult,timeWinner,
  bookSuggestions:()=>[{label:'1...e5'}],openingForPosition:()=>({eco:'B00',name:'Opening'}),whiteWdl:()=>[90,5,5],t:x=>x,
- session,tab:'analysis',matchActive:()=>true,clockExpired:()=>!!state.clockExpired,gameClock:{expired:'b'},clockStatus:()=>timeResult(state.clockExpired),
+ settings:state.settings,session,tab:'analysis',matchActive:()=>true,clockExpired:()=>!!state.clockExpired,gameClock:{expired:'b'},clockStatus:()=>timeResult(state.clockExpired),
  currentAnalysisLines:()=>[{uci:'e7e5',rank:1}],analysisPaused:false,engineFailed:false,gameStatus,
- mateCelebration:{render(position,winner){c.winner=winner;}},renderAnalysisProgress(){},renderAnalysisArrows(){}};
+ mateCelebration:{render(position,winner){c.winner=winner;}},renderEvaluationBar(){},renderAnalysisProgress(){},renderAnalysisArrows(){}};
  vm.createContext(c);
  const menus=readFileSync(new URL('../dist/menus.js',import.meta.url),'utf8');
  vm.runInContext(menus.slice(menus.indexOf('  function renderInsights(){'),menus.indexOf('  fillResourceOptions();')),c);

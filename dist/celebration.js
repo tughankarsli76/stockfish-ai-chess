@@ -34,7 +34,7 @@ export class WinCelebration {
   }
 }
 
-// Checkmate uses the defeated king; time wins retain the winner-colored king.
+// Every decisive result uses the same winner-colored samurai and defeated king.
 export class CheckmateCelebration {
   constructor(containers){
     this.containers=containers;this.position=null;this.kind=null;this.playing=null;this.timer=null;
@@ -51,23 +51,25 @@ export class CheckmateCelebration {
       this.samurai.set(container,new SamuraiCelebration(container));
     }
   }
-  get active(){return this.playing!==null&&(this.kind!=='mate'||this.samurai.get(this.playing).active);}
+  get active(){return this.playing!==null&&this.samurai.get(this.playing).active;}
   stop(settle=true){
     const previous=this.playing;
     clearTimeout(this.timer);this.timer=null;previous?.classList.remove('playing');this.playing=null;
     for(const scene of this.samurai.values())scene.stop();
-    if(settle&&previous&&this.kind==='mate'&&this.position)this.samurai.get(previous).renderFinal(previous.dataset.winner==='white'?'w':'b');
+    if(settle&&previous&&this.position)this.samurai.get(previous).renderFinal(previous.dataset.winner==='white'?'w':'b');
   }
-  render(position,timeWinner=null){
-    const mate=position.isCheckmate(),checkmate=mate||!!timeWinner,key=checkmate?position.fen()+'|'+(timeWinner||'mate'):null,changed=key!==this.position;
+  render(position,winner=null,enabled=true,resultKind='time'){
+    const mate=position.isCheckmate(),winningSide=mate?(position.turn()==='w'?'b':'w'):winner;
+    const decided=enabled&&!!winningSide,kind=mate?'mate':resultKind;
+    const key=decided?position.fen()+'|'+winningSide+'|'+kind:null,changed=key!==this.position;
     if(changed)this.stop(false);
     this.position=key;
-    this.kind=mate?'mate':timeWinner?'time':null;
+    this.kind=decided?kind:null;
     for(const container of this.containers){
-      container.hidden=!checkmate;
-      container.dataset.winner=(timeWinner||(position.turn()==='w'?'b':'w'))==='w'?'white':'black';
+      container.hidden=!decided;
+      container.dataset.winner=winningSide==='w'?'white':'black';
       container.dataset.kind=this.kind||'';
-      if(changed&&mate)this.samurai.get(container).renderFinal(container.dataset.winner==='white'?'w':'b');
+      if(changed&&decided)this.samurai.get(container).renderFinal(container.dataset.winner==='white'?'w':'b');
     }
   }
   play(view){
@@ -75,13 +77,9 @@ export class CheckmateCelebration {
     if(!this.position||document.hidden||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
     const container=this.containers.find(element=>element.dataset.view===view);
     if(!container)return;
-    // Flush a previous animation before a new checkmate starts.
+    // Flush a previous animation before a new decisive result starts.
     void container.offsetWidth;
     this.playing=container;container.classList.add('playing');
-    if(this.kind==='mate'){
-      this.samurai.get(container).play(container.dataset.winner==='white'?'w':'b');
-      return;
-    }
-    this.timer=setTimeout(()=>this.stop(),9300);
+    this.samurai.get(container).play(container.dataset.winner==='white'?'w':'b');
   }
 }

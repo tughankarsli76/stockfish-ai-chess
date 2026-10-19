@@ -81,6 +81,6 @@ export function installTournament(api){
       tournament.results.push({...tournament.schedule[tournament.results.length],result,pgn:(g.setHeader('Result',result),g.pgn())});save();nextAt=Date.now()+4000;
       if(tournament.results.length===tournament.schedule.length){showResults();return;}
     }
-    if(!match.paused&&match.round===tournament.results.length&&Date.now()>=nextAt)launch();
+    if(!match.paused&&!s.celebrating&&match.round===tournament.results.length&&Date.now()>=nextAt)launch();
   },500);
 }

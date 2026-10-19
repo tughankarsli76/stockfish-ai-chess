@@ -13,7 +13,7 @@ import {MoveRatings,appendMoveRating} from './move-ratings.js';
 import {ChessCoach} from './coach.js';
 import {StockfishEngine} from './engine.js';
 import {NativeEngineTransport} from './native-engine.js';
-import {LINE_COLORS,requestedLines,describeLine,arrowMarkup,AnalysisUpdates} from './analysis.js';
+import {LINE_COLORS,requestedLines,describeLine,arrowMarkup,AnalysisUpdates,evaluationBarState} from './analysis.js';
 import {DEFAULT_SETTINGS,notation,chooseBookMove,bookMoves,computerMoveTime,normalizeAnalysisTime,analysisMoveTime,shouldThinkDuringTurn,migrateRemovedKarsli} from './features.js';
 import {installMenus} from './menus.js';
 import {MENU_MARKUP} from './menu-markup.js';
@@ -564,6 +564,18 @@ function renderAnalysisArrows(){
     ?arrowMarkup(book.length?book:lines,flipped):'';
   if($('arrows').innerHTML!==markup)$('arrows').innerHTML=markup;
 }
+function renderEvaluationBar(){
+  const position=session.position();
+  const result=position.isCheckmate()?(position.turn()==='w'?'0-1':'1-0')
+    :position.isDraw()?'1/2-1/2'
+    :session.live&&clockExpired()?(timeWinner(gameClock.expired)==='w'?'1-0':'0-1')
+    :session.live?session.game.getHeaders().Result:null;
+  const state=evaluationBarState(currentAnalysisLines().find(line=>line.rank===1),result);
+  const bar=$('analysisEvaluationBar');bar.hidden=tab!=='analysis';
+  bar.style.setProperty('--white-share',(state.whiteShare*100)+'%');bar.dataset.favored=state.favored;
+  $('analysisEvaluationLabel').textContent=state.label;
+  bar.setAttribute('aria-label',state.label==='—'?'Position not yet evaluated':state.label+' · White perspective');
+}
 function renderAnalysis(){
   document.body.classList.toggle('match-analysis',tab==='analysis'&&matchActive());
   const position=session.position(),timeout=session.live&&clockExpired(),lines=timeout?[]:currentAnalysisLines();
@@ -577,7 +589,9 @@ function renderAnalysis(){
     :tab==='analysis'&&analysisPaused?'Click Analysis to resume.':engineFailed?'Stockfish disconnected. Click Analysis to reconnect.'
     :'';
   $('analysisMessage').hidden=lines.length>0||!$('analysisMessage').textContent;
-  mateCelebration.render(position,session.live&&clockExpired()?timeWinner(gameClock.expired):null);
+  const declaredWinner=session.live?({'1-0':'w','0-1':'b'}[session.game.getHeaders().Result]||null):null;
+  mateCelebration.render(position,timeout?timeWinner(gameClock.expired):declaredWinner,settings.animations!==false,timeout?'time':'result');
+  renderEvaluationBar();
   renderAnalysisProgress();
   $('analysisNote').textContent=timeout?'':position.isGameOver()?'No further moves.'
     :position.moves().length===1?'Only one legal move.'
@@ -602,6 +616,7 @@ function patchSettings(patch){
   const resetTime=['fixedTime','gameMinutes','increment'].some(key=>key in patch&&patch[key]!==settings[key]);
   if(['chessCoach','engine','opponent','side'].some(key=>key in patch))coach.clear();
   gameClock.tick();if('engine' in patch){scores={};moveRatings.clear();}Object.assign(settings,patch);
+  if('animations' in patch&&settings.animations===false)mateCelebration.stop(false);
   settings.gameMinutes=gameMinutes(settings.gameMinutes);settings.increment=moveIncrement(settings.increment);
   if(resetTime)resetGameClock();
   if('side' in patch)flipped=settings.side==='b';

@@ -1,5 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import {GameSession} from '../dist/model.js';
 import {createSchedule,standings,tournamentOutcome} from '../dist/tournament.js';
 test('round robin includes every pairing and balances colors',()=>{
  for(let count=2;count<=6;count++)for(let games=1;games<=10;games++)for(const coin of [0,1]){
@@ -36,4 +39,20 @@ test('equal points produce joint winners',()=>{
  const t={engines:['a','b'],schedule:createSchedule(['a','b'],1),results:[{white:'a',black:'b',result:'1/2-1/2'}]};
  const outcome=tournamentOutcome(t);
  assert.deepEqual(outcome.winners.map(r=>[r.id,r.points]),[['a',.5],['b',.5]]);
+});
+
+test('the next tournament game waits for the full celebration after its four-second interval',()=>{
+ const session=new GameSession();session.load('1. f3 e5 2. g4 Qh4#');
+ const state={settings:{opponent:'match'},engineMatch:{tournamentId:'cup',round:1,paused:false},session,celebrating:true};
+ const pair={white:'a',black:'b'},tournament={id:'cup',schedule:[pair,pair],results:[]};
+ let now=0,launched=0;
+ const c={tournament,nextAt:0,api:{state:()=>state},Date:{now:()=>now},document:{hidden:false,querySelector:()=>null},save(){},showResults(){},launch(){launched++;}};
+ vm.createContext(c);
+ const source=readFileSync(new URL('../dist/tournament.js',import.meta.url),'utf8');
+ const callback=source.slice(source.lastIndexOf('  setInterval(()=>{')+'  setInterval(()=>{'.length,source.lastIndexOf('  },500);'));
+ vm.runInContext('this.tick=()=>{'+callback+'}',c);
+ c.tick();assert.equal(tournament.results.length,1);assert.equal(launched,0);
+ now=5000;c.tick();assert.equal(launched,0,'the active samurai must finish before advancing');
+ state.celebrating=false;now=6800;c.tick();assert.equal(launched,1);
+ assert.equal(tournament.results.length,1,'rerenders must not record the same result twice');
 });

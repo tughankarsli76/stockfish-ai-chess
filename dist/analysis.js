@@ -56,7 +56,16 @@ export function describeLine(fen, info) {
     const prefix = move.color === 'w' ? `${move.number}. ` : index === 0 ? `${move.number}… ` : '';
     return prefix + move.san;
   }).join(' ');
-  return {scoreTone: whiteScore > 0 ? 'positive' : whiteScore < 0 ? 'negative' : 'neutral', rank: info.multipv, root: moves[0].san, uci: info.pv[0], evaluation, assessment: whiteAssessment(whiteScore, info.type), continuation, depth: info.depth};
+  return {whiteScore,type:info.type,scoreTone: whiteScore > 0 ? 'positive' : whiteScore < 0 ? 'negative' : 'neutral', rank: info.multipv, root: moves[0].san, uci: info.pv[0], evaluation, assessment: whiteAssessment(whiteScore, info.type), continuation, depth: info.depth};
+}
+
+// A visual evaluation balance, not a win probability. Scores already use White's perspective.
+export function evaluationBarState(line,result=null){
+  if(['1-0','0-1','1/2-1/2'].includes(result))return {whiteShare:result==='1-0'?1:result==='0-1'?0:.5,label:result==='1/2-1/2'?'½–½':result==='1-0'?'1–0':'0–1',favored:result==='0-1'?'black':'white'};
+  if(!line||!Number.isFinite(line.whiteScore)||!['cp','mate'].includes(line.type))return {whiteShare:.5,label:'—',favored:'white'};
+  const score=line.whiteScore;
+  if(line.type==='mate')return {whiteShare:score>=0?1:0,label:'M'+Math.abs(score),favored:score<0?'black':'white'};
+  return {whiteShare:Math.max(.02,Math.min(.98,1/(1+Math.exp(-score/250)))),label:(score>=0?'+':'')+(score/100).toFixed(2),favored:score<0?'black':'white'};
 }
 
 export function boardPoint(square, flipped = false) {
