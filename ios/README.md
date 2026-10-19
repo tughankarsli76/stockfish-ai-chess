@@ -66,7 +66,7 @@ The project generator now preserves existing build/signing settings rather than 
 
 ## Version 2.1 interface
 
-Options → Animations, directly below Chess Coach, controls only the samurai
+Options → Game End Animations, directly below Chess Coach, controls only the samurai
 celebration. It defaults to on and is saved between launches. Decisive results
 in human and computer matches use the same scene, including wins on time.
 Turning it off keeps the original winner-colored king animation, piece motion,
