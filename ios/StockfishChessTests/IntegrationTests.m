@@ -805,6 +805,23 @@
     for(NSString *key in @[@"firstQueued",@"humanTurnLive",@"noStaleReply",@"noReview"])XCTAssertEqualObjects(rapid[key],@YES,@"%@",key);
 }
 
+- (void)testEngineMatchBookDisplayInAnalysis {
+    XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for match tests");
+    WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
+    XCTestExpectation *loaded=[self expectationWithDescription:@"Opening book display ready"];
+    [self waitForBoard:web expectation:loaded attempts:200];
+    [self waitForExpectations:@[loaded] timeout:25];
+    XCTestExpectation *done=[self expectationWithDescription:@"Book display and engine handoff"];
+    __block id result;
+    [web callAsyncJavaScript:@"const tests=await import('chess://app/ios-integration-tests.js');try{return await tests.engineMatchBookDisplay();}catch(error){return {error:error.message};}" arguments:@{} inFrame:nil inContentWorld:WKContentWorld.pageWorld completionHandler:^(id value,NSError *error){XCTAssertNil(error,@"%@",error);result=value;[done fulfill];}];
+    [self waitForExpectations:@[done] timeout:70];
+    NSLog(@"MATCH_BOOK_DISPLAY: %@",result);
+    XCTAssertNotNil(result);
+    XCTAssertNil(result[@"error"],@"%@",result);
+    XCTAssertGreaterThanOrEqual([result[@"bookPositionsChecked"] integerValue],3);
+    for(NSString *key in @[@"bookBeforeSearch",@"bothViewsEqual",@"bookFitsPanel",@"toggleContinuesMatch",@"engineAnalysisAfterBook"])XCTAssertEqualObjects(result[key],@YES,@"%@",key);
+}
+
 - (void)testMainDisplayContinuityAndRoundedAnalysisBar {
     XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for display tests");
     WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
@@ -1524,7 +1541,7 @@
     NSLog(@"BOOK_MATCH_RESULT: %@",result);
     XCTAssertEqualObjects(result[@"moves"],@2);XCTAssertEqualObjects(result[@"initialArrows"],@2);
     for(NSString *key in @[@"screenshotBookPagerHidden",@"liveBookPagerHidden",@"startsBeforeBudget",@"noEngineSearch",@"legalBookMoves",@"synced",@"pauseRespected"])XCTAssertEqualObjects(result[key],@YES,@"%@",key);
-    XCTAssertEqualObjects(result[@"animationArrows"],@0);XCTAssertGreaterThan([result[@"arrowsSeen"] intValue],0);XCTAssertGreaterThanOrEqual([result[@"firstInterval"] doubleValue],1450.0);XCTAssertLessThan([result[@"firstInterval"] doubleValue],2500.0);XCTAssertGreaterThanOrEqual([result[@"secondInterval"] doubleValue],2100.0);XCTAssertLessThan([result[@"secondInterval"] doubleValue],3500.0);
+    XCTAssertGreaterThan([result[@"animationArrows"] intValue],0);XCTAssertGreaterThan([result[@"arrowsSeen"] intValue],0);XCTAssertGreaterThanOrEqual([result[@"firstInterval"] doubleValue],1450.0);XCTAssertLessThan([result[@"firstInterval"] doubleValue],2500.0);XCTAssertGreaterThanOrEqual([result[@"secondInterval"] doubleValue],2100.0);XCTAssertLessThan([result[@"secondInterval"] doubleValue],3500.0);
 }
 - (void)testEngineMatchContinuesInAnalysis {
     WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];

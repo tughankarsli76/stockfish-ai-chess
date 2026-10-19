@@ -97,6 +97,47 @@ export function trackMoveFeedback(){
  window.__moveFeedback=events;
  window.__restoreMoveFeedback=()=>{for(const reset of restore)reset();};
 }
+export async function engineMatchBookDisplay(){
+ const api=nativeIntegration,$=id=>document.getElementById(id),{bookSuggestions}=await import('./features.js');
+ const assert=(condition,message)=>{if(!condition)throw Error(message);};
+ const result={bookPositionsChecked:0,openingNames:[],bookBounds:[],bookBeforeSearch:false,bothViewsEqual:true,bookFitsPanel:true,toggleContinuesMatch:false,engineAnalysisAfterBook:false};
+ api.stopEngineMatch();api.patch({engine:'stockfish19',openingBook:true,showAnalysis:true,analysisArrows:true,figurine:true,bookVariety:'low',threads:1,hash:32});
+ try{
+  api.startEngineMatch({white:'stockfish19',black:'clover91',seconds:3});api.setTab('analysis');
+  await until(()=>!api.state().active,'Previous native search did not finish cancelling');
+  const checkBook=()=>{
+   const state=api.state(),card=$('analysisBookInsights'),board=new Chess(state.fen),choices=bookSuggestions(board).slice(0,2);
+   assert(!card.hidden&&getComputedStyle(card).display!=='none'&&card.getClientRects().length>0,'Analysis opening book is not visible');
+   assert(card.querySelector('strong')?.textContent==='Book','Analysis book title is missing');
+   assert(choices.length>0&&card.querySelector('p:last-child')?.textContent.includes('%'),'Analysis book move percentages are missing');
+   const labels=[...card.querySelectorAll('p:last-child>span')].map(node=>node.getAttribute('aria-label')||node.textContent);
+   assert(JSON.stringify(labels)===JSON.stringify(choices.map(move=>move.label)),'Analysis book moves do not match the current side/position');
+   assert(card.textContent===$('gameInsights').textContent,'Game and Analysis book names or moves differ');
+   assert($('analysisLines').hidden,'Cached engine lines are competing with book play');
+   assert(!state.active,'Book play unexpectedly started a native search');
+   const bounds=card.getBoundingClientRect(),panel=$('analysisPanel').getBoundingClientRect(),toolbar=document.querySelector('.main-toolbar').getBoundingClientRect();
+   assert(bounds.bottom<=Math.min(panel.bottom,toolbar.top)&&bounds.top>=panel.top,'Book content is clipped or overlaps the toolbar');
+   result.bookBounds.push({top:bounds.top,bottom:bounds.bottom,panelBottom:panel.bottom,toolbarTop:toolbar.top});
+   result.openingNames.push(card.querySelector('.opening-name')?.textContent||'');
+   result.bookPositionsChecked++;
+  };
+  checkBook();result.bookBeforeSearch=api.state().length===0;
+  const before=api.state();api.setTab('game');api.setTab('analysis');
+  result.toggleContinuesMatch=!api.state().engineMatch.paused&&api.state().length===before.length;
+  for(let move=1;move<=2;move++){
+   await until(()=>api.state().length>=move&&!document.querySelector('.moving-piece'),'Book match did not advance',15000);
+   checkBook();
+  }
+  api.load('6k1/8/8/8/8/8/5Q2/6K1 w - - 0 1');
+  assert(bookSuggestions(new Chess(api.state().fen)).length===0,'Transition fixture is still in the opening book');
+  await until(()=>api.state().lines.length>0&&$('analysisLines').querySelector('.analysis-line')&&api.state().depth>0,'Native engine analysis did not appear after the book');
+  assert($('analysisBookInsights').hidden&&!$('analysisBookInsights').textContent,'Opening book remained visible after leaving it');
+  assert(!$('analysisLines').hidden,'Real engine analysis remained hidden after book play');
+  result.engineAnalysisAfterBook=true;
+  return result;
+ }finally{api.pauseEngineMatch();api.stopEngineMatch();}
+}
+
 export async function mainDisplayContinuity(){
  const api=nativeIntegration,$=id=>document.getElementById(id);
  api.stopEngineMatch();api.patch({engine:'stockfish19',opponent:'local',openingBook:false,showAnalysis:true,analysisArrows:true,wdl:true,chessCoach:false,animations:true,threads:1,hash:32,time:0});

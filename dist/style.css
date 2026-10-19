@@ -64,11 +64,11 @@ body[data-theme=green] .board-frame{background:#586e53}
 body.use-toolbar .main-toolbar{display:flex}
 body.use-toolbar .tabs,body.use-toolbar .tools{display:none}
 #gamePanel{height:auto;min-height:182px;padding-bottom:8px}
-#gameInsights{text-align:center;padding:16px 0 18px;font-size:15px}
-#gameInsights>strong{font-size:18px}
-#gameInsights>p{line-height:1.6;margin:11px 0 4px}
+#gameInsights,#analysisBookInsights{text-align:center;padding:16px 0 18px;font-size:15px}
+#gameInsights>strong,#analysisBookInsights>strong{font-size:18px}
+#gameInsights>p,#analysisBookInsights>p{line-height:1.6;margin:11px 0 4px}
 #gameInsights>small{display:block;font-size:12px;color:#777782}
-#gameInsights[hidden]{display:none}
+#gameInsights[hidden],#analysisBookInsights[hidden]{display:none}
 #gameInsights.checkmate-result{padding:13px 0 0}
 #gameInsights.checkmate-result>p{font-size:20px;font-weight:700;color:#17171b;line-height:1.25}
 .native-ios #gameInsights.checkmate-result{padding-bottom:0}
@@ -376,9 +376,9 @@ body[data-theme=graphite] .board-frame,body[data-theme=graphite] .setup-board-fr
 .board .moving-piece{position:absolute;z-index:5;pointer-events:none;user-select:none;object-fit:contain;will-change:transform}
 
 .move-color-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
-#gameInsights .notation-figurine{font-size:1.3em;line-height:1;vertical-align:.08em;font-family:"Apple Symbols","Segoe UI Symbol",serif;font-weight:400;paint-order:stroke fill}
-#gameInsights .notation-figurine.white{color:#fff;-webkit-text-fill-color:#fff;-webkit-text-stroke:1px #222;text-shadow:0 1px 1px #0006}
-#gameInsights .notation-figurine.black{color:#111;-webkit-text-fill-color:#111;-webkit-text-stroke:0;text-shadow:none}
+:is(#gameInsights,#analysisBookInsights) .notation-figurine{font-size:1.3em;line-height:1;vertical-align:.08em;font-family:"Apple Symbols","Segoe UI Symbol",serif;font-weight:400;paint-order:stroke fill}
+:is(#gameInsights,#analysisBookInsights) .notation-figurine.white{color:#fff;-webkit-text-fill-color:#fff;-webkit-text-stroke:1px #222;text-shadow:0 1px 1px #0006}
+:is(#gameInsights,#analysisBookInsights) .notation-figurine.black{color:#111;-webkit-text-fill-color:#111;-webkit-text-stroke:0;text-shadow:none}
 
 #gameInsights>.move-evaluations{font-size:13px;color:#000}
 #gameInsights .move-score{font-weight:700;color:#000}
@@ -456,7 +456,7 @@ body[data-theme=graphite] .board-frame,body[data-theme=graphite] .setup-board-fr
 .native-ios .players b{font-size:18px}
 .native-ios .players b .player-clock{font-size:17px}
 .native-ios .status-line>span{font-size:16px;line-height:1.4}
-.native-ios #gameInsights{font-size:18px;padding-block:12px}
+.native-ios #gameInsights,.native-ios #analysisBookInsights{font-size:18px;padding-block:12px}
 .native-ios #gameInsights>.move-evaluations{font-size:18px;line-height:1.65}
 .native-ios #gameInsights>.wdl-inline,
 .native-ios .wdl-summary{font-size:16px;font-weight:500;line-height:1.5;color:#222}
@@ -627,7 +627,7 @@ body .board .square.checked,body[data-theme] .board .square.checked{
 
 /* Keep WDL at the bottom of Analysis, below the variations. */
 #analysisPanel:not([hidden]){display:flex;flex-direction:column}
-#analysisPanel>.analysis-heading,#analysisPanel>#analysisLines{flex-shrink:0}
+#analysisPanel>.analysis-heading,#analysisPanel>#analysisBookInsights,#analysisPanel>#analysisLines{flex-shrink:0}
 #analysisPanel #wdlSummary,.native-ios body #analysisPanel #wdlSummary{position:static;top:auto;margin: auto 0 12px;padding-top:12px;flex-shrink:0}
 
 /* Leave room for move-history arrows below WDL on taller phones. */

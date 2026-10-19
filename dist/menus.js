@@ -103,6 +103,7 @@ export function installMenus(api,html){
   $('analysisBack').onclick=()=>api.navigate(Math.max(0,api.state().session.cursor-1));
   $('analysisForward').onclick=()=>{const {session}=api.state();api.navigate(Math.min(session.length,session.cursor+1));};
   $('gamePanel').insertAdjacentHTML('afterbegin','<div id="gameInsights"></div>');
+  $('analysisLines').insertAdjacentHTML('beforebegin','<div id="analysisBookInsights" hidden></div>');
   document.querySelector('.status-line').insertAdjacentHTML('beforeend','<div id="matchResume" class="match-resume" hidden><button id="resumeMatch" type="button" class="primary">Resume Match</button></div>');
   $('analysisPanel').insertAdjacentHTML('beforeend','<div id="wdlSummary" class="wdl-summary"></div>');
 
@@ -353,23 +354,35 @@ export function installMenus(api,html){
     if($('capturedPiecesDialog').open)refreshCapturedPieces();
   }
   function renderInsights(){
-    const {settings:s,session,tab,analysis,analysisLines,analysisFen,clockExpired}=api.state(),position=session.position();
+    const {settings:s,session,tab,analysis,analysisLines,analysisFen,clockExpired,engineMatch}=api.state(),position=session.position();
     const display=api.displayAnalysis?.();
     const available=display?.lines||(analysisFen===position.fen()?analysisLines:[]),book=s.openingBook?bookSuggestions(position):[];
     const linePosition=(display?.fen||position.fen()).split(' '),lineSide=linePosition[1],lineNumber=Number(linePosition[5]);
-    $('gameInsights').setAttribute('aria-busy',String(display?.pending||false));
+    $('gameInsights').setAttribute('aria-busy',String(!book.length&&display?.pending||false));
     const opening=book.length?openingForPosition(position,session.moves.slice(0,session.cursor).map(m=>m.before)):null;
     const timeout=session.live?timeResult(clockExpired):'',result=timeout||(position.isCheckmate()?api.status(position):'');
+    const appendBook=container=>{
+      const title=document.createElement('strong');title.textContent=t('Book');
+      const name=document.createElement('p');name.className='opening-name';
+      name.textContent=opening?opening.eco+': '+opening.name:t('Starting position');
+      const moves=document.createElement('p');
+      book.slice(0,2).forEach((move,index)=>{
+        if(index)moves.append(document.createTextNode('   '));
+        moves.append(moveNotation(move.label,s.figurine,position.turn()));
+      });
+      container.append(title,name,moves);
+    };
+    const matchBook=tab==='analysis'&&s.opponent==='match'&&!!engineMatch&&book.length>0&&!position.isGameOver()&&!timeout;
+    $('analysisBookInsights').hidden=!matchBook;
+    $('analysisBookInsights').replaceChildren();
+    if(matchBook)appendBook($('analysisBookInsights'));
+    $('analysisLines').hidden=matchBook;
     $('gameInsights').classList.toggle('checkmate-result',!!result);
     $('gameInsights').hidden=!s.showAnalysis&&!result;
     $('gameInsights').replaceChildren();
     if(s.showAnalysis||result){
       const text=document.createElement('p');
       if(result)text.textContent=result;
-      else if(book.length)book.slice(0,2).forEach((m,index)=>{
-        if(index)text.append(document.createTextNode('   '));
-        text.append(moveNotation(m.label,s.figurine,position.turn()));
-      });
       else if(available.length){text.className='move-evaluations';available.slice(0,2).forEach((line,index)=>{
         if(index)text.append(document.createElement('br'));
         const move=document.createElement('span');
@@ -382,13 +395,8 @@ export function installMenus(api,html){
       });}
       else text.textContent=position.isGameOver()?api.status(position):'';
       if(book.length&&!result){
-        const title=document.createElement('strong');title.textContent=t('Book');
-        $('gameInsights').append(title);
-        const name=document.createElement('p');name.className='opening-name';
-        name.textContent=opening?opening.eco+': '+opening.name:t('Starting position');
-        $('gameInsights').append(name);
-      }
-      $('gameInsights').append(text);
+        appendBook($('gameInsights'));
+      }else $('gameInsights').append(text);
     }
     const wdl=!result&&s.wdl?(display?display.wdl:analysisFen===position.fen()?whiteWdl(analysis?.wdl,position.turn()):null):null;
     $('wdlSummary').hidden=!s.wdl;$('wdlSummary').textContent=wdl?t('White')+': '+wdl[0]+'% · '+t('Draw')+': '+wdl[1]+'% · '+t('Black')+': '+wdl[2]+'%':'';
