@@ -819,7 +819,25 @@
     XCTAssertNotNil(result);
     XCTAssertNil(result[@"error"],@"%@",result);
     XCTAssertGreaterThanOrEqual([result[@"bookPositionsChecked"] integerValue],3);
-    for(NSString *key in @[@"bookBeforeSearch",@"bothViewsEqual",@"bookFitsPanel",@"toggleContinuesMatch",@"engineAnalysisAfterBook"])XCTAssertEqualObjects(result[key],@YES,@"%@",key);
+    for(NSString *key in @[@"bookBeforeSearch",@"bothViewsEqual",@"bookFitsPanel",@"bookBarHidden",@"barRestoredAfterBook",@"toggleContinuesMatch",@"engineAnalysisAfterBook"])XCTAssertEqualObjects(result[key],@YES,@"%@",key);
+}
+
+- (void)testComputerBookAnalysisAndToolbar {
+    XCTSkipIf(![NSBundle.mainBundle.bundleIdentifier containsString:@".corebench."], @"Use isolated app storage for computer-analysis tests");
+    WKWebView *web=[UIApplication.sharedApplication.windows.firstObject.rootViewController valueForKey:@"webView"];
+    XCTestExpectation *loaded=[self expectationWithDescription:@"Computer analysis ready"];
+    [self waitForBoard:web expectation:loaded attempts:200];
+    [self waitForExpectations:@[loaded] timeout:25];
+    XCTestExpectation *done=[self expectationWithDescription:@"Computer book and toolbar transitions"];
+    __block id result;
+    [web callAsyncJavaScript:@"const tests=await import('chess://app/ios-integration-tests.js');try{return await tests.computerBookAnalysisAndToolbar();}catch(error){return {error:error.message};}" arguments:@{} inFrame:nil inContentWorld:WKContentWorld.pageWorld completionHandler:^(id value,NSError *error){XCTAssertNil(error,@"%@",error);result=value;[done fulfill];}];
+    [self waitForExpectations:@[done] timeout:100];
+    NSLog(@"COMPUTER_BOOK_ANALYSIS_TOOLBAR: %@",result);
+    XCTAssertNotNil(result);
+    XCTAssertNil(result[@"error"],@"%@",result);
+    XCTAssertGreaterThanOrEqual([result[@"bookPositionsChecked"] integerValue],4);
+    XCTAssertEqualObjects(result[@"toolbarCycles"],@3);
+    for(NSString *key in @[@"bookPriorityDuringSearch",@"engineAnalysisAfterBook",@"gameSelectedAfterStop",@"selectionPillFollowsGame"])XCTAssertEqualObjects(result[key],@YES,@"%@",key);
 }
 
 - (void)testMainDisplayContinuityAndRoundedAnalysisBar {

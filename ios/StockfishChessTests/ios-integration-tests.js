@@ -100,8 +100,8 @@ export function trackMoveFeedback(){
 export async function engineMatchBookDisplay(){
  const api=nativeIntegration,$=id=>document.getElementById(id),{bookSuggestions}=await import('./features.js');
  const assert=(condition,message)=>{if(!condition)throw Error(message);};
- const result={bookPositionsChecked:0,openingNames:[],bookBounds:[],bookBeforeSearch:false,bothViewsEqual:true,bookFitsPanel:true,toggleContinuesMatch:false,engineAnalysisAfterBook:false};
- api.stopEngineMatch();api.patch({engine:'stockfish19',openingBook:true,showAnalysis:true,analysisArrows:true,figurine:true,bookVariety:'low',threads:1,hash:32});
+ const result={bookPositionsChecked:0,openingNames:[],bookBounds:[],bookBeforeSearch:false,bothViewsEqual:true,bookFitsPanel:true,bookBarHidden:true,barRestoredAfterBook:false,toggleContinuesMatch:false,engineAnalysisAfterBook:false};
+ api.stopEngineMatch();api.patch({engine:'stockfish19',openingBook:true,showAnalysis:true,analysisArrows:true,figurine:true,useToolbar:true,bookVariety:'low',threads:1,hash:32});
  try{
   api.startEngineMatch({white:'stockfish19',black:'clover91',seconds:3});api.setTab('analysis');
   await until(()=>!api.state().active,'Previous native search did not finish cancelling');
@@ -114,6 +114,7 @@ export async function engineMatchBookDisplay(){
    assert(JSON.stringify(labels)===JSON.stringify(choices.map(move=>move.label)),'Analysis book moves do not match the current side/position');
    assert(card.textContent===$('gameInsights').textContent,'Game and Analysis book names or moves differ');
    assert($('analysisLines').hidden,'Cached engine lines are competing with book play');
+   assert($('analysisEvaluationBar').hidden&&getComputedStyle($('analysisEvaluationBar')).display==='none','Match evaluation bar is visible during book play');
    assert(!state.active,'Book play unexpectedly started a native search');
    const bounds=card.getBoundingClientRect(),panel=$('analysisPanel').getBoundingClientRect(),toolbar=document.querySelector('.main-toolbar').getBoundingClientRect();
    assert(bounds.bottom<=Math.min(panel.bottom,toolbar.top)&&bounds.top>=panel.top,'Book content is clipped or overlaps the toolbar');
@@ -122,7 +123,10 @@ export async function engineMatchBookDisplay(){
    result.bookPositionsChecked++;
   };
   checkBook();result.bookBeforeSearch=api.state().length===0;
-  const before=api.state();api.setTab('game');api.setTab('analysis');
+  const before=api.state();$('toolbarAnalysis').click();
+  assert(api.state().tab==='game'&&$('toolbarGame').classList.contains('active'),'Match Analysis did not return to the Game menu button');
+  $('toolbarAnalysis').click();
+  assert(api.state().tab==='analysis'&&$('toolbarAnalysis').classList.contains('active'),'Match Analysis did not reselect its menu button');
   result.toggleContinuesMatch=!api.state().engineMatch.paused&&api.state().length===before.length;
   for(let move=1;move<=2;move++){
    await until(()=>api.state().length>=move&&!document.querySelector('.moving-piece'),'Book match did not advance',15000);
@@ -130,12 +134,57 @@ export async function engineMatchBookDisplay(){
   }
   api.load('6k1/8/8/8/8/8/5Q2/6K1 w - - 0 1');
   assert(bookSuggestions(new Chess(api.state().fen)).length===0,'Transition fixture is still in the opening book');
+  assert(!$('analysisEvaluationBar').hidden,'Match evaluation bar did not return when book play ended');
   await until(()=>api.state().lines.length>0&&$('analysisLines').querySelector('.analysis-line')&&api.state().depth>0,'Native engine analysis did not appear after the book');
   assert($('analysisBookInsights').hidden&&!$('analysisBookInsights').textContent,'Opening book remained visible after leaving it');
   assert(!$('analysisLines').hidden,'Real engine analysis remained hidden after book play');
-  result.engineAnalysisAfterBook=true;
+  result.engineAnalysisAfterBook=true;result.barRestoredAfterBook=true;
   return result;
  }finally{api.pauseEngineMatch();api.stopEngineMatch();}
+}
+
+export async function computerBookAnalysisAndToolbar(){
+ const api=nativeIntegration,$=id=>document.getElementById(id),{bookSuggestions}=await import('./features.js');
+ const assert=(condition,message)=>{if(!condition)throw Error(message);};
+ const result={bookPositionsChecked:0,bookNames:[],bookPriorityDuringSearch:false,engineAnalysisAfterBook:false,toolbarCycles:0,gameSelectedAfterStop:true,selectionPillFollowsGame:true};
+ api.stopEngineMatch();api.setTab('analysis');
+ api.patch({engine:'stockfish19',opponent:'computer',side:'w',openingBook:true,showAnalysis:true,analysisArrows:true,figurine:true,useToolbar:true,time:0,threads:1,hash:32});
+ const moveLabels=node=>[...node.querySelectorAll('p:not([class])>span')].map(span=>span.getAttribute('aria-label')||span.textContent);
+ const checkBook=()=>{
+  const card=$('analysisBookInsights'),state=api.state(),choices=bookSuggestions(new Chess(state.fen)).slice(0,2);
+  assert(state.settings.opponent==='computer'&&state.tab==='analysis'&&!card.hidden&&card.getClientRects().length>0,'Computer game book details are not visible in Analysis');
+  assert(card.querySelector('.opening-name')?.textContent===$('gameInsights').querySelector('.opening-name')?.textContent,'Computer game opening name differs between views');
+  assert(JSON.stringify(moveLabels(card))===JSON.stringify(choices.map(move=>move.label))&&JSON.stringify(moveLabels(card))===JSON.stringify(moveLabels($('gameInsights'))),'Computer game book moves differ from the current position or main screen');
+  assert($('analysisLines').hidden,'Engine variations replaced the computer game book prematurely');
+  assert(!$('analysisEvaluationBar').hidden,'Human-computer Analysis unexpectedly hid its evaluation bar');
+  result.bookNames.push(card.querySelector('.opening-name').textContent);result.bookPositionsChecked++;
+ };
+ try{
+  for(const pgn of ['1. d4','1. d4 Nf6','1. e4 e5 2. Nf3 Nc6']){api.load(pgn);checkBook();}
+  await until(()=>api.state().lines.length>0,'Underlying computer game analysis did not produce a native PV');
+  checkBook();result.bookPriorityDuringSearch=true;
+  api.patch({openingBook:false});
+  await until(()=>!$('analysisLines').hidden&&$('analysisLines').querySelector('.analysis-line'),'Disabling book did not restore engine variations');
+  assert($('analysisBookInsights').hidden,'Computer book remained visible with Opening Book off');
+  api.patch({openingBook:true});checkBook();
+  api.load('6k1/8/8/8/8/8/5Q2/6K1 w - - 0 1');
+  await until(()=>api.state().lines.length>0&&!$('analysisLines').hidden&&$('analysisLines').querySelector('.analysis-line'),'Computer game Analysis did not resume outside the book');
+  assert($('analysisBookInsights').hidden&&!$('analysisEvaluationBar').hidden,'Out-of-book computer analysis kept the wrong presentation');
+  result.engineAnalysisAfterBook=true;
+  $('toolbarOptions').click();assert($('settingsDialog').open,'Options did not open');$('settingsDialog').close();
+  for(let cycle=0;cycle<3;cycle++){
+   $('toolbarAnalysis').click();
+   assert(api.state().tab==='game'&&!$('gamePanel').hidden&&$('analysisPanel').hidden,'Stopping Analysis did not return to Game');
+   assert($('toolbarGame').classList.contains('active')&&!$('toolbarAnalysis').classList.contains('active')&&$('toolbarAnalysis').getAttribute('aria-pressed')==='false','Bottom menu still selects Analysis after stopping it');
+   await delay(250);
+   const pill=document.querySelector('.toolbar-selection').getBoundingClientRect(),game=$('toolbarGame').getBoundingClientRect();
+   assert(Math.abs((pill.left+pill.width/2)-(game.left+game.width/2))<1,'Bottom menu selection pill did not move to Game');
+   $('toolbarAnalysis').click();
+   assert(api.state().tab==='analysis'&&$('toolbarAnalysis').classList.contains('active')&&!$('toolbarGame').classList.contains('active'),'Starting Analysis did not select its menu button');
+   result.toolbarCycles++;
+  }
+  return result;
+ }finally{api.patch({opponent:'local'});}
 }
 
 export async function mainDisplayContinuity(){

@@ -1,6 +1,6 @@
 # Stockfish AI Chess
 
-An independent iOS chess app by Tughan Y. Karsli. The `develop` branch contains version 2.1 development source, including Chess Coach after version 1.6. See [the phone-to-TestFlight guide](ios/XCODE-CLOUD.md) for cloud builds and AI coding tasks.
+An independent iOS chess app by Tughan Y. Karsli. The `develop` branch contains version 2.2 development source, including Chess Coach after version 1.6. See [the phone-to-TestFlight guide](ios/XCODE-CLOUD.md) for cloud builds and AI coding tasks.
 
 Large engine models are restored with `python3 ios/ci_scripts/restore-models.py` from the checksum-pinned [build 21 source release](https://github.com/tughankarsli76/stockfish-ai-chess/releases/tag/v1.4-build21-source). Run `npm test` with Node 24 or newer. Read [SOURCE-BUILD.md](SOURCE-BUILD.md), [LICENSING.md](LICENSING.md) and [AGENTS.md](AGENTS.md) before native development.
 

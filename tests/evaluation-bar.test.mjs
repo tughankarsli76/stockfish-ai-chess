@@ -34,7 +34,7 @@ test('engine scores and mate signs keep White perspective on either turn',()=>{
 
 function harness(){
  const session=new GameSession(),bar={hidden:false,style:{setProperty(key,value){this[key]=value;}},dataset:{},setAttribute(key,value){this[key]=value;}},label={};
- const c={session,tab:'analysis',clockExpired:()=>false,gameClock:{expired:null},timeWinner,evaluationBar:new EvaluationBar(),
+ const c={session,tab:'analysis',matchActive:()=>false,clockExpired:()=>false,gameClock:{expired:null},timeWinner,evaluationBar:new EvaluationBar(),
   currentAnalysisLines:()=>[], $:id=>id==='analysisEvaluationBar'?bar:label};
  vm.createContext(c);
  const app=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');

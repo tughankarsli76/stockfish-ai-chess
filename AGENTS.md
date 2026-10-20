@@ -1,6 +1,6 @@
 # Stockfish AI Chess development
 
-The `develop` branch is the active app source for version 2.1. The release downloads and historical release tags are immutable records of shipped builds.
+The `develop` branch is the active app source for version 2.2. The release downloads and historical release tags are immutable records of shipped builds.
 
 - Edit the interface in `dist/`, native integration in `ios/StockfishChess/`, and Xcode project configuration in `ios/generate-project.py`.
 - Run `npm test` with Node 24 or newer for interface and game changes. There are no npm dependencies to install.

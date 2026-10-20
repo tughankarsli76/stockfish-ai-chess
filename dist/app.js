@@ -571,7 +571,7 @@ function displayAnalysis(){
     terminal:position.isGameOver()||session.live&&clockExpired(),continuingMatch:matchActive()});
 }
 function renderAnalysisArrows(){
-  const position=session.position(),book=(tab==='game'||matchActive()&&tab==='analysis')&&settings.openingBook?bookMoves(position).slice(0,2).map((move,i)=>({...move,rank:i+1})):[];
+  const position=session.position(),book=(tab==='game'||tab==='analysis'&&(matchActive()||settings.opponent==='computer'))&&settings.openingBook&&!(session.live&&clockExpired())?bookMoves(position).slice(0,2).map((move,i)=>({...move,rank:i+1})):[];
   const lines=displayAnalysis().lines.slice(0,tab==='analysis'?3:2);
   const markup=(tab==='analysis'||(tab==='game'&&settings.showAnalysis))&&settings.analysisArrows
     ?arrowMarkup(book.length?book:lines,flipped):'';
@@ -584,7 +584,8 @@ function renderEvaluationBar(){
     :session.live&&clockExpired()?(timeWinner(gameClock.expired)==='w'?'1-0':'0-1')
     :session.live?session.game.getHeaders().Result:null;
   const state=evaluationBar.update(session.game,currentAnalysisLines().find(line=>line.rank===1),result);
-  const bar=$('analysisEvaluationBar');bar.hidden=tab!=='analysis';
+  const book=matchActive()&&settings.openingBook&&!(session.live&&clockExpired())&&bookMoves(position).length>0;
+  const bar=$('analysisEvaluationBar');bar.hidden=tab!=='analysis'||book;
   bar.style.setProperty('--white-share',(state.whiteShare*100)+'%');bar.dataset.favored=state.favored;
   $('analysisEvaluationLabel').textContent=state.label;
   bar.setAttribute('aria-label',state.label==='—'?'Position not yet evaluated':(state.pending?'Updating evaluation; last evaluation ':'')+state.label+' · White perspective');

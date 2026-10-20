@@ -70,7 +70,7 @@ export function installMenus(api,html){
   toolbar.innerHTML='<button id="toolbarGame">Game</button><button id="toolbarOptions">Options</button><button id="toolbarAnalysis">Analysis</button><button id="toolbarFlip">Flip</button><button id="toolbarMove">Move</button>';
   const toolbarButtons=[...toolbar.querySelectorAll('button')];
   const toolbarSelection=document.createElement('span');toolbarSelection.className='toolbar-selection';toolbarSelection.hidden=true;toolbarSelection.setAttribute('aria-hidden','true');toolbar.append(toolbarSelection);
-  let selectedToolbar=toolbar.querySelector(api.state().tab==='analysis'?'#toolbarAnalysis':'#toolbarGame'),toolbarLayoutFrame=0;
+  let toolbarTab=api.state().tab,selectedToolbar=toolbar.querySelector(toolbarTab==='analysis'?'#toolbarAnalysis':'#toolbarGame'),toolbarLayoutFrame=0;
   selectedToolbar.classList.add('active');
   function positionToolbarSelection(animate=false){
     const target=selectedToolbar.getBoundingClientRect(),bounds=toolbar.getBoundingClientRect();
@@ -85,12 +85,24 @@ export function installMenus(api,html){
       toolbarLayoutFrame=requestAnimationFrame(()=>{toolbarSelection.classList.add('animated');toolbarLayoutFrame=0;});
     }
   }
+  function selectToolbar(button,animate=true){
+    selectedToolbar=button;
+    for(const item of toolbarButtons)item.classList.toggle('active',item===button);
+    positionToolbarSelection(animate);
+  }
+  function syncToolbarSelection(tab){
+    // Ordinary rerenders retain the last control tapped; navigation follows the view.
+    if(tab!==toolbarTab){
+      toolbarTab=tab;
+      selectToolbar(toolbar.querySelector(tab==='analysis'?'#toolbarAnalysis':'#toolbarGame'));
+    }
+    $('toolbarGame').setAttribute('aria-pressed',String(tab==='game'));
+    $('toolbarAnalysis').setAttribute('aria-pressed',String(tab==='analysis'&&!api.state().analysisPaused));
+  }
   toolbar.addEventListener('click',event=>{
     const selected=event.target.closest('button');
     if(!selected||!toolbar.contains(selected)||selected.disabled)return;
-    selectedToolbar=selected;
-    for(const button of toolbarButtons)button.classList.toggle('active',button===selected);
-    positionToolbarSelection(true);
+    selectToolbar(selected);
   },true);
   document.querySelector('.app').append(toolbar);
   positionToolbarSelection();
@@ -336,7 +348,7 @@ export function installMenus(api,html){
     for(const [id,value] of Object.entries(values))$(id+'Value').textContent=value;
     document.body.classList.toggle('use-toolbar',s.useToolbar);
     $('analysisTab').hidden=true;
-    $('toolbarAnalysis').setAttribute('aria-pressed',String(tab==='analysis'&&!api.state().analysisPaused));
+    syncToolbarSelection(tab);
     $('showAnalysisView').hidden=!s.showAnalysis;
     $('newGame').textContent={new:'＋',flip:'⇅',move:'▶',hint:'◇'}[s.shortcut]||'＋';$('newGame').setAttribute('aria-label',t(labels[s.shortcut]||'Start Game'));
     $('takeBack').disabled=session.cursor===0;$('stepForward').disabled=session.live;$('startOfGame').disabled=session.cursor===0;$('endOfGame').disabled=session.live;
@@ -372,11 +384,11 @@ export function installMenus(api,html){
       });
       container.append(title,name,moves);
     };
-    const matchBook=tab==='analysis'&&s.opponent==='match'&&!!engineMatch&&book.length>0&&!position.isGameOver()&&!timeout;
-    $('analysisBookInsights').hidden=!matchBook;
+    const showBook=tab==='analysis'&&(s.opponent==='computer'||s.opponent==='match'&&!!engineMatch)&&book.length>0&&!position.isGameOver()&&!timeout;
+    $('analysisBookInsights').hidden=!showBook;
     $('analysisBookInsights').replaceChildren();
-    if(matchBook)appendBook($('analysisBookInsights'));
-    $('analysisLines').hidden=matchBook;
+    if(showBook)appendBook($('analysisBookInsights'));
+    $('analysisLines').hidden=showBook;
     $('gameInsights').classList.toggle('checkmate-result',!!result);
     $('gameInsights').hidden=!s.showAnalysis&&!result;
     $('gameInsights').replaceChildren();
